@@ -73,7 +73,6 @@ h1,h2,h3,h4{margin:0;font-weight:600;letter-spacing:-.01em}
 .main{min-width:0;display:flex;flex-direction:column}
 .top{background:var(--paper);border-bottom:1px solid var(--line);padding:16px 26px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:sticky;top:0;z-index:20}
 .top h2{font-size:18px}
-.top .crumb{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);display:block;margin-bottom:2px}
 .top .sp{flex:1}
 .uni-lista{display:flex;flex-direction:column;gap:8px}
 .uni-op{display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;
@@ -272,7 +271,7 @@ td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabu
   </aside>
   <div class="main">
     <header class="top">
-      <div><span class="crumb" id="crumb">Painel</span><h2 id="titulo">Painel</h2></div>
+      <div><h2 id="titulo">Painel</h2></div>
       <div class="sp"></div>
       <div id="unidadeBox"></div>
       <div id="topAcoes" style="display:flex;gap:8px;flex-wrap:wrap"></div>
@@ -572,7 +571,7 @@ function pintarUnidade(){
     cx.innerHTML = `<label class="uni-sel"><span class="mono">Unidade</span>
       <select class="inp" onchange="trocarUnidade(this.value)">
         ${S.acessos.map(x=>
-          `<option value="${x.id}" ${S.unidade?.id===x.id?'selected':''}>${esc(x.codigo)} — ${esc(x.nome)}</option>`).join('')}
+          `<option value="${x.id}" ${S.unidade?.id===x.id?'selected':''}>${esc(x.nome)}</option>`).join('')}
       </select></label>`;
   } else {
     cx.innerHTML = `<span class="tag brand mono">${esc(u?.codigo||'—')}</span>`;
@@ -607,7 +606,7 @@ function montarNav(){
 function irPara(id){ if(location.hash.slice(1)===id) render(); else location.hash = id; }
 async function render(){
   const r = ROTAS.find(x=>x.id===S.rota) || ROTAS[1];
-  $('#crumb').textContent = 'Ilha VIX'; $('#titulo').textContent = r.t;
+  $('#titulo').textContent = r.t;
   $('#topAcoes').innerHTML = ''; $('#view').innerHTML = '<div class="empty">Carregando…</div>';
   montarNav();
   try { await r.f(); } catch(e){ erro(e); $('#view').innerHTML = `<div class="card"><div class="empty"><b>Não foi possível carregar</b>${esc(e.message||e)}</div></div>`; }
@@ -1083,7 +1082,7 @@ function formSaidaFuncionario(varId=null, funcId=null){
   if(!podeOperar()) return toast('Sem permissão para lançar.','err');
   modal({titulo:'Entrega definitiva a funcionário', wide:true, corpo:`
     <div class="row">
-      <label class="field"><span>Funcionário <em>*</em></span><select class="inp" id="fFunc">
+      <label class="field"><span>Funcionário de ${esc(S.unidade.codigo)} <em>*</em></span><select class="inp" id="fFunc">
         <option value="">Selecione…</option>
         ${S.funcionarios.filter(f=>f.ativo).map(f=>`<option value="${f.id}">${esc(f.nome)}${f.setor?' — '+esc(f.setor):''}</option>`).join('')}
       </select></label>
@@ -1136,7 +1135,7 @@ function formEmprestimo(varId=null, funcId=null){
   const d = new Date(); d.setDate(d.getDate()+7);
   modal({titulo:'Empréstimo com recibo', wide:true, corpo:`
     <div class="row-3">
-      <label class="field"><span>Funcionário <em>*</em></span><select class="inp" id="fFunc">
+      <label class="field"><span>Funcionário de ${esc(S.unidade.codigo)} <em>*</em></span><select class="inp" id="fFunc">
         <option value="">Selecione…</option>
         ${S.funcionarios.filter(f=>f.ativo).map(f=>`<option value="${f.id}">${esc(f.nome)}${f.setor?' — '+esc(f.setor):''}</option>`).join('')}
       </select></label>
@@ -1836,7 +1835,7 @@ async function listarFuncionarios(){
   else if(filtroVinculo === 'INATIVOS') lista = lista.filter(f=>!f.ativo);
   else if(filtroVinculo !== 'TODOS')  lista = lista.filter(f=>f.ativo && (f.vinculo||'EFETIVO')===filtroVinculo);
   $('#funcLista').innerHTML = lista.length? `
-    <div class="card-h"><h3>${lista.length} funcionários</h3><div class="sp"></div>
+    <div class="card-h"><h3>${lista.length} funcionários de ${esc(S.unidade.nome)}</h3><div class="sp"></div>
       <span class="small muted">${S.funcionarios.filter(f=>f.ativo).length} ativos ·
         ${S.funcionarios.filter(f=>!f.ativo).length} desligados</span></div>
     <div class="tbl-wrap"><table>
@@ -1911,7 +1910,7 @@ async function fichaFuncionario(id){
 function formFuncionario(id=null){
   if(!exigeGestor()) return;
   const f = id? S.funcionarios.find(x=>x.id===id) : {};
-  modal({titulo: id?'Editar funcionário':'Novo funcionário', corpo:`
+  modal({titulo: id?'Editar funcionário':'Novo funcionário em '+S.unidade.nome, corpo:`
     <label class="field"><span>Nome completo <em>*</em></span><input class="inp" id="nNome" value="${esc(f.nome||'')}"></label>
     <div class="row">
       <label class="field"><span>Matrícula</span><input class="inp" id="nMat" value="${esc(f.matricula||'')}"></label>
@@ -2478,7 +2477,7 @@ function pintarDotacao(){
 
   const grupos = [...new Set((window._dot||[]).map(d=>d.grupo))].sort();
   $('#dotLista').innerHTML = lista.length? `
-    <div class="card-h"><h3>${lista.length} funcionários</h3><div class="sp"></div>
+    <div class="card-h"><h3>${lista.length} funcionários de ${esc(S.unidade.nome)}</h3><div class="sp"></div>
       <span class="small muted">${lista.reduce((s,f)=>s+f.falta,0)} peças faltando no total</span></div>
     <div class="tbl-wrap"><table>
       <thead><tr><th>Funcionário</th><th>Cargo / setor</th>
@@ -2949,7 +2948,7 @@ function formNovaUnidade(){
     </div>
     <label class="field"><span>Copiar o catálogo de</span><select class="inp" id="unCopia">
       <option value="">Começar do zero</option>
-      ${S.acessos.map(a=>`<option value="${a.id}">${esc(a.codigo)} — ${esc(a.nome)}</option>`).join('')}
+      ${S.acessos.map(a=>`<option value="${a.id}">${esc(a.nome)}</option>`).join('')}
     </select></label>
     <p class="small muted" style="margin:0">Copiar traz itens, grades, tamanhos, categorias e regras já prontos,
     com estoque zerado. A partir daí a unidade segue sozinha — mudar lá não mexe aqui.</p>`,
