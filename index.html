@@ -1,0 +1,2256 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Almoxarifado de Uniformes e EPI — Ilha do Caranguejo VIX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0E1418; --ink-2:#38434D; --mut:#78838F; --line:#DCE3E8; --line-2:#EDF1F4;
+  --paper:#FFFFFF; --bg:#EBEFF2; --sur:#F6F8FA;
+  --sea:#0B4F53; --sea-d:#073A3D; --sea-l:#E4EFEF; --sea-t:#0E6B70;
+  --amber:#A85B06; --amber-l:#FBF0E0;
+  --red:#A82015; --red-l:#FBE9E7;
+  --green:#12734F; --green-l:#E3F1EA;
+  --r:6px; --sh:0 1px 2px rgba(14,20,24,.06), 0 6px 20px rgba(14,20,24,.06);
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:'Archivo',system-ui,sans-serif;font-size:14px;line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--sea-t)}
+h1,h2,h3,h4{margin:0;font-weight:600;letter-spacing:-.01em}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.hide{display:none !important}
+
+/* ---------- LOGIN / CONFIG ---------- */
+.gate{min-height:100dvh;display:grid;place-items:center;padding:24px;
+  background:linear-gradient(160deg,var(--sea-d),#0B4F53 60%,#0E6B70)}
+.gate-card{width:100%;max-width:400px;background:var(--paper);border-radius:10px;padding:32px;box-shadow:0 24px 60px rgba(0,0,0,.28)}
+.gate-card h1{font-size:19px}
+.gate-card .sub{color:var(--mut);font-size:13px;margin:6px 0 22px}
+.brandmark{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--sea-t);text-transform:uppercase;font-weight:600}
+
+/* ---------- SHELL ---------- */
+.shell{display:grid;grid-template-columns:236px 1fr;min-height:100dvh}
+.side{background:var(--sea-d);color:#CFE0E0;display:flex;flex-direction:column;position:sticky;top:0;height:100dvh}
+.side-top{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.09)}
+.side-top .u{font-size:15px;color:#fff;font-weight:600;letter-spacing:-.01em}
+.side-top .brandmark{color:#7FB6B6}
+.nav{padding:10px 10px;flex:1;overflow:auto}
+.nav-lbl{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#5E8C8C;padding:14px 8px 6px}
+.nav a{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--r);color:#CFE0E0;text-decoration:none;font-size:13.5px}
+.nav a:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav a.on{background:var(--sea-t);color:#fff;font-weight:500}
+.nav a .ic{width:16px;text-align:center;opacity:.9;font-size:13px}
+.nav a .badge{margin-left:auto;background:var(--amber);color:#fff;border-radius:20px;padding:1px 7px;font-size:11px;font-family:var(--mono)}
+.side-foot{padding:12px 14px;border-top:1px solid rgba(255,255,255,.09);font-size:12px;color:#8FB3B3}
+.side-foot b{color:#fff;font-weight:500;display:block}
+.side-foot button{margin-top:8px;background:none;border:1px solid rgba(255,255,255,.2);color:#CFE0E0;padding:4px 10px;border-radius:var(--r);cursor:pointer;font-size:12px}
+.side-foot button:hover{background:rgba(255,255,255,.1)}
+
+.main{min-width:0;display:flex;flex-direction:column}
+.top{background:var(--paper);border-bottom:1px solid var(--line);padding:16px 26px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:sticky;top:0;z-index:20}
+.top h2{font-size:18px}
+.top .crumb{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);display:block;margin-bottom:2px}
+.top .sp{flex:1}
+.content{padding:22px 26px 60px;max-width:1500px;width:100%}
+
+/* ---------- COMPONENTES ---------- */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:8px}
+.card-h{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}
+.card-h h3{font-size:14px}
+.card-h .sp{flex:1}
+.card-b{padding:16px}
+.grid{display:grid;gap:14px}
+.muted{color:var(--mut)}
+.small{font-size:12.5px}
+
+.btn{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:var(--r);border:1px solid var(--line);
+  background:var(--paper);cursor:pointer;font-size:13px;font-weight:500;white-space:nowrap;transition:.12s}
+.btn:hover{background:var(--sur);border-color:#C6D0D8}
+.btn:focus-visible{outline:2px solid var(--sea-t);outline-offset:2px}
+.btn.pri{background:var(--sea);border-color:var(--sea);color:#fff}
+.btn.pri:hover{background:var(--sea-t);border-color:var(--sea-t)}
+.btn.dan{color:var(--red);border-color:#E8C4C0}
+.btn.dan:hover{background:var(--red-l)}
+.btn.sm{padding:5px 10px;font-size:12px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+.field{display:block;margin-bottom:14px}
+.field>span{display:block;font-size:12px;font-weight:500;color:var(--ink-2);margin-bottom:5px}
+.field>span em{color:var(--red);font-style:normal}
+.inp{width:100%;padding:8px 11px;border:1px solid var(--line);border-radius:var(--r);background:var(--paper);transition:.12s}
+.inp:focus{outline:none;border-color:var(--sea-t);box-shadow:0 0 0 3px rgba(14,107,112,.12)}
+textarea.inp{min-height:70px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 14px}
+.check{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:13px;cursor:pointer}
+.check input{width:16px;height:16px;accent-color:var(--sea)}
+
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-family:var(--mono);
+   color:var(--mut);font-weight:600;padding:9px 12px;border-bottom:1px solid var(--line);background:var(--sur);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--line-2);vertical-align:middle}
+tbody tr:hover{background:var(--sur)}
+td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.tbl-wrap{overflow-x:auto}
+
+.tag{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:20px;font-size:11.5px;font-weight:500;
+  background:var(--sur);border:1px solid var(--line);color:var(--ink-2);white-space:nowrap}
+.tag.ok{background:var(--green-l);border-color:#BFE0D0;color:var(--green)}
+.tag.low{background:var(--amber-l);border-color:#EDD4AC;color:var(--amber)}
+.tag.zero{background:var(--red-l);border-color:#EFC6C1;color:var(--red)}
+.tag.sea{background:var(--sea-l);border-color:#BFD9D9;color:var(--sea)}
+.tag.in{background:var(--green-l);border-color:#BFE0D0;color:var(--green)}
+.tag.out{background:#EFEAF7;border-color:#D9CEEC;color:#5B3E96}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+.kpi{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:16px 18px;position:relative;overflow:hidden}
+.kpi::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--sea)}
+.kpi.warn::after{background:var(--amber)} .kpi.bad::after{background:var(--red)} .kpi.good::after{background:var(--green)}
+.kpi .l{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+.kpi .v{font-size:28px;font-weight:600;letter-spacing:-.02em;margin-top:6px;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.kpi .d{font-size:12px;color:var(--mut);margin-top:2px}
+
+/* ---------- ASSINATURA: MATRIZ DE ESTOQUE ---------- */
+.matriz{border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--paper);margin-bottom:18px}
+.matriz-h{padding:12px 16px;background:var(--sea);color:#fff;display:flex;align-items:center;gap:10px}
+.matriz-h h3{font-size:13px;color:#fff}
+.matriz-h .g{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#9CC6C6;margin-left:auto}
+.matriz table{table-layout:auto}
+.matriz th.item-col,.matriz td.item-col{position:sticky;left:0;background:var(--paper);z-index:2;min-width:250px;border-right:1px solid var(--line)}
+.matriz th.item-col{background:var(--sur)}
+.matriz tbody tr:hover td.item-col{background:var(--sur)}
+.matriz td{padding:0;text-align:center;border-right:1px solid var(--line-2)}
+.matriz td.item-col{padding:9px 12px;text-align:left}
+.cel{width:100%;min-width:58px;padding:11px 4px;border:0;background:none;cursor:pointer;font-family:var(--mono);
+  font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink);transition:.1s}
+.cel:hover{background:var(--sea-l);box-shadow:inset 0 0 0 2px var(--sea-t)}
+.cel.zero{color:#C6CED4}
+.cel.low{background:var(--amber-l);color:var(--amber)}
+.cel.neg{background:var(--red-l);color:var(--red)}
+.cel .m{display:block;font-size:9.5px;font-weight:400;color:var(--mut);letter-spacing:.04em}
+.cel .lav{display:block;font-size:9px;font-weight:500;color:var(--sea-t);letter-spacing:.03em}
+.cel.na{cursor:default;color:#D5DCE1}
+.cel.na:hover{background:none;box-shadow:none}
+.it-nome{font-weight:500;font-size:13px}
+.it-meta{font-size:11px;color:var(--mut);font-family:var(--mono)}
+
+/* ---------- MODAL / DRAWER ---------- */
+.ovl{position:fixed;inset:0;background:rgba(14,20,24,.44);z-index:60;display:flex;align-items:flex-start;justify-content:center;padding:5vh 16px;overflow:auto}
+.mdl{background:var(--paper);border-radius:10px;width:100%;max-width:600px;box-shadow:0 30px 70px rgba(0,0,0,.3);animation:up .16s ease-out}
+.mdl.wide{max-width:900px}
+@keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.mdl-h{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}
+.mdl-h h3{font-size:16px}
+.mdl-h .x{margin-left:auto;background:none;border:0;font-size:22px;color:var(--mut);cursor:pointer;line-height:1;padding:0 4px}
+.mdl-b{padding:22px;max-height:65vh;overflow:auto}
+.mdl-f{padding:14px 22px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end;background:var(--sur);border-radius:0 0 10px 10px}
+
+.drw{position:fixed;top:0;right:0;bottom:0;width:min(520px,100%);background:var(--paper);z-index:70;
+  box-shadow:-14px 0 46px rgba(0,0,0,.22);display:flex;flex-direction:column;animation:slide .18s ease-out}
+@keyframes slide{from{transform:translateX(24px);opacity:.6}to{transform:none;opacity:1}}
+.drw-h{padding:20px 22px;border-bottom:1px solid var(--line)}
+.drw-b{flex:1;overflow:auto;padding:20px 22px}
+
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:90;display:flex;flex-direction:column;gap:8px;align-items:center}
+.tst{background:var(--ink);color:#fff;padding:11px 18px;border-radius:var(--r);font-size:13px;box-shadow:var(--sh);max-width:520px}
+.tst.err{background:var(--red)} .tst.ok{background:var(--green)}
+
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:18px;overflow-x:auto}
+.tabs button{background:none;border:0;border-bottom:2px solid transparent;padding:9px 14px;cursor:pointer;font-size:13px;color:var(--mut);white-space:nowrap}
+.tabs button.on{color:var(--sea);border-bottom-color:var(--sea);font-weight:600}
+
+.chart{width:100%;height:200px}
+.chart .bar-in{fill:var(--sea-t)} .chart .bar-out{fill:#8FA3B0}
+.chart .ax{stroke:var(--line)} .chart .lbl{font-size:10px;fill:var(--mut);font-family:var(--mono)}
+.legend{display:flex;gap:16px;font-size:12px;color:var(--mut);margin-top:6px}
+.legend i{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:5px}
+
+.empty{padding:44px 20px;text-align:center;color:var(--mut)}
+.empty b{display:block;color:var(--ink);font-weight:600;margin-bottom:4px;font-size:14px}
+.pick{display:flex;gap:8px;align-items:flex-end;margin-bottom:12px;flex-wrap:wrap}
+.pick .field{flex:1;min-width:150px;margin:0}
+.lista-itens{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:8px}
+.lista-itens .li{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--line-2);font-size:13px}
+.lista-itens .li:last-child{border-bottom:0}
+.lista-itens .li .sp{flex:1}
+.lista-itens .li .qt{font-family:var(--mono);font-weight:600}
+
+/* ---------- RECIBO / IMPRESSAO ---------- */
+#print{display:none}
+@media print{
+  body{background:#fff}
+  .shell,.ovl,.drw,.toast{display:none !important}
+  #print{display:block !important;padding:0;font-size:12px;color:#000}
+  @page{size:A4;margin:16mm}
+}
+.rec-h{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #000;padding-bottom:10px;margin-bottom:16px}
+.rec-h .t{font-size:17px;font-weight:700;letter-spacing:-.01em}
+.rec-h .s{font-size:11px;color:#444}
+.rec-cod{font-family:var(--mono);font-size:13px;font-weight:600;text-align:right}
+.rec-dados{display:grid;grid-template-columns:1fr 1fr;gap:4px 24px;margin-bottom:16px;font-size:12px}
+.rec-dados div{border-bottom:1px solid #ccc;padding:5px 0}
+.rec-dados b{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#555;display:block}
+#print table{width:100%;border-collapse:collapse;margin-bottom:16px}
+#print th{background:#eee;border:1px solid #999;padding:6px;font-size:10px;text-transform:uppercase}
+#print td{border:1px solid #bbb;padding:6px;font-size:12px}
+.rec-termo{font-size:10.5px;line-height:1.55;text-align:justify;border:1px solid #999;padding:10px;margin-bottom:26px;background:#fafafa}
+.rec-ass{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:44px;text-align:center;font-size:11px}
+.rec-ass div{border-top:1px solid #000;padding-top:5px}
+
+@media(max-width:900px){
+  .shell{grid-template-columns:1fr}
+  .side{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center}
+  .side-top{border:0;padding:12px 16px} .nav{display:flex;flex-wrap:wrap;padding:6px}
+  .nav-lbl{display:none} .side-foot{border:0;width:100%}
+  .content,.top{padding-left:14px;padding-right:14px}
+  .row,.row-3{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</head>
+<body>
+<div id="gate" class="gate"></div>
+<div id="shell" class="shell hide">
+  <aside class="side">
+    <div class="side-top">
+      <span class="brandmark">Grupo Ilha</span>
+      <div class="u">Almoxarifado</div>
+      <div class="small" style="color:#7FB6B6" id="uniLbl">Ilha do Caranguejo — VIX</div>
+    </div>
+    <nav class="nav" id="nav"></nav>
+    <div class="side-foot">
+      <b id="userNome">—</b>
+      <span id="userPapel" class="mono small">—</span>
+      <button onclick="sair()">Sair</button>
+    </div>
+  </aside>
+  <div class="main">
+    <header class="top">
+      <div><span class="crumb" id="crumb">Painel</span><h2 id="titulo">Painel</h2></div>
+      <div class="sp"></div>
+      <div id="topAcoes" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+    </header>
+    <main class="content" id="view"></main>
+  </div>
+</div>
+<div id="modal"></div>
+<div id="drawer"></div>
+<div class="toast" id="toast"></div>
+<div id="print"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+/* =====================================================================
+   ALMOXARIFADO DE UNIFORMES E EPI - Ilha do Caranguejo VIX
+   Front-end: HTML unico + Supabase. Publicavel no GitHub Pages.
+   ===================================================================== */
+
+/* --- 1. CONFIGURACAO -------------------------------------------------
+   Preencha abaixo OU deixe em branco e informe na tela inicial
+   (fica salvo no navegador).                                          */
+const CONFIG = {
+  SUPABASE_URL: '',
+  SUPABASE_ANON_KEY: '',
+  UNIDADE_PADRAO: 'VIX',
+  EMPRESA: 'Grupo Ilha',
+  LOJA: 'Ilha do Caranguejo — Vitória (VIX)'
+};
+
+const LS = 'almox.cfg';
+function cfg(){
+  const s = JSON.parse(localStorage.getItem(LS) || '{}');
+  return { url: CONFIG.SUPABASE_URL || s.url || '', key: CONFIG.SUPABASE_ANON_KEY || s.key || '' };
+}
+
+/* --- 2. ESTADO ------------------------------------------------------ */
+const S = {
+  sb:null, user:null, perfil:null, unidade:null, rota:'painel',
+  unidades:[], categorias:[], grades:[], tamanhos:[], itens:[],
+  funcionarios:[], fornecedores:[], dotacoes:[], estoque:[], lavanderia:[],
+  alertas:0, atrasados:0, aguardando:0, semDotacao:0
+};
+
+/* --- 3. UTILITARIOS ------------------------------------------------- */
+const $  = (s,r=document)=>r.querySelector(s);
+const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
+const esc = v => String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num = v => Number(v||0).toLocaleString('pt-BR');
+const brl = v => Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const dt  = v => v ? new Date(v).toLocaleDateString('pt-BR') : '—';
+const dth = v => v ? new Date(v).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}) : '—';
+const hoje = ()=> new Date().toISOString().slice(0,10);
+const diasAtras = n => new Date(Date.now()-n*864e5).toISOString();
+
+const TIPOS = {
+  ENTRADA_COMPRA:'Entrada — compra',
+  ENTRADA_DEVOLUCAO:'Entrada — devolução',
+  ENTRADA_RETORNO_EMPRESTIMO:'Entrada — retorno de empréstimo',
+  ENTRADA_AJUSTE:'Entrada — ajuste de inventário',
+  SAIDA_FUNCIONARIO:'Saída — funcionário',
+  SAIDA_EMPRESTIMO:'Saída — empréstimo',
+  SAIDA_DESCARTE:'Saída — descarte',
+  SAIDA_AJUSTE:'Saída — ajuste de inventário',
+  RETORNO_LAVANDERIA:'Entrada — retorno limpo da lavanderia',
+  DESCARTE_LAVANDERIA:'Saída — peça condenada na lavagem'
+};
+const STATUS_REM = {ENVIADA:'Na lavanderia',RECEBIDA:'Recebida',CANCELADA:'Cancelada'};
+const STATUS_EMP = {ABERTO:'Em aberto',PARCIAL:'Devolução parcial',DEVOLVIDO:'Devolvido',BAIXADO:'Baixado'};
+
+function toast(msg,tipo=''){
+  const el = document.createElement('div');
+  el.className = 'tst '+tipo; el.textContent = msg;
+  $('#toast').appendChild(el);
+  setTimeout(()=>{el.style.opacity='0';el.style.transition='.3s';setTimeout(()=>el.remove(),300)}, tipo==='err'?6000:3200);
+}
+function erro(e){ console.error(e); toast(e?.message || String(e), 'err'); }
+
+function modal({titulo, corpo, acoes=[], wide=false, aoAbrir}){
+  const ovl = document.createElement('div'); ovl.className='ovl';
+  ovl.innerHTML = `<div class="mdl ${wide?'wide':''}" role="dialog" aria-modal="true">
+    <div class="mdl-h"><h3>${esc(titulo)}</h3><button class="x" aria-label="Fechar">&times;</button></div>
+    <div class="mdl-b">${corpo}</div>
+    <div class="mdl-f"></div></div>`;
+  const fechar = ()=> ovl.remove();
+  ovl.querySelector('.x').onclick = fechar;
+  ovl.onclick = e => { if(e.target===ovl) fechar(); };
+  const f = ovl.querySelector('.mdl-f');
+  acoes.forEach(a=>{
+    const b = document.createElement('button');
+    b.className = 'btn '+(a.classe||''); b.textContent = a.rotulo;
+    b.onclick = ()=> a.acao ? a.acao(ovl, fechar, b) : fechar();
+    f.appendChild(b);
+  });
+  $('#modal').appendChild(ovl);
+  document.addEventListener('keydown', function esq(e){ if(e.key==='Escape'){fechar();document.removeEventListener('keydown',esq);} });
+  aoAbrir && aoAbrir(ovl);
+  const first = ovl.querySelector('input,select,textarea'); first && first.focus();
+  return {ovl, fechar};
+}
+function confirmar(titulo, texto, aoConfirmar, rotulo='Confirmar'){
+  modal({titulo, corpo:`<p style="margin:0">${texto}</p>`, acoes:[
+    {rotulo:'Cancelar'},
+    {rotulo, classe:'pri', acao:async(o,f,b)=>{ b.disabled=true; try{ await aoConfirmar(); f(); }catch(e){ erro(e); b.disabled=false; } }}
+  ]});
+}
+function drawer({titulo, sub='', corpo}){
+  $('#drawer').innerHTML='';
+  const ovl = document.createElement('div'); ovl.className='ovl'; ovl.style.padding='0'; ovl.style.justifyContent='flex-end';
+  ovl.innerHTML = `<div class="drw"><div class="drw-h"><div style="display:flex;align-items:center;gap:12px">
+      <div style="flex:1"><h3 style="font-size:16px">${esc(titulo)}</h3>
+      <div class="small muted">${sub}</div></div>
+      <button class="x" style="background:none;border:0;font-size:24px;color:var(--mut);cursor:pointer">&times;</button>
+    </div></div><div class="drw-b">${corpo}</div></div>`;
+  const fechar=()=>ovl.remove();
+  ovl.querySelector('.x').onclick=fechar;
+  ovl.onclick=e=>{ if(e.target===ovl) fechar(); };
+  $('#drawer').appendChild(ovl);
+  return {ovl, fechar};
+}
+
+const podeOperar = ()=> ['GESTOR','OPERADOR'].includes(S.perfil?.papel);
+const ehGestor   = ()=> S.perfil?.papel === 'GESTOR';
+function exigeGestor(){ if(!ehGestor()){ toast('Ação restrita ao gestor.','err'); return false; } return true; }
+
+/* --- 4. ACESSO ------------------------------------------------------ */
+function telaConfig(msg=''){
+  $('#gate').innerHTML = `<div class="gate-card">
+    <span class="brandmark">Grupo Ilha</span>
+    <h1>Conectar ao Supabase</h1>
+    <p class="sub">Informe o endereço do projeto e a chave pública (anon). Fica salvo apenas neste navegador.</p>
+    ${msg?`<p class="small" style="color:var(--red);margin:-10px 0 16px">${esc(msg)}</p>`:''}
+    <label class="field"><span>URL do projeto</span>
+      <input class="inp mono" id="cfgUrl" placeholder="https://xxxx.supabase.co"></label>
+    <label class="field"><span>Chave anon (public)</span>
+      <input class="inp mono" id="cfgKey" placeholder="eyJhbGciOi..."></label>
+    <button class="btn pri" style="width:100%;justify-content:center" onclick="salvarConfig()">Conectar</button>
+  </div>`;
+}
+function salvarConfig(){
+  const url = $('#cfgUrl').value.trim().replace(/\/$/,''), key = $('#cfgKey').value.trim();
+  if(!url || !key) return toast('Preencha os dois campos.','err');
+  localStorage.setItem(LS, JSON.stringify({url,key}));
+  location.reload();
+}
+function telaLogin(msg=''){
+  $('#gate').innerHTML = `<div class="gate-card">
+    <span class="brandmark">Grupo Ilha</span>
+    <h1>Almoxarifado de uniformes e EPI</h1>
+    <p class="sub">${esc(CONFIG.LOJA)}</p>
+    ${msg?`<p class="small" style="color:var(--red);margin:-10px 0 16px">${esc(msg)}</p>`:''}
+    <label class="field"><span>E-mail</span><input class="inp" id="loginEmail" type="email" autocomplete="username"></label>
+    <label class="field"><span>Senha</span><input class="inp" id="loginSenha" type="password" autocomplete="current-password"></label>
+    <button class="btn pri" style="width:100%;justify-content:center" id="btnEntrar">Entrar</button>
+    <p class="small muted" style="margin:16px 0 0;text-align:center">
+      <a href="#" onclick="localStorage.removeItem('${LS}');location.reload();return false">Trocar projeto Supabase</a></p>
+  </div>`;
+  const go = async ()=>{
+    const b = $('#btnEntrar'); b.disabled = true; b.textContent = 'Entrando…';
+    const { error } = await S.sb.auth.signInWithPassword({
+      email: $('#loginEmail').value.trim(), password: $('#loginSenha').value });
+    if(error){ b.disabled=false; b.textContent='Entrar'; return telaLogin('Não foi possível entrar: '+error.message); }
+    iniciarSessao();
+  };
+  $('#btnEntrar').onclick = go;
+  $('#loginSenha').onkeydown = e => { if(e.key==='Enter') go(); };
+}
+async function sair(){ await S.sb.auth.signOut(); location.reload(); }
+
+/* --- 5. CARGA DE DADOS ---------------------------------------------- */
+async function q(tabela, sel='*', mod = b=>b){
+  const { data, error } = await mod(S.sb.from(tabela).select(sel));
+  if(error) throw error; return data || [];
+}
+async function carregarBase(){
+  const [uni, cat, gra, tam, ite, fun, forn, dot] = await Promise.all([
+    q('almox_unidades','*',b=>b.order('codigo')),
+    q('almox_categorias','*',b=>b.order('ordem').order('nome')),
+    q('almox_grades','*',b=>b.order('nome')),
+    q('almox_tamanhos','*',b=>b.order('ordem')),
+    q('almox_itens','*',b=>b.order('nome')),
+    q('almox_funcionarios','*',b=>b.order('nome')),
+    q('almox_fornecedores','*',b=>b.order('nome')),
+    q('almox_dotacoes','*',b=>b.order('grupo'))
+  ]);
+  S.unidades=uni; S.categorias=cat; S.grades=gra; S.tamanhos=tam;
+  S.itens=ite; S.funcionarios=fun; S.fornecedores=forn; S.dotacoes=dot;
+  S.unidade = (S.perfil?.unidade_id && uni.find(u=>u.id===S.perfil.unidade_id))
+              || uni.find(u=>u.codigo===CONFIG.UNIDADE_PADRAO) || uni[0] || null;
+}
+async function carregarEstoque(){
+  S.estoque = await q('almox_vw_estoque','*',b=>b.order('item').order('tamanho_ordem'));
+  S.alertas = S.estoque.filter(e=>e.variacao_ativa && e.item_ativo && e.situacao!=='OK').length;
+}
+async function carregarLavanderia(){
+  S.lavanderia = await q('almox_vw_lavanderia','*',b=>b.gt('em_lavanderia',0).order('item'));
+  S.aguardando = S.lavanderia.reduce((t,l)=>t+l.aguardando_envio,0);
+}
+async function carregarDotacao(){
+  const d = await q('almox_vw_dotacao','funcionario_id,falta',b=>b.gt('falta',0));
+  S.semDotacao = new Set(d.map(x=>x.funcionario_id)).size;
+}
+async function carregarAtrasados(){
+  const d = await q('almox_vw_emprestimos','id,atrasado,status',b=>b.in('status',['ABERTO','PARCIAL']));
+  S.atrasados = d.filter(e=>e.atrasado).length;
+}
+const nomeCat  = id => S.categorias.find(c=>c.id===id)?.nome || '—';
+const nomeItem = id => S.itens.find(i=>i.id===id)?.nome || '—';
+const tamanhosDaGrade = gid => S.tamanhos.filter(t=>t.grade_id===gid && t.ativo).sort((a,b)=>a.ordem-b.ordem);
+
+/* --- 6. NAVEGACAO --------------------------------------------------- */
+const ROTAS = [
+  {g:'Operação'},
+  {id:'painel',       t:'Painel',        ic:'▤', f:()=>viewPainel()},
+  {id:'estoque',      t:'Estoque',       ic:'▦', f:()=>viewEstoque()},
+  {id:'movimentacoes',t:'Movimentações', ic:'⇄', f:()=>viewMovimentacoes()},
+  {id:'emprestimos',  t:'Empréstimos',   ic:'✎', f:()=>viewEmprestimos()},
+  {id:'lavanderia',   t:'Lavanderia',    ic:'≈', f:()=>viewLavanderia()},
+  {id:'inventario',   t:'Inventário',    ic:'☑', f:()=>viewInventario()},
+  {g:'Equipe'},
+  {id:'funcionarios', t:'Funcionários',  ic:'☺', f:()=>viewFuncionarios()},
+  {id:'dotacao',      t:'Dotação',       ic:'≡', f:()=>viewDotacao()},
+  {g:'Cadastros'},
+  {id:'cadastros',    t:'Itens e grades',ic:'⚙', f:()=>viewCadastros()}
+];
+function montarNav(){
+  $('#nav').innerHTML = ROTAS.map(r=>{
+    if(r.g) return `<div class="nav-lbl">${r.g}</div>`;
+    const badge = r.id==='estoque' && S.alertas ? `<span class="badge">${S.alertas}</span>`
+               : r.id==='emprestimos' && S.atrasados ? `<span class="badge">${S.atrasados}</span>`
+               : r.id==='lavanderia' && S.aguardando ? `<span class="badge">${S.aguardando}</span>`
+               : r.id==='dotacao' && S.semDotacao ? `<span class="badge">${S.semDotacao}</span>` : '';
+    return `<a href="#${r.id}" class="${S.rota===r.id?'on':''}"><span class="ic">${r.ic}</span>${r.t}${badge}</a>`;
+  }).join('');
+}
+function irPara(id){ location.hash = id; }
+async function render(){
+  const r = ROTAS.find(x=>x.id===S.rota) || ROTAS[1];
+  $('#crumb').textContent = 'Ilha VIX'; $('#titulo').textContent = r.t;
+  $('#topAcoes').innerHTML = ''; $('#view').innerHTML = '<div class="empty">Carregando…</div>';
+  montarNav();
+  try { await r.f(); } catch(e){ erro(e); $('#view').innerHTML = `<div class="card"><div class="empty"><b>Não foi possível carregar</b>${esc(e.message||e)}</div></div>`; }
+}
+window.addEventListener('hashchange', ()=>{
+  const h = location.hash.slice(1);
+  S.rota = ROTAS.some(r=>r.id===h) ? h : 'painel';
+  render();
+});
+
+/* --- 7. BOOT -------------------------------------------------------- */
+async function iniciarSessao(){
+  const { data:{ user } } = await S.sb.auth.getUser();
+  if(!user) return telaLogin();
+  S.user = user;
+  const { data: perfil, error } = await S.sb.from('almox_usuarios').select('*').eq('id', user.id).maybeSingle();
+  if(error) return telaLogin('Erro ao ler o perfil: '+error.message);
+  if(!perfil || !perfil.ativo){
+    return telaLogin('Seu usuário existe, mas ainda não tem acesso liberado. Peça ao gestor para ativar o cadastro.');
+  }
+  S.perfil = perfil;
+  $('#gate').classList.add('hide'); $('#shell').classList.remove('hide');
+  $('#userNome').textContent = perfil.nome;
+  $('#userPapel').textContent = {GESTOR:'Gestor',OPERADOR:'Operador',LEITURA:'Consulta'}[perfil.papel];
+  await carregarBase(); await carregarEstoque(); await carregarAtrasados();
+  await carregarLavanderia(); await carregarDotacao();
+  $('#uniLbl').textContent = S.unidade ? S.unidade.nome : CONFIG.LOJA;
+  const h = location.hash.slice(1);
+  S.rota = ROTAS.some(r=>r.id===h) ? h : 'painel';
+  render();
+}
+(async function boot(){
+  const c = cfg();
+  if(!c.url || !c.key) return telaConfig();
+  try { S.sb = supabase.createClient(c.url, c.key); }
+  catch(e){ return telaConfig('Configuração inválida: '+e.message); }
+  const { data:{ session } } = await S.sb.auth.getSession();
+  session ? iniciarSessao() : telaLogin();
+})();
+</script>
+<script>
+/* =====================================================================
+   VIEWS — PAINEL E ESTOQUE
+   ===================================================================== */
+
+function chartBarras(dados, alt=190){
+  if(!dados.length) return '<div class="empty">Sem movimento no período.</div>';
+  const w=760, h=alt, pad={t:12,r:8,b:26,l:44};
+  const max = Math.max(1, ...dados.flatMap(d=>[d.a,d.b]));
+  const iw = w-pad.l-pad.r, ih = h-pad.t-pad.b;
+  const bw = iw/dados.length, bar = Math.min(20, bw/3);
+  const y = v => pad.t + ih - (v/max)*ih;
+  let g='';
+  for(let i=0;i<=3;i++){
+    const v = max*i/3, yy = y(v);
+    g += `<line class="ax" x1="${pad.l}" y1="${yy}" x2="${w-pad.r}" y2="${yy}"/>
+          <text class="lbl" x="${pad.l-8}" y="${yy+3}" text-anchor="end">${Math.round(v)}</text>`;
+  }
+  dados.forEach((d,i)=>{
+    const cx = pad.l + bw*i + bw/2;
+    g += `<rect class="bar-in"  x="${cx-bar-2}" y="${y(d.a)}" width="${bar}" height="${pad.t+ih-y(d.a)}" rx="2"><title>${esc(d.r)} · entradas ${d.a}</title></rect>
+          <rect class="bar-out" x="${cx+2}"     y="${y(d.b)}" width="${bar}" height="${pad.t+ih-y(d.b)}" rx="2"><title>${esc(d.r)} · saídas ${d.b}</title></rect>
+          <text class="lbl" x="${cx}" y="${h-8}" text-anchor="middle">${esc(d.r)}</text>`;
+  });
+  return `<svg class="chart" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet" role="img">${g}</svg>
+    <div class="legend"><span><i style="background:var(--sea-t)"></i>Entradas</span><span><i style="background:#8FA3B0"></i>Saídas</span></div>`;
+}
+
+async function viewPainel(){
+  const desde = diasAtras(180);
+  const [mensal, saidas90, empAbertos, faltas] = await Promise.all([
+    q('almox_vw_mov_mensal','*',b=>b.gte('mes', desde.slice(0,10))),
+    q('almox_vw_movimentacoes','tipo,quantidade,item,tamanho,setor,funcionario,data',
+      b=>b.gte('data', diasAtras(90)).eq('cancelada',false).in('tipo',['SAIDA_FUNCIONARIO','SAIDA_EMPRESTIMO'])),
+    q('almox_vw_emprestimos','*',b=>b.in('status',['ABERTO','PARCIAL']).order('previsao_devolucao')),
+    q('almox_vw_dotacao','*',b=>b.gt('falta',0).order('falta',{ascending:false}).limit(10))
+  ]);
+
+  const pecas  = S.estoque.reduce((s,e)=>s+e.saldo,0);
+  const valor  = S.estoque.reduce((s,e)=>s+Number(e.valor_estoque||0),0);
+  const zerados= S.estoque.filter(e=>e.variacao_ativa && e.item_ativo && e.situacao==='ZERADO').length;
+  const baixos = S.estoque.filter(e=>e.variacao_ativa && e.item_ativo && e.situacao==='BAIXO').length;
+  const atras  = empAbertos.filter(e=>e.atrasado).length;
+  const saidas30 = saidas90.filter(m=>new Date(m.data)>=new Date(diasAtras(30))).reduce((s,m)=>s+m.quantidade,0);
+  const emLav  = S.estoque.reduce((s,e)=>s+(e.saldo_lavanderia||0),0);
+
+  // serie mensal
+  const meses = [];
+  for(let i=5;i>=0;i--){
+    const d = new Date(); d.setDate(1); d.setMonth(d.getMonth()-i);
+    const k = d.toISOString().slice(0,7);
+    const ent = mensal.filter(m=>m.mes.slice(0,7)===k && m.tipo.startsWith('ENTRADA')).reduce((s,m)=>s+m.quantidade,0);
+    const sai = mensal.filter(m=>m.mes.slice(0,7)===k && m.tipo.startsWith('SAIDA')).reduce((s,m)=>s+m.quantidade,0);
+    meses.push({r: d.toLocaleDateString('pt-BR',{month:'short'}).replace('.',''), a:ent, b:sai});
+  }
+  // top itens e setores
+  const agr = (arr,campo)=>{
+    const m = {}; arr.forEach(x=>{ const k = x[campo] || '—'; m[k]=(m[k]||0)+x.quantidade; });
+    return Object.entries(m).sort((a,b)=>b[1]-a[1]);
+  };
+  const topItens  = agr(saidas90.map(m=>({...m, chave:`${m.item} ${m.tamanho}`})),'chave').slice(0,6);
+  const topSetor  = agr(saidas90,'setor').slice(0,6);
+  const critico   = S.estoque.filter(e=>e.variacao_ativa && e.item_ativo && e.situacao!=='OK')
+                    .sort((a,b)=>a.saldo-b.saldo || a.item.localeCompare(b.item)).slice(0,10);
+
+  $('#topAcoes').innerHTML = podeOperar()
+    ? `<button class="btn" onclick="formEntradaCompra()">Registrar compra</button>
+       <button class="btn pri" onclick="formSaidaFuncionario()">Entregar a funcionário</button>` : '';
+
+  $('#view').innerHTML = `
+    <div class="kpis" style="margin-bottom:18px">
+      <div class="kpi"><div class="l">Disponível para entregar</div><div class="v">${num(pecas)}</div>
+        <div class="d">${S.estoque.filter(e=>e.variacao_ativa && e.item_ativo).length} combinações item/tamanho</div></div>
+      <div class="kpi good"><div class="l">Valor imobilizado</div><div class="v" style="font-size:23px">${brl(valor)}</div>
+        <div class="d">pelo custo de referência</div></div>
+      <div class="kpi ${zerados?'bad':baixos?'warn':''}"><div class="l">Reposição</div><div class="v">${num(zerados+baixos)}</div>
+        <div class="d">${zerados} zerados · ${baixos} abaixo do mínimo</div></div>
+      <div class="kpi ${atras?'bad':''}"><div class="l">Empréstimos abertos</div><div class="v">${num(empAbertos.length)}</div>
+        <div class="d">${atras? atras+' com devolução atrasada' : 'nenhum atrasado'}</div></div>
+      <div class="kpi ${S.aguardando?'warn':''}"><div class="l">Na lavanderia</div><div class="v">${num(emLav)}</div>
+        <div class="d">${S.aguardando} aguardando envio</div></div>
+      <div class="kpi ${S.semDotacao?'bad':'good'}"><div class="l">Abaixo da dotação</div><div class="v">${num(S.semDotacao)}</div>
+        <div class="d">funcionários sem o mínimo de peças</div></div>
+      <div class="kpi"><div class="l">Saídas em 30 dias</div><div class="v">${num(saidas30)}</div>
+        <div class="d">peças entregues ou emprestadas</div></div>
+    </div>
+
+    <div class="grid" style="grid-template-columns:1.4fr 1fr;align-items:start">
+      <div class="card">
+        <div class="card-h"><h3>Entradas e saídas por mês</h3><div class="sp"></div>
+          <span class="small muted">últimos 6 meses</span></div>
+        <div class="card-b">${chartBarras(meses)}</div>
+      </div>
+      <div class="card">
+        <div class="card-h"><h3>Precisa de reposição</h3><div class="sp"></div>
+          <button class="btn sm" onclick="irPara('estoque')">Ver estoque</button></div>
+        ${critico.length ? `<div class="tbl-wrap"><table><tbody>${critico.map(e=>`
+          <tr style="cursor:pointer" onclick="drawerVariacao(${e.variacao_id})">
+            <td><div class="it-nome">${esc(e.item)}</div><div class="it-meta">${esc(e.tamanho)} · ${esc(e.categoria||'—')}</div></td>
+            <td class="num" style="width:110px"><span class="tag ${e.situacao==='ZERADO'?'zero':'low'}">${e.saldo} / mín ${e.estoque_minimo}</span></td>
+          </tr>`).join('')}</tbody></table></div>`
+          : '<div class="empty">Estoque todo acima do mínimo.</div>'}
+      </div>
+    </div>
+
+    <div class="grid" style="grid-template-columns:1fr 1fr;margin-top:14px;align-items:start">
+      <div class="card">
+        <div class="card-h"><h3>Mais consumidos</h3><div class="sp"></div><span class="small muted">90 dias</span></div>
+        ${topItens.length? `<div class="tbl-wrap"><table><tbody>${topItens.map(([k,v])=>`
+          <tr><td>${esc(k)}</td><td class="num" style="width:70px">${v}</td></tr>`).join('')}</tbody></table></div>`
+          : '<div class="empty">Nenhuma saída registrada ainda.</div>'}
+      </div>
+      <div class="card">
+        <div class="card-h"><h3>Consumo por setor</h3><div class="sp"></div><span class="small muted">90 dias</span></div>
+        ${topSetor.length? `<div class="tbl-wrap"><table><tbody>${topSetor.map(([k,v])=>`
+          <tr><td>${esc(k)}</td><td class="num" style="width:70px">${v}</td></tr>`).join('')}</tbody></table></div>`
+          : '<div class="empty">Nenhuma saída registrada ainda.</div>'}
+      </div>
+    </div>
+
+    ${faltas.length? `<div class="card" style="margin-top:14px">
+      <div class="card-h"><h3>Funcionários abaixo da dotação</h3><div class="sp"></div>
+        <button class="btn sm" onclick="irPara('dotacao')">Ver todos</button></div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Funcionário</th><th>Setor</th><th>Grupo</th><th class="num">Tem</th>
+          <th class="num">Mínimo</th><th class="num">Falta</th><th></th></tr></thead>
+        <tbody>${faltas.map(d=>`<tr>
+          <td>${esc(d.funcionario)}</td><td class="small">${esc(d.setor||'—')}</td>
+          <td>${esc(d.grupo)}</td><td class="num">${d.em_posse}</td><td class="num muted">${d.quantidade_minima}</td>
+          <td class="num"><span class="tag zero">${d.falta}</span></td>
+          <td style="text-align:right">${podeOperar()?`<button class="btn sm" onclick="formSaidaFuncionario(null,${d.funcionario_id})">Entregar</button>`:''}</td>
+        </tr>`).join('')}</tbody></table></div></div>` : ''}
+
+    ${empAbertos.length? `<div class="card" style="margin-top:14px">
+      <div class="card-h"><h3>Empréstimos a devolver</h3><div class="sp"></div>
+        <button class="btn sm" onclick="irPara('emprestimos')">Abrir módulo</button></div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Recibo</th><th>Funcionário</th><th>Saída</th><th>Previsão</th><th class="num">Pendentes</th><th></th></tr></thead>
+        <tbody>${empAbertos.slice(0,8).map(e=>`<tr>
+          <td class="mono">${esc(e.codigo)}</td>
+          <td>${esc(e.funcionario)}<div class="it-meta">${esc(e.setor||'—')}</div></td>
+          <td>${dt(e.data_saida)}</td>
+          <td>${e.atrasado? `<span class="tag zero">${dt(e.previsao_devolucao)}</span>` : dt(e.previsao_devolucao)}</td>
+          <td class="num">${e.pendentes}</td>
+          <td style="text-align:right"><button class="btn sm" onclick="abrirEmprestimo(${e.id})">Detalhes</button></td>
+        </tr>`).join('')}</tbody></table></div></div>` : ''}
+  `;
+}
+
+/* --------------------- ESTOQUE : MATRIZ ITEM x TAMANHO --------------- */
+let filtroCat = 'todas', filtroBusca = '';
+
+async function viewEstoque(){
+  await carregarEstoque();
+  $('#topAcoes').innerHTML = `
+    <input class="inp" style="width:200px" placeholder="Buscar item…" value="${esc(filtroBusca)}"
+      oninput="filtroBusca=this.value;desenharMatriz()">
+    <select class="inp" style="width:180px" onchange="filtroCat=this.value;desenharMatriz()">
+      <option value="todas">Todas as categorias</option>
+      ${S.categorias.map(c=>`<option value="${c.id}" ${filtroCat==String(c.id)?'selected':''}>${esc(c.nome)}</option>`).join('')}
+    </select>
+    <button class="btn" onclick="exportarEstoqueCSV()">Exportar CSV</button>
+    ${ehGestor()?`<button class="btn" onclick="recalcularSaldos()">Recalcular saldos</button>`:''}`;
+  $('#view').innerHTML = `<div id="matrizes"></div>`;
+  desenharMatriz();
+}
+
+function desenharMatriz(){
+  const busca = filtroBusca.trim().toLowerCase();
+  let dados = S.estoque.filter(e=>e.variacao_ativa && e.item_ativo);
+  if(filtroCat!=='todas') dados = dados.filter(e=>String(e.categoria_id)===filtroCat);
+  if(busca) dados = dados.filter(e=>(e.item+' '+(e.categoria||'')+' '+(e.cor||'')).toLowerCase().includes(busca));
+
+  if(!dados.length) return $('#matrizes').innerHTML =
+    `<div class="card"><div class="empty"><b>Nada encontrado</b>Ajuste a busca ou cadastre itens em “Itens e grades”.</div></div>`;
+
+  // agrupa por grade -> item
+  const porGrade = {};
+  dados.forEach(e=>{ (porGrade[e.grade_id] ||= {grade:e.grade, grade_id:e.grade_id, itens:{}});
+    (porGrade[e.grade_id].itens[e.item_id] ||= {nome:e.item, cat:e.categoria, cor:e.cor, epi:e.epi, cels:{}, total:0});
+    porGrade[e.grade_id].itens[e.item_id].cels[e.tamanho_id ?? 'u'] = e;
+    porGrade[e.grade_id].itens[e.item_id].total += e.saldo;
+  });
+
+  $('#matrizes').innerHTML = Object.values(porGrade).map(g=>{
+    const tams = tamanhosDaGrade(g.grade_id);
+    const itens = Object.values(g.itens).sort((a,b)=>a.nome.localeCompare(b.nome));
+    const totalGrade = itens.reduce((s,i)=>s+i.total,0);
+    return `<div class="matriz">
+      <div class="matriz-h"><h3>${esc(g.grade)}</h3>
+        <span class="g">${itens.length} itens · ${num(totalGrade)} peças</span></div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th class="item-col">Item</th>
+          ${tams.map(t=>`<th class="num" style="text-align:center">${esc(t.rotulo)}</th>`).join('')}
+          <th class="num">Total</th></tr></thead>
+        <tbody>${itens.map(it=>`<tr>
+          <td class="item-col"><div class="it-nome">${esc(it.nome)}</div>
+            <div class="it-meta">${esc(it.cat||'—')}${it.epi?' · EPI':''}</div></td>
+          ${tams.map(t=>{
+            const c = it.cels[t.id];
+            if(!c) return `<td><button class="cel na" disabled>–</button></td>`;
+            const cls = c.saldo<=0?'zero':(c.situacao==='BAIXO'?'low':'');
+            return `<td><button class="cel ${cls}" onclick="drawerVariacao(${c.variacao_id})"
+                      title="${esc(it.nome)} ${esc(t.rotulo)} — disponível ${c.saldo}, mínimo ${c.estoque_minimo}${c.saldo_lavanderia?', '+c.saldo_lavanderia+' na lavanderia':''}">${c.saldo}
+                      ${c.saldo_lavanderia?`<span class="lav">+${c.saldo_lavanderia} lav</span>`:
+                        c.situacao!=='OK'?`<span class="m">mín ${c.estoque_minimo}</span>`:''}</button></td>`;
+          }).join('')}
+          <td class="num" style="font-weight:600">${num(it.total)}</td>
+        </tr>`).join('')}</tbody></table></div></div>`;
+  }).join('');
+}
+
+async function drawerVariacao(id){
+  const e = S.estoque.find(x=>x.variacao_id===id);
+  if(!e) return;
+  const d = drawer({
+    titulo: e.item,
+    sub: `${esc(e.tamanho)} · ${esc(e.categoria||'—')} · <span class="mono">${esc(e.sku||'')}</span>`,
+    corpo: `
+      <div class="kpis" style="grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:18px">
+        <div class="kpi ${e.situacao==='ZERADO'?'bad':e.situacao==='BAIXO'?'warn':'good'}" style="padding:12px 14px">
+          <div class="l">Disponível</div><div class="v" style="font-size:24px">${e.saldo}</div></div>
+        <div class="kpi ${e.saldo_lavanderia?'warn':''}" style="padding:12px 14px">
+          <div class="l">Lavanderia</div><div class="v" style="font-size:24px">${e.saldo_lavanderia}</div></div>
+        <div class="kpi" style="padding:12px 14px"><div class="l">Mínimo</div><div class="v" style="font-size:24px">${e.estoque_minimo}</div></div>
+        <div class="kpi" style="padding:12px 14px"><div class="l">Valor</div><div class="v" style="font-size:16px">${brl(e.valor_estoque)}</div></div>
+      </div>
+      ${podeOperar()?`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">
+        <button class="btn sm" onclick="formEntradaCompra(${id})">Entrada</button>
+        <button class="btn sm" onclick="formSaidaFuncionario(${id})">Entregar</button>
+        <button class="btn sm" onclick="formEmprestimo(${id})">Emprestar</button>
+        <button class="btn sm" onclick="formDevolucao(${id})">Devolução</button>
+        <button class="btn sm dan" onclick="formDescarte(${id})">Descarte</button>
+      </div>`:''}
+      <h4 style="font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--mut);font-family:var(--mono);margin-bottom:8px">Últimas movimentações</h4>
+      <div id="histVar" class="muted small">Carregando…</div>`
+  });
+  const h = await q('almox_vw_movimentacoes','*',b=>b.eq('variacao_id',id).order('data',{ascending:false}).limit(30));
+  const el = d.ovl.querySelector('#histVar');
+  el.innerHTML = h.length ? `<div class="tbl-wrap"><table><tbody>${h.map(m=>`
+    <tr${m.cancelada?' style="opacity:.45;text-decoration:line-through"':''}>
+      <td style="width:88px" class="small muted">${dth(m.data)}</td>
+      <td><span class="tag ${m.e_entrada?'in':'out'}">${m.e_entrada?'+':'−'}${m.quantidade}</span>
+        <div class="it-meta" style="margin-top:3px">${esc(TIPOS[m.tipo])}${m.funcionario?' · '+esc(m.funcionario):''}</div></td>
+      <td class="num small muted">${m.saldo_posterior ?? ''}</td></tr>`).join('')}</tbody></table></div>`
+    : '<div class="empty">Sem movimentações.</div>';
+}
+
+async function recalcularSaldos(){
+  if(!exigeGestor()) return;
+  confirmar('Recalcular saldos','Os saldos serão reconstruídos a partir do histórico de movimentações. Use quando desconfiar de divergência.',
+    async()=>{ const {data,error}=await S.sb.rpc('almox_recalcular_saldos'); if(error) throw error;
+      toast(data.length? `${data.length} saldo(s) corrigido(s).`:'Nenhuma divergência encontrada.','ok');
+      await carregarEstoque(); desenharMatriz(); montarNav(); }, 'Recalcular');
+}
+function exportarEstoqueCSV(){
+  const linhas = [['Categoria','Item','Tamanho','SKU','Saldo','Minimo','Situacao','Custo','Valor']];
+  S.estoque.filter(e=>e.variacao_ativa && e.item_ativo).forEach(e=>linhas.push([e.categoria,e.item,e.tamanho,e.sku,e.saldo,e.estoque_minimo,e.situacao,e.custo_referencia,e.valor_estoque]));
+  const csv = linhas.map(l=>l.map(c=>`"${String(c??'').replace(/"/g,'""')}"`).join(';')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(["\uFEFF"+csv],{type:'text/csv;charset=utf-8'}));
+  a.download = `estoque-uniformes-${hoje()}.csv`; a.click();
+}
+</script>
+<script>
+/* =====================================================================
+   SELETOR DE ITENS (usado em todos os lançamentos)
+   ===================================================================== */
+function htmlSeletor(comCusto=false){
+  return `<div class="pick">
+      <label class="field"><span>Item</span>
+        <select class="inp" id="selItem"><option value="">Selecione…</option>
+        ${S.itens.filter(i=>i.ativo).map(i=>`<option value="${i.id}">${esc(i.nome)}</option>`).join('')}
+        </select></label>
+      <label class="field" style="max-width:130px"><span>Tamanho</span>
+        <select class="inp" id="selTam"><option value="">—</option></select></label>
+      <label class="field" style="max-width:88px"><span>Qtd</span>
+        <input class="inp mono" id="selQtd" type="number" min="1" value="1"></label>
+      ${comCusto?`<label class="field" style="max-width:120px"><span>Custo un. (R$)</span>
+        <input class="inp mono" id="selCusto" type="number" min="0" step="0.01" placeholder="0,00"></label>`:''}
+      <button type="button" class="btn" id="btnAdd">Adicionar</button>
+    </div>
+    <div id="selInfo" class="small muted" style="margin:-6px 0 10px"></div>
+    <div class="lista-itens" id="listaSel"><div class="li muted">Nenhum item incluído.</div></div>`;
+}
+function ligarSeletor(ovl, preVarId=null, comCusto=false){
+  ovl._itens = [];
+  const si=ovl.querySelector('#selItem'), st=ovl.querySelector('#selTam'),
+        sq=ovl.querySelector('#selQtd'), sc=ovl.querySelector('#selCusto'),
+        info=ovl.querySelector('#selInfo');
+
+  const varsDoItem = id => S.estoque.filter(e=>e.item_id==id && e.variacao_ativa)
+                            .sort((a,b)=>a.tamanho_ordem-b.tamanho_ordem);
+  function popularTam(){
+    const vs = varsDoItem(si.value);
+    st.innerHTML = vs.map(v=>`<option value="${v.variacao_id}">${esc(v.tamanho)} (saldo ${v.saldo})</option>`).join('')
+                  || '<option value="">—</option>';
+    mostrarInfo();
+  }
+  function mostrarInfo(){
+    const v = S.estoque.find(e=>e.variacao_id==st.value);
+    info.textContent = v ? `Saldo atual: ${v.saldo} · mínimo ${v.estoque_minimo} · ${v.sku||''}` : '';
+  }
+  si.onchange = popularTam; st.onchange = mostrarInfo;
+
+  ovl.querySelector('#btnAdd').onclick = ()=>{
+    const vid = Number(st.value), qtd = Number(sq.value);
+    if(!vid) return toast('Escolha o item e o tamanho.','err');
+    if(!qtd || qtd<1) return toast('Quantidade inválida.','err');
+    const v = S.estoque.find(e=>e.variacao_id===vid);
+    const ex = ovl._itens.find(x=>x.variacao_id===vid);
+    if(ex) ex.quantidade += qtd;
+    else ovl._itens.push({variacao_id:vid, quantidade:qtd, saldo:v.saldo,
+            custo: sc? Number(sc.value||0) : null, rotulo:`${v.item} · ${v.tamanho}`});
+    sq.value = 1; if(sc) sc.value='';
+    pintar();
+  };
+  function pintar(){
+    const l = ovl.querySelector('#listaSel');
+    l.innerHTML = ovl._itens.length ? ovl._itens.map((x,i)=>`
+      <div class="li"><span class="qt">${x.quantidade}×</span><span class="sp">${esc(x.rotulo)}
+        ${x.custo?`<span class="muted small"> — ${brl(x.custo)}/un</span>`:''}</span>
+        <span class="small muted">saldo ${x.saldo}</span>
+        <button type="button" class="btn sm dan" data-i="${i}">Remover</button></div>`).join('')
+      : '<div class="li muted">Nenhum item incluído.</div>';
+    l.querySelectorAll('button[data-i]').forEach(b=> b.onclick=()=>{ ovl._itens.splice(+b.dataset.i,1); pintar(); });
+  }
+  if(preVarId){
+    const v = S.estoque.find(e=>e.variacao_id===preVarId);
+    if(v){ si.value = v.item_id; popularTam(); st.value = String(preVarId); mostrarInfo(); }
+  }
+  pintar();
+}
+const exigirItens = ovl => { if(!ovl._itens.length){ toast('Inclua ao menos um item.','err'); return false; } return true; };
+
+async function gravarMovs(linhas){
+  const base = { unidade_id: S.unidade?.id ?? null, usuario_id: S.user.id };
+  const { error } = await S.sb.from('almox_movimentacoes').insert(linhas.map(l=>({...base, ...l})));
+  if(error) throw error;
+}
+async function depoisDeMovimentar(msg){
+  await carregarEstoque(); await carregarAtrasados();
+  await carregarLavanderia(); await carregarDotacao(); montarNav();
+  toast(msg,'ok'); render();
+}
+
+/* =====================================================================
+   LANCAMENTOS
+   ===================================================================== */
+function formEntradaCompra(varId=null){
+  if(!podeOperar()) return toast('Sem permissão para lançar.','err');
+  modal({titulo:'Entrada por compra', wide:true, corpo:`
+    <div class="row-3">
+      <label class="field"><span>Fornecedor</span><select class="inp" id="fFor">
+        <option value="">Não informado</option>
+        ${S.fornecedores.filter(f=>f.ativo).map(f=>`<option value="${f.id}">${esc(f.nome)}</option>`).join('')}
+      </select></label>
+      <label class="field"><span>Nota fiscal / pedido</span><input class="inp" id="fDoc" placeholder="NF 12345"></label>
+      <label class="field"><span>Data</span><input class="inp" id="fData" type="date" value="${hoje()}"></label>
+    </div>
+    ${htmlSeletor(true)}
+    <label class="field" style="margin-top:14px"><span>Observações</span><textarea class="inp" id="fObs"></textarea></label>`,
+    aoAbrir:o=>ligarSeletor(o, varId, true),
+    acoes:[{rotulo:'Cancelar'},{rotulo:'Registrar entrada',classe:'pri',acao:async(o,f,b)=>{
+      if(!exigirItens(o)) return;
+      b.disabled=true;
+      try{
+        const data = o.querySelector('#fData').value;
+        await gravarMovs(o._itens.map(x=>({
+          variacao_id:x.variacao_id, tipo:'ENTRADA_COMPRA', quantidade:x.quantidade,
+          custo_unitario: x.custo || null,
+          data: data? new Date(data+'T12:00:00').toISOString() : new Date().toISOString(),
+          fornecedor_id: o.querySelector('#fFor').value || null,
+          documento: o.querySelector('#fDoc').value || null,
+          justificativa: 'Compra',
+          observacoes: o.querySelector('#fObs').value || null
+        })));
+        f(); depoisDeMovimentar('Entrada registrada.');
+      }catch(e){ erro(e); b.disabled=false; }
+    }}]});
+}
+
+function formSaidaFuncionario(varId=null, funcId=null){
+  if(!podeOperar()) return toast('Sem permissão para lançar.','err');
+  modal({titulo:'Entrega definitiva a funcionário', wide:true, corpo:`
+    <div class="row">
+      <label class="field"><span>Funcionário <em>*</em></span><select class="inp" id="fFunc">
+        <option value="">Selecione…</option>
+        ${S.funcionarios.filter(f=>f.ativo).map(f=>`<option value="${f.id}">${esc(f.nome)}${f.setor?' — '+esc(f.setor):''}</option>`).join('')}
+      </select></label>
+      <label class="field"><span>Justificativa <em>*</em></span><select class="inp" id="fJust">
+        <option>Uniforme inicial (admissão)</option>
+        <option>Troca por desgaste</option>
+        <option>Troca por dano</option>
+        <option>Troca de tamanho</option>
+        <option>Perda pelo funcionário</option>
+        <option>Reposição periódica</option>
+        <option value="__outro">Outro motivo…</option>
+      </select></label>
+    </div>
+    <label class="field hide" id="fJustOutroBox"><span>Descreva o motivo <em>*</em></span><input class="inp" id="fJustOutro"></label>
+    ${htmlSeletor(false)}
+    <label class="field" style="margin-top:14px"><span>Observações</span><textarea class="inp" id="fObs"></textarea></label>
+    <label class="check"><input type="checkbox" id="fRecibo" checked> Gerar comprovante de entrega para assinatura</label>`,
+    aoAbrir:o=>{
+      ligarSeletor(o, varId);
+      if(funcId) o.querySelector('#fFunc').value = String(funcId);
+      o.querySelector('#fJust').onchange = e =>
+        o.querySelector('#fJustOutroBox').classList.toggle('hide', e.target.value!=='__outro');
+    },
+    acoes:[{rotulo:'Cancelar'},{rotulo:'Registrar entrega',classe:'pri',acao:async(o,f,b)=>{
+      const func = o.querySelector('#fFunc').value;
+      let just = o.querySelector('#fJust').value;
+      if(just==='__outro') just = o.querySelector('#fJustOutro').value.trim();
+      if(!func) return toast('Selecione o funcionário.','err');
+      if(!just) return toast('A justificativa é obrigatória.','err');
+      if(!exigirItens(o)) return;
+      b.disabled=true;
+      try{
+        const { error } = await S.sb.rpc('almox_saida_funcionario',{
+          p_funcionario_id: Number(func),
+          p_itens: o._itens.map(x=>({variacao_id:x.variacao_id, quantidade:x.quantidade})),
+          p_justificativa: just,
+          p_observacoes: o.querySelector('#fObs').value || null,
+          p_unidade_id: S.unidade?.id ?? null
+        });
+        if(error) throw error;
+        const gerar = o.querySelector('#fRecibo').checked;
+        const dadosRecibo = {func:Number(func), just, itens:[...o._itens]};
+        f(); await depoisDeMovimentar('Entrega registrada.');
+        if(gerar) reciboEntrega(dadosRecibo);
+      }catch(e){ erro(e); b.disabled=false; }
+    }}]});
+}
+
+function formEmprestimo(varId=null, funcId=null){
+  if(!podeOperar()) return toast('Sem permissão para lançar.','err');
+  const d = new Date(); d.setDate(d.getDate()+7);
+  modal({titulo:'Empréstimo com recibo', wide:true, corpo:`
+    <div class="row-3">
+      <label class="field"><span>Funcionário <em>*</em></span><select class="inp" id="fFunc">
+        <option value="">Selecione…</option>
+        ${S.funcionarios.filter(f=>f.ativo).map(f=>`<option value="${f.id}">${esc(f.nome)}${f.setor?' — '+esc(f.setor):''}</option>`).join('')}
+      </select></label>
+      <label class="field"><span>Previsão de devolução</span>
+        <input class="inp" id="fPrev" type="date" value="${d.toISOString().slice(0,10)}"></label>
+      <label class="field"><span>Motivo</span><select class="inp" id="fMot">
+        <option>Uso temporário na câmara fria</option>
+        <option>Cobertura de turno</option>
+        <option>Evento / ação externa</option>
+        <option>Substituição enquanto aguarda tamanho</option>
+        <option>Visitante / prestador</option>
+      </select></label>
+    </div>
+    ${htmlSeletor(false)}
+    <label class="field" style="margin-top:14px"><span>Observações</span><textarea class="inp" id="fObs"
+      placeholder="Estado da peça na saída, avarias, etc."></textarea></label>`,
+    aoAbrir:o=>{ ligarSeletor(o, varId); if(funcId) o.querySelector('#fFunc').value = String(funcId); },
+    acoes:[{rotulo:'Cancelar'},{rotulo:'Gerar empréstimo e recibo',classe:'pri',acao:async(o,f,b)=>{
+      const func = o.querySelector('#fFunc').value;
+      if(!func) return toast('Selecione o funcionário.','err');
+      if(!exigirItens(o)) return;
+      b.disabled=true;
+      try{
+        const { data, error } = await S.sb.rpc('almox_registrar_emprestimo',{
+          p_funcionario_id: Number(func),
+          p_itens: o._itens.map(x=>({variacao_id:x.variacao_id, quantidade:x.quantidade})),
+          p_previsao_devolucao: o.querySelector('#fPrev').value || null,
+          p_motivo: o.querySelector('#fMot').value,
+          p_observacoes: o.querySelector('#fObs').value || null,
+          p_unidade_id: S.unidade?.id ?? null
+        });
+        if(error) throw error;
+        f(); await depoisDeMovimentar('Empréstimo '+data.codigo+' registrado.');
+        reciboEmprestimo(data.id);
+      }catch(e){ erro(e); b.disabled=false; }
+    }}]});
+}
+
+function formDevolucao(varId=null){
+  if(!podeOperar()) return toast('Sem permissão para lançar.','err');
+  modal({titulo:'Entrada por devolução', wide:true, corpo:`
+    <p class="small muted" style="margin-top:0">Para peças que voltam fora de um empréstimo — desligamento, troca de tamanho
+    ou peça entregue por engano. Peça usada não volta direto ao estoque: entra na fila da lavanderia e só fica
+    disponível quando a remessa retornar limpa.</p>
+    <div class="row">
+      <label class="field"><span>Funcionário que devolveu <em>*</em></span><select class="inp" id="fFunc">
+        <option value="">Selecione…</option>
+        ${S.funcionarios.map(f=>`<option value="${f.id}">${esc(f.nome)}${f.ativo?'':' (inativo)'}</option>`).join('')}
+      </select></label>
+      <label class="field"><span>Motivo <em>*</em></span><select class="inp" id="fJust">
+        <option>Desligamento — devolução de uniforme</option>
+        <option>Troca de tamanho</option>
+        <option>Peça não utilizada</option>
+        <option>Transferência de unidade</option>
+        <option value="__outro">Outro motivo…</option>
+      </select></label>
+    </div>
+    <label class="field hide" id="fJustOutroBox"><span>Descreva o motivo <em>*</em></span><input class="inp" id="fJustOutro"></label>
+    <label class="field"><span>Destino da peça <em>*</em></span><select class="inp" id="fDest">
+      <option value="LAVANDERIA">Peça usada — vai para a lavanderia</option>
+      <option value="DISPONIVEL">Peça limpa ou nunca usada — volta direto ao estoque</option>
+    </select></label>
+    ${htmlSeletor(false)}
+    <label class="field" style="margin-top:14px"><span>Estado das peças</span><textarea class="inp" id="fObs"
+      placeholder="Ex.: 2 camisas em bom estado, 1 com mancha"></textarea></label>`,
+    aoAbrir:o=>{ ligarSeletor(o, varId);
+      o.querySelector('#fJust').onchange = e => o.querySelector('#fJustOutroBox').classList.toggle('hide', e.target.value!=='__outro'); },
+    acoes:[{rotulo:'Cancelar'},{rotulo:'Registrar devolução',classe:'pri',acao:async(o,f,b)=>{
+      const func = o.querySelector('#fFunc').value;
+      let just = o.querySelector('#fJust').value;
+      if(just==='__outro') just = o.querySelector('#fJustOutro').value.trim();
+      if(!func) return toast('Selecione o funcionário.','err');
+      if(!just) return toast('Informe o motivo.','err');
+      if(!exigirItens(o)) return;
+      b.disabled=true;
+      try{
+        await gravarMovs(o._itens.map(x=>({
+          variacao_id:x.variacao_id, tipo:'ENTRADA_DEVOLUCAO', quantidade:x.quantidade,
+          bucket:o.querySelector('#fDest').value,
+          funcionario_id:Number(func), justificativa:just,
+          observacoes:o.querySelector('#fObs').value || null })));
+        f(); depoisDeMovimentar(o.querySelector('#fDest').value==='LAVANDERIA'
+          ? 'Devolução registrada. As peças entraram na fila da lavanderia.'
+          : 'Devolução registrada direto no estoque.');
+      }catch(e){ erro(e); b.disabled=false; }
+    }}]});
+}
+
+function formDescarte(varId=null){
+  if(!ehGestor()) return toast('Descarte é restrito ao gestor.','err');
+  modal({titulo:'Baixa por descarte ou perda', wide:true, corpo:`
+    <label class="field"><span>Motivo <em>*</em></span><select class="inp" id="fJust">
+      <option>Peça danificada / imprópria para uso</option>
+      <option>Extravio no almoxarifado</option>
+      <option>Contaminação — descarte sanitário</option>
+      <option>Fim da vida útil do EPI</option>
+      <option value="__outro">Outro motivo…</option>
+    </select></label>
+    <label class="field hide" id="fJustOutroBox"><span>Descreva o motivo <em>*</em></span><input class="inp" id="fJustOutro"></label>
+    ${htmlSeletor(false)}
+    <label class="field" style="margin-top:14px"><span>Observações</span><textarea class="inp" id="fObs"></textarea></label>`,
+    aoAbrir:o=>{ ligarSeletor(o, varId);
+      o.querySelector('#fJust').onchange = e => o.querySelector('#fJustOutroBox').classList.toggle('hide', e.target.value!=='__outro'); },
+    acoes:[{rotulo:'Cancelar'},{rotulo:'Dar baixa',classe:'dan',acao:async(o,f,b)=>{
+      let just = o.querySelector('#fJust').value;
+      if(just==='__outro') just = o.querySelector('#fJustOutro').value.trim();
+      if(!just) return toast('Informe o motivo.','err');
+      if(!exigirItens(o)) return;
+      b.disabled=true;
+      try{
+        await gravarMovs(o._itens.map(x=>({
+          variacao_id:x.variacao_id, tipo:'SAIDA_DESCARTE', quantidade:x.quantidade,
+          justificativa:just, observacoes:o.querySelector('#fObs').value || null })));
+        f(); depoisDeMovimentar('Baixa registrada.');
+      }catch(e){ erro(e); b.disabled=false; }
+    }}]});
+}
+
+function formAjuste(){
+  if(!ehGestor()) return toast('Ajuste é restrito ao gestor.','err');
+  modal({titulo:'Ajuste manual de saldo', wide:true, corpo:`
+    <p class="small muted" style="margin-top:0">Todo ajuste fica registrado com autor e justificativa.
+    Para conferência completa prefira o módulo Inventário.</p>
+    <div class="row">
+      <label class="field"><span>Sentido <em>*</em></span><select class="inp" id="fSent">
+        <option value="ENTRADA_AJUSTE">Somar ao estoque</option>
+        <option value="SAIDA_AJUSTE">Subtrair do estoque</option>
+      </select></label>
+      <label class="field"><span>Justificativa <em>*</em></span><input class="inp" id="fJust" placeholder="Ex.: peças encontradas no depósito"></label>
+    </div>
+    ${htmlSeletor(false)}`,
+    aoAbrir:o=>ligarSeletor(o),
+    acoes:[{rotulo:'Cancelar'},{rotulo:'Aplicar ajuste',classe:'pri',acao:async(o,f,b)=>{
+      const just = o.querySelector('#fJust').value.trim();
+      if(!just) return toast('A justificativa é obrigatória.','err');
+      if(!exigirItens(o)) return;
+      b.disabled=true;
+      try{
+        const tipo = o.querySelector('#fSent').value;
+        await gravarMovs(o._itens.map(x=>({
+          variacao_id:x.variacao_id, tipo, quantidade:x.quantidade, justificativa:just })));
+        f(); depoisDeMovimentar('Ajuste aplicado.');
+      }catch(e){ erro(e); b.disabled=false; }
+    }}]});
+}
+</script>
+<script>
+/* =====================================================================
+   MOVIMENTACOES
+   ===================================================================== */
+const FM = {tipo:'', periodo:'30', func:'', busca:'', cat:''};
+
+async function viewMovimentacoes(){
+  $('#topAcoes').innerHTML = podeOperar() ? `
+    <button class="btn" onclick="formEntradaCompra()">Compra</button>
+    <button class="btn" onclick="formDevolucao()">Devolução</button>
+    <button class="btn pri" onclick="formSaidaFuncionario()">Entrega</button>
+    <button class="btn" onclick="formEmprestimo()">Empréstimo</button>
+    ${ehGestor()?`<button class="btn" onclick="formAjuste()">Ajuste</button>
+      <button class="btn dan" onclick="formDescarte()">Descarte</button>`:''}` : '';
+
+  $('#view').innerHTML = `
+    <div class="card" style="margin-bottom:14px"><div class="card-b" style="padding:12px 16px">
+      <div class="pick" style="margin:0">
+        <label class="field"><span>Período</span><select class="inp" id="fmPer">
+          ${[['7','Últimos 7 dias'],['30','Últimos 30 dias'],['90','Últimos 90 dias'],['365','Últimos 12 meses'],['0','Tudo']]
+            .map(([v,t])=>`<option value="${v}" ${FM.periodo===v?'selected':''}>${t}</option>`).join('')}
+        </select></label>
+        <label class="field"><span>Tipo</span><select class="inp" id="fmTipo">
+          <option value="">Todos</option>
+          ${Object.entries(TIPOS).map(([k,v])=>`<option value="${k}" ${FM.tipo===k?'selected':''}>${v}</option>`).join('')}
+        </select></label>
+        <label class="field"><span>Funcionário</span><select class="inp" id="fmFunc">
+          <option value="">Todos</option>
+          ${S.funcionarios.map(f=>`<option value="${f.id}" ${FM.func==String(f.id)?'selected':''}>${esc(f.nome)}</option>`).join('')}
+        </select></label>
+        <label class="field"><span>Buscar item</span><input class="inp" id="fmBusca" value="${esc(FM.busca)}" placeholder="Nome do item…"></label>
+        <button class="btn" id="fmAplicar">Filtrar</button>
+        <button class="btn" id="fmCsv">CSV</button>
+      </div></div></div>
+    <div class="card"><div id="movLista"><div class="empty">Carregando…</div></div></div>`;
+
+  $('#fmAplicar').onclick = ()=>{
+    FM.periodo=$('#fmPer').value; FM.tipo=$('#fmTipo').value;
+    FM.func=$('#fmFunc').value; FM.busca=$('#fmBusca').value; carregarMovs();
+  };
+  $('#fmBusca').onkeydown = e=>{ if(e.key==='Enter') $('#fmAplicar').click(); };
+  $('#fmCsv').onclick = ()=>exportarMovsCSV();
+  carregarMovs();
+}
+
+let MOVS = [];
+async function carregarMovs(){
+  let b = S.sb.from('almox_vw_movimentacoes').select('*').order('data',{ascending:false}).limit(500);
+  if(FM.periodo!=='0') b = b.gte('data', diasAtras(Number(FM.periodo)));
+  if(FM.tipo) b = b.eq('tipo', FM.tipo);
+  if(FM.func) b = b.eq('funcionario_id', Number(FM.func));
+  if(FM.busca) b = b.ilike('item', '%'+FM.busca+'%');
+  const { data, error } = await b;
+  if(error) return erro(error);
+  MOVS = data;
+  const el = $('#movLista');
+  if(!data.length) return el.innerHTML = '<div class="empty"><b>Nenhuma movimentação</b>Ajuste os filtros ou registre um lançamento.</div>';
+
+  const totIn  = data.filter(m=>m.e_entrada && !m.cancelada).reduce((s,m)=>s+m.quantidade,0);
+  const totOut = data.filter(m=>!m.e_entrada && !m.cancelada).reduce((s,m)=>s+m.quantidade,0);
+  const valor  = data.filter(m=>m.tipo==='ENTRADA_COMPRA' && !m.cancelada).reduce((s,m)=>s+Number(m.valor_total||0),0);
+
+  el.innerHTML = `
+    <div class="card-h"><h3>${data.length} lançamentos</h3><div class="sp"></div>
+      <span class="tag in">+${num(totIn)} entradas</span>
+      <span class="tag out">−${num(totOut)} saídas</span>
+      <span class="tag">${brl(valor)} em compras</span></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Data</th><th>Tipo</th><th>Item</th><th class="num">Qtd</th><th>Pessoa / documento</th>
+        <th>Justificativa</th><th class="num">Saldo</th><th></th></tr></thead>
+      <tbody>${data.map(m=>`<tr${m.cancelada?' style="opacity:.5"':''}>
+        <td class="small mono">${dth(m.data)}</td>
+        <td><span class="tag ${m.e_entrada?'in':'out'}">${m.e_entrada?'entrada':'saída'}</span>
+          <div class="it-meta">${esc(TIPOS[m.tipo].split('— ')[1]||TIPOS[m.tipo])}</div></td>
+        <td><div class="it-nome"${m.cancelada?' style="text-decoration:line-through"':''}>${esc(m.item)}</div>
+          <div class="it-meta">${esc(m.tamanho)}</div></td>
+        <td class="num" style="font-weight:600">${m.e_entrada?'+':'−'}${m.quantidade}</td>
+        <td class="small">${esc(m.funcionario || m.fornecedor || '—')}
+          ${m.documento?`<div class="it-meta">${esc(m.documento)}</div>`:''}</td>
+        <td class="small muted">${esc(m.cancelada ? 'CANCELADA: '+(m.motivo_cancelamento||'') : (m.justificativa||'—'))}</td>
+        <td class="num small muted">${m.saldo_posterior ?? ''}</td>
+        <td style="text-align:right">${(ehGestor() && !m.cancelada && !m.emprestimo_id)
+          ? `<button class="btn sm dan" onclick="cancelarMov(${m.id})">Cancelar</button>`:''}</td>
+      </tr>`).join('')}</tbody></table></div>`;
+}
+function cancelarMov(id){
+  modal({titulo:'Cancelar movimentação', corpo:`
+    <p style="margin-top:0">O lançamento fica no histórico marcado como cancelado e o saldo é estornado.</p>
+    <label class="field"><span>Motivo do cancelamento <em>*</em></span><input class="inp" id="cMot" placeholder="Ex.: lançamento em duplicidade"></label>`,
+    acoes:[{rotulo:'Voltar'},{rotulo:'Cancelar lançamento',classe:'dan',acao:async(o,f,b)=>{
+      const mot = o.querySelector('#cMot').value.trim();
+      if(!mot) return toast('Informe o motivo.','err');
+      b.disabled=true;
+      try{ const {error} = await S.sb.rpc('almox_cancelar_movimentacao',{p_id:id,p_motivo:mot});
+        if(error) throw error; f(); await carregarEstoque(); montarNav(); carregarMovs(); toast('Lançamento cancelado.','ok');
+      }catch(e){ erro(e); b.disabled=false; }
+    }}]});
+}
+function exportarMovsCSV(){
+  const l = [['Data','Tipo','Item','Tamanho','Qtd','Sentido','Pessoa','Documento','Justificativa','Valor','Cancelada']];
+  MOVS.forEach(m=>l.push([dth(m.data),TIPOS[m.tipo],m.item,m.tamanho,m.quantidade,m.e_entrada?'ENTRADA':'SAIDA',
+    m.funcionario||m.fornecedor||'',m.documento||'',m.justificativa||'',m.valor_total||0,m.cancelada?'SIM':'NAO']));
+  const csv = l.map(r=>r.map(c=>`"${String(c??'').replace(/"/g,'""')}"`).join(';')).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(["\uFEFF"+csv],{type:'text/csv;charset=utf-8'}));
+  a.download=`movimentacoes-${hoje()}.csv`; a.click();
+}
+
+/* =====================================================================
+   EMPRESTIMOS
+   ===================================================================== */
+let FE = 'abertos';
+async function viewEmprestimos(){
+  $('#topAcoes').innerHTML = podeOperar()
+    ? `<button class="btn pri" onclick="formEmprestimo()">Novo empréstimo</button>` : '';
+  const dados = await q('almox_vw_emprestimos','*',b=>b.order('data_saida',{ascending:false}).limit(300));
+  const filtra = f => f==='abertos' ? dados.filter(e=>['ABERTO','PARCIAL'].includes(e.status))
+                    : f==='atrasados' ? dados.filter(e=>e.atrasado)
+                    : f==='encerrados' ? dados.filter(e=>['DEVOLVIDO','BAIXADO'].includes(e.status)) : dados;
+  const render = ()=>{
+    const l = filtra(FE);
+    $('#empLista').innerHTML = l.length ? `<div class="tbl-wrap"><table>
+      <thead><tr><th>Recibo</th><th>Funcionário</th><th>Saída</th><th>Previsão</th>
+        <th class="num">Itens</th><th class="num">Pendentes</th><th>Situação</th><th></th></tr></thead>
+      <tbody>${l.map(e=>`<tr>
+        <td class="mono" style="font-weight:600">${esc(e.codigo)}</td>
+        <td>${esc(e.funcionario)}<div class="it-meta">${esc(e.setor||'—')}${e.matricula?' · '+esc(e.matricula):''}</div></td>
+        <td class="small">${dth(e.data_saida)}</td>
+        <td class="small">${e.atrasado?`<span class="tag zero">${dt(e.previsao_devolucao)}</span>`:dt(e.previsao_devolucao)}</td>
+        <td class="num">${e.total_itens}</td>
+        <td class="num" style="font-weight:600">${e.pendentes}</td>
+        <td><span class="tag ${e.status==='DEVOLVIDO'?'ok':e.status==='BAIXADO'?'':'sea'}">${STATUS_EMP[e.status]}</span>
+          ${e.recibo_assinado?'<div class="it-meta">recibo assinado</div>':'<div class="it-meta">aguardando assinatura</div>'}</td>
+        <td style="text-align:right"><button class="btn sm" onclick="abrirEmprestimo(${e.id})">Abrir</button></td>
+      </tr>`).join('')}</tbody></table></div>` : '<div class="empty"><b>Nada por aqui</b>Nenhum empréstimo nesta situação.</div>';
+  };
+  $('#view').innerHTML = `
+    <div class="tabs">
+      ${[['abertos','Em aberto'],['atrasados','Atrasados'],['encerrados','Encerrados'],['todos','Todos']]
+        .map(([k,t])=>`<button data-f="${k}" class="${FE===k?'on':''}">${t}
+          <span class="mono small">(${filtra(k).length})</span></button>`).join('')}
+    </div><div class="card"><div id="empLista"></div></div>`;
+  $$('.tabs button').forEach(b=> b.onclick = ()=>{ FE=b.dataset.f;
+    $$('.tabs button').forEach(x=>x.classList.toggle('on', x.dataset.f===FE)); render(); });
+  render();
+}
+
+async function abrirEmprestimo(id){
+  const [emp] = await q('almox_vw_emprestimos','*',b=>b.eq('id',id));
+  const itens = await q('almox_emprestimo_itens','*, almox_variacoes(sku, tamanho_id, almox_itens(nome), almox_tamanhos(rotulo))',
+                        b=>b.eq('emprestimo_id',id));
+  const nomeDe = i => `${i.almox_variacoes.almox_itens.nome} · ${i.almox_variacoes.almox_tamanhos?.rotulo || 'ÚNICO'}`;
+  const aberto = ['ABERTO','PARCIAL'].includes(emp.status);
+  drawer({titulo:emp.codigo, sub:`${esc(emp.funcionario)} · ${STATUS_EMP[emp.status]}`, corpo:`
+    <div class="rec-dados" style="grid-template-columns:1fr 1fr;font-size:12.5px;margin-bottom:18px">
+      <div><b>Saída</b>${dth(emp.data_saida)}</div>
+      <div><b>Previsão de devolução</b>${dt(emp.previsao_devolucao)}${emp.atrasado?' <span class="tag zero">atrasado</span>':''}</div>
+      <div><b>Setor</b>${esc(emp.setor||'—')}</div>
+      <div><b>Motivo</b>${esc(emp.motivo||'—')}</div>
+    </div>
+    ${emp.observacoes?`<p class="small muted">${esc(emp.observacoes)}</p>`:''}
+    <div class="lista-itens" style="margin-bottom:18px">
+      ${itens.map(i=>`<div class="li"><span class="qt">${i.quantidade}×</span>
+        <span class="sp">${esc(nomeDe(i))}</span>
+        <span class="small ${i.quantidade_devolvida>=i.quantidade?'':'muted'}">
+          ${i.quantidade_devolvida>=i.quantidade?'<span class="tag ok">devolvido</span>':`devolvidos ${i.quantidade_devolvida}/${i.quantidade}`}</span>
+      </div>`).join('')}
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" onclick="reciboEmprestimo(${id})">Imprimir recibo</button>
+      ${aberto && podeOperar()?`<button class="btn pri" onclick="formDevolverEmprestimo(${id})">Registrar devolução</button>`:''}
+      ${aberto && ehGestor()?`<button class="btn dan" onclick="formBaixarEmprestimo(${id})">Dar baixa</button>`:''}
+      ${!emp.recibo_assinado && podeOperar()?`<button class="btn" onclick="marcarAssinado(${id})">Marcar como assinado</button>`:''}
+    </div>`});
+}
+
+async function marcarAssinado(id){
+  const { error } = await S.sb.from('almox_emprestimos')
+    .update({recibo_assinado:true, assinado_em:new Date().toISOString()}).eq('id',id);
+  if(error) return erro(error);
+  toast('Recibo marcado como assinado.','ok'); $('#drawer').innerHTML=''; render();
+}
+
+async function formDevolverEmprestimo(id){
+  const itens = await q('almox_emprestimo_itens','*, almox_variacoes(almox_itens(nome), almox_tamanhos(rotulo))',
+                        b=>b.eq('emprestimo_id',id));
+  const pend = itens.filter(i=>i.quantidade>i.quantidade_devolvida);
+  if(!pend.length) return toast('Não há itens pendentes.','err');
+  modal({titulo:'Registrar devolução', corpo:`
+    <p class="small muted" style="margin-top:0">Informe quanto está voltando de cada item. As peças retornam ao estoque.</p>
+    ${pend.map(i=>`<div class="pick" style="align-items:center">
+      <div class="field" style="margin:0"><span>${esc(i.almox_variacoes.almox_itens.nome)} · ${esc(i.almox_variacoes.almox_tamanhos?.rotulo||'ÚNICO')}</span>
+        <div class="small muted">pendente: ${i.quantidade-i.quantidade_devolvida}</div></div>
+      <label class="field" style="max-width:100px;margin:0"><span>Devolver</span>
+        <input class="inp mono" type="number" min="0" max="${i.quantidade-i.quantidade_devolvida}"
+               value="${i.quantidade-i.quantidade_devolvida}" data-it="${i.id}"></label>
+    </div>`).join('')}
+    <label class="field" style="margin-top:10px"><span>Destino das peças <em>*</em></span><select class="inp" id="dDest">
+      <option value="1">Peça usada — vai para a lavanderia</option>
+      <option value="0">Peça limpa — volta direto ao estoque</option>
+    </select></label>
+    <label class="field"><span>Observações</span>
+      <textarea class="inp" id="dObs" placeholder="Estado das peças devolvidas"></textarea></label>`,
+    acoes:[{rotulo:'Cancelar'},{rotulo:'Confirmar devolução',classe:'pri',acao:async(o,f,b)=>{
+      const lista = [...o.querySelectorAll('input[data-it]')]
+        .map(i=>({emprestimo_item_id:Number(i.dataset.it), quantidade:Number(i.value||0)}))
+        .filter(x=>x.quantidade>0);
+      if(!lista.length) return toast('Informe ao menos uma quantidade.','err');
+      b.disabled=true;
+      try{
+        const paraLav = o.querySelector('#dDest').value==='1';
+        const {error} = await S.sb.rpc('almox_devolver_emprestimo',
+          {p_emprestimo_id:id, p_itens:lista, p_observacoes:o.querySelector('#dObs').value||null,
+           p_para_lavanderia:paraLav});
+        if(error) throw error;
+        f(); $('#drawer').innerHTML=''; await depoisDeMovimentar(paraLav
+          ? 'Devolução registrada. As peças foram para a fila da lavanderia.'
+          : 'Devolução registrada direto no estoque.');
+      }catch(e){ erro(e); b.disabled=false; }
+    }}]});
+}
+
+function formBaixarEmprestimo(id){
+  modal({titulo:'Dar baixa no empréstimo', corpo:`
+    <p style="margin-top:0">O que não voltou passa a contar como entrega definitiva ao funcionário e sai do controle de pendências.</p>
+    <label class="field"><span>Motivo <em>*</em></span><input class="inp" id="bMot" placeholder="Ex.: peça extraviada, desconto em folha"></label>`,
+    acoes:[{rotulo:'Voltar'},{rotulo:'Dar baixa',classe:'dan',acao:async(o,f,b)=>{
+      const mot = o.querySelector('#bMot').value.trim();
+      if(!mot) return toast('Informe o motivo.','err');
+      b.disabled=true;
+      try{ const {error} = await S.sb.rpc('almox_baixar_emprestimo',{p_emprestimo_id:id,p_motivo:mot});
+        if(error) throw error; f(); $('#drawer').innerHTML=''; await depoisDeMovimentar('Empréstimo baixado.');
+      }catch(e){ erro(e); b.disabled=false; }
+    }}]});
+}
+
+/* --------------------------- RECIBOS --------------------------------- */
+function cabecalhoRecibo(titulo, codigo){
+  return `<div class="rec-h">
+    <div><div class="t">${esc(CONFIG.EMPRESA)}</div>
+      <div class="s">${esc(S.unidade?.nome || CONFIG.LOJA)}<br>Almoxarifado de uniformes e EPI</div></div>
+    <div><div class="t" style="font-size:14px;text-align:right">${esc(titulo)}</div>
+      <div class="rec-cod">${esc(codigo)}</div>
+      <div class="s" style="text-align:right">${new Date().toLocaleString('pt-BR')}</div></div></div>`;
+}
+const TERMO_EMPRESTIMO = `Declaro ter recebido, a título de empréstimo, os itens relacionados acima, em bom estado de conservação e em quantidade conferida por mim. Comprometo-me a utilizá-los exclusivamente no exercício das minhas funções, a zelar pela sua conservação e higiene e a devolvê-los ao almoxarifado até a data prevista de devolução ou imediatamente quando solicitado, bem como no ato do desligamento. Estou ciente de que a perda, o extravio ou o dano por uso indevido poderão ser objeto de reposição ou de desconto, conforme o artigo 462, §1º, da CLT, mediante minha anuência. No caso de equipamentos de proteção individual, declaro ter recebido orientação sobre o uso correto, a guarda e a conservação, nos termos da NR-6.`;
+const TERMO_ENTREGA = `Declaro ter recebido do almoxarifado os itens relacionados acima, conferidos por mim quanto a tipo, tamanho e quantidade, em perfeitas condições de uso. Comprometo-me a utilizá-los exclusivamente no exercício das minhas funções, a mantê-los limpos e conservados e a devolvê-los no ato do desligamento ou quando substituídos. Estou ciente de que a perda ou o dano por uso indevido poderá ser objeto de reposição, conforme o artigo 462, §1º, da CLT, mediante minha anuência. No caso de equipamentos de proteção individual, declaro ter recebido orientação sobre uso, guarda e conservação, nos termos da NR-6, e me responsabilizo pelo seu uso durante toda a jornada.`;
+
+function imprimir(html){
+  $('#print').innerHTML = html;
+  setTimeout(()=>window.print(), 60);
+}
+function tabelaRecibo(linhas){
+  return `<table><thead><tr><th style="width:44px">Qtd</th><th>Item</th><th style="width:90px">Tamanho</th>
+    <th style="width:110px">Código</th></tr></thead><tbody>
+    ${linhas.map(l=>`<tr><td class="mono" style="text-align:center">${l.q}</td><td>${esc(l.n)}</td>
+      <td style="text-align:center">${esc(l.t)}</td><td class="mono">${esc(l.s||'')}</td></tr>`).join('')}
+    </tbody></table>`;
+}
+function assinaturas(nomeFunc){
+  return `<div class="rec-ass">
+    <div>${esc(nomeFunc)}<br><span style="font-size:10px;color:#555">Funcionário — assinatura e data</span></div>
+    <div>${esc(S.perfil?.nome||'')}<br><span style="font-size:10px;color:#555">Almoxarifado — responsável pela entrega</span></div></div>`;
+}
+
+async function reciboEmprestimo(id){
+  const [emp] = await q('almox_vw_emprestimos','*',b=>b.eq('id',id));
+  const itens = await q('almox_emprestimo_itens','*, almox_variacoes(sku, almox_itens(nome), almox_tamanhos(rotulo))',
+                        b=>b.eq('emprestimo_id',id));
+  imprimir(`${cabecalhoRecibo('Recibo de empréstimo', emp.codigo)}
+    <div class="rec-dados">
+      <div><b>Funcionário</b>${esc(emp.funcionario)}</div>
+      <div><b>Matrícula</b>${esc(emp.matricula||'—')}</div>
+      <div><b>Cargo</b>${esc(emp.cargo||'—')}</div>
+      <div><b>Setor</b>${esc(emp.setor||'—')}</div>
+      <div><b>Data da saída</b>${dth(emp.data_saida)}</div>
+      <div><b>Devolução prevista</b>${dt(emp.previsao_devolucao)}</div>
+      <div style="grid-column:1/-1"><b>Motivo</b>${esc(emp.motivo||'—')}</div>
+    </div>
+    ${tabelaRecibo(itens.map(i=>({q:i.quantidade, n:i.almox_variacoes.almox_itens.nome,
+        t:i.almox_variacoes.almox_tamanhos?.rotulo||'ÚNICO', s:i.almox_variacoes.sku})))}
+    <div class="rec-termo"><b>TERMO DE RESPONSABILIDADE</b><br>${TERMO_EMPRESTIMO}</div>
+    ${assinaturas(emp.funcionario)}
+    <div style="margin-top:26px;border-top:1px dashed #999;padding-top:8px;font-size:10px;color:#555">
+      Devolução — preenchimento no retorno das peças: data ____/____/______ &nbsp;&nbsp;
+      recebido por ______________________________ &nbsp;&nbsp; observações ____________________________________</div>`);
+}
+function reciboEntrega({func, just, itens}){
+  const f = S.funcionarios.find(x=>x.id===func) || {};
+  const linhas = itens.map(x=>{ const v = S.estoque.find(e=>e.variacao_id===x.variacao_id)||{};
+    return {q:x.quantidade, n:v.item, t:v.tamanho, s:v.sku}; });
+  imprimir(`${cabecalhoRecibo('Comprovante de entrega', 'ENT-'+(S.unidade?.codigo||'VIX')+'-'+hoje().replace(/-/g,'').slice(2))}
+    <div class="rec-dados">
+      <div><b>Funcionário</b>${esc(f.nome||'')}</div>
+      <div><b>Matrícula</b>${esc(f.matricula||'—')}</div>
+      <div><b>Cargo</b>${esc(f.cargo||'—')}</div>
+      <div><b>Setor</b>${esc(f.setor||'—')}</div>
+      <div style="grid-column:1/-1"><b>Motivo da entrega</b>${esc(just)}</div>
+    </div>
+    ${tabelaRecibo(linhas)}
+    <div class="rec-termo"><b>TERMO DE RECEBIMENTO E RESPONSABILIDADE</b><br>${TERMO_ENTREGA}</div>
+    ${assinaturas(f.nome||'')}`);
+}
+</script>
+<script>
+/* =====================================================================
+   INVENTARIO
+   ===================================================================== */
+async function viewInventario(){
+  const abertos = await q('almox_inventarios','*',b=>b.eq('status','ABERTO'));
+  if(abertos.length) return telaContagem(abertos[0]);
+
+  const hist = await q('almox_inventarios','*',b=>b.order('iniciado_em',{ascending:false}).limit(30));
+  $('#topAcoes').innerHTML = podeOperar() ? `<button class="btn pri" onclick="formAbrirInventario()">Abrir contagem</button>` : '';
+  $('#view').innerHTML = `
+    <div class="card" style="margin-bottom:14px"><div class="card-b">
+      <b>Nenhuma contagem em andamento.</b>
+      <p class="small muted" style="margin:6px 0 0">Abra uma contagem por categoria — camisas numa semana, calçados na outra —
+      lance o que foi contado na prateleira e finalize. O sistema gera sozinho os ajustes de entrada e saída,
+      com o inventário registrado como justificativa.</p>
+    </div></div>
+    <div class="card"><div class="card-h"><h3>Contagens anteriores</h3></div>
+    ${hist.length?`<div class="tbl-wrap"><table>
+      <thead><tr><th>Código</th><th>Escopo</th><th>Início</th><th>Fim</th><th>Situação</th><th></th></tr></thead>
+      <tbody>${hist.map(i=>`<tr>
+        <td class="mono">${esc(i.codigo)}</td>
+        <td>${esc(i.categoria_id? nomeCat(i.categoria_id) : 'Todas as categorias')}
+          ${i.descricao?`<div class="it-meta">${esc(i.descricao)}</div>`:''}</td>
+        <td class="small">${dth(i.iniciado_em)}</td><td class="small">${dth(i.finalizado_em)}</td>
+        <td><span class="tag ${i.status==='FINALIZADO'?'ok':''}">${i.status}</span></td>
+        <td style="text-align:right"><button class="btn sm" onclick="verInventario(${i.id})">Ver</button></td>
+      </tr>`).join('')}</tbody></table></div>`:'<div class="empty">Nenhuma contagem registrada.</div>'}</div>`;
+}
+function formAbrirInventario(){
+  modal({titulo:'Abrir contagem de inventário', corpo:`
+    <label class="field"><span>Escopo</span><select class="inp" id="iCat">
+      <option value="">Todas as categorias</option>
+      ${S.categorias.map(c=>`<option value="${c.id}">${esc(c.nome)}</option>`).join('')}
+    </select></label>
+    <label class="field"><span>Descrição</span><input class="inp" id="iDesc" placeholder="Ex.: contagem de segunda-feira"></label>`,
+    acoes:[{rotulo:'Cancelar'},{rotulo:'Abrir contagem',classe:'pri',acao:async(o,f,b)=>{
+      b.disabled=true;
+      try{ const {error} = await S.sb.rpc('almox_abrir_inventario',{
+          p_categoria_id: o.querySelector('#iCat').value || null,
+          p_descricao: o.querySelector('#iDesc').value || null,
+          p_unidade_id: S.unidade?.id ?? null });
+        if(error) throw error; f(); toast('Contagem aberta.','ok'); render();
+      }catch(e){ erro(e); b.disabled=false; }
+    }}]});
+}
+async function telaContagem(inv){
+  const itens = await q('almox_inventario_itens','*, almox_variacoes(id, sku, saldo, tamanho_id, item_id)',
+                        b=>b.eq('inventario_id',inv.id));
+  const enriquecido = itens.map(i=>{
+    const e = S.estoque.find(x=>x.variacao_id===i.variacao_id) || {};
+    return {...i, item:e.item||'?', tamanho:e.tamanho||'—', categoria:e.categoria||'—', saldo_atual:e.saldo??0};
+  }).sort((a,b)=> a.item.localeCompare(b.item) || String(a.tamanho).localeCompare(String(b.tamanho)));
+
+  const contados = enriquecido.filter(i=>i.saldo_contado!==null).length;
+  $('#topAcoes').innerHTML = `
+    <span class="tag sea mono">${esc(inv.codigo)}</span>
+    <button class="btn" onclick="cancelarInventario(${inv.id})">Cancelar contagem</button>
+    <button class="btn pri" onclick="revisarInventario(${inv.id})">Revisar e finalizar</button>`;
+  $('#view').innerHTML = `
+    <div class="card" style="margin-bottom:14px"><div class="card-b" style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+      <div><div class="l mono small muted">ESCOPO</div><b>${esc(inv.categoria_id? nomeCat(inv.categoria_id):'Todas as categorias')}</b></div>
+      <div><div class="l mono small muted">ABERTA EM</div><b>${dth(inv.iniciado_em)}</b></div>
+      <div><div class="l mono small muted">PROGRESSO</div><b id="progCont">${contados} de ${enriquecido.length} contados</b></div>
+      <div class="sp" style="flex:1"></div>
+      <input class="inp" style="width:220px" id="invBusca" placeholder="Buscar item…">
+    </div></div>
+    <div class="card"><div class="tbl-wrap"><table>
+      <thead><tr><th>Item</th><th>Tamanho</th><th class="num">Sistema</th><th class="num">Contado</th><th class="num">Diferença</th></tr></thead>
+      <tbody id="invBody">${enriquecido.map(i=>linhaContagem(i)).join('')}</tbody>
+    </table></div></div>`;
+  $('#invBusca').oninput = e=>{
+    const t = e.target.value.toLowerCase();
+    $$('#invBody tr').forEach(tr=> tr.style.display = tr.dataset.busca.includes(t)?'':'none');
+  };
+  $$('#invBody input').forEach(inp=> inp.onchange = ()=>salvarContagem(inp));
+}
+function linhaContagem(i){
+  const dif = i.saldo_contado===null? null : i.saldo_contado - i.saldo_atual;
+  return `<tr data-busca="${esc((i.item+' '+i.tamanho+' '+i.categoria).toLowerCase())}">
+    <td><div class="it-nome">${esc(i.item)}</div><div class="it-meta">${esc(i.categoria)}</div></td>
+    <td>${esc(i.tamanho)}</td>
+    <td class="num muted">${i.saldo_atual}</td>
+    <td class="num"><input class="inp mono" style="width:80px;text-align:right" type="number" min="0"
+        value="${i.saldo_contado ?? ''}" data-id="${i.id}" data-sist="${i.saldo_atual}" placeholder="—"></td>
+    <td class="num" data-dif>${dif===null?'' : `<span class="tag ${dif===0?'ok':dif>0?'sea':'zero'}">${dif>0?'+':''}${dif}</span>`}</td>
+  </tr>`;
+}
+async function salvarContagem(inp){
+  const v = inp.value===''? null : Number(inp.value);
+  const { error } = await S.sb.from('almox_inventario_itens').update({saldo_contado:v}).eq('id',Number(inp.dataset.id));
+  if(error) return erro(error);
+  const dif = v===null? null : v - Number(inp.dataset.sist);
+  inp.closest('tr').querySelector('[data-dif]').innerHTML =
+    dif===null?'':`<span class="tag ${dif===0?'ok':dif>0?'sea':'zero'}">${dif>0?'+':''}${dif}</span>`;
+  const total = $$('#invBody input').length, feitos = $$('#invBody input').filter(i=>i.value!=='').length;
+  $('#progCont').textContent = `${feitos} de ${total} contados`;
+}
+async function revisarInventario(id){
+  const itens = await q('almox_inventario_itens','*',b=>b.eq('inventario_id',id).not('saldo_contado','is',null));
+  const difs = itens.map(i=>{ const e=S.estoque.find(x=>x.variacao_id===i.variacao_id)||{};
+      return {...i, item:e.item, tamanho:e.tamanho, atual:e.saldo??0, dif:i.saldo_contado-(e.saldo??0)}; })
+    .filter(i=>i.dif!==0);
+  modal({titulo:'Finalizar inventário', wide:true, corpo:`
+    <p style="margin-top:0">${itens.length} item(ns) contados. ${difs.length? difs.length+' divergência(s) gerarão ajuste automático:' : 'Nenhuma divergência — nada será ajustado.'}</p>
+    ${difs.length?`<div class="tbl-wrap"><table><thead><tr><th>Item</th><th>Tamanho</th>
+      <th class="num">Sistema</th><th class="num">Contado</th><th class="num">Ajuste</th></tr></thead><tbody>
+      ${difs.map(d=>`<tr><td>${esc(d.item)}</td><td>${esc(d.tamanho)}</td>
+        <td class="num">${d.atual}</td><td class="num">${d.saldo_contado}</td>
+        <td class="num"><span class="tag ${d.dif>0?'sea':'zero'}">${d.dif>0?'+':''}${d.dif}</span></td></tr>`).join('')}
+      </tbody></table></div>`:''}
+    <p class="small muted">Itens sem contagem lançada permanecem com o saldo atual.</p>`,
+    acoes:[{rotulo:'Voltar'},{rotulo:'Finalizar e ajustar',classe:'pri',acao:async(o,f,b)=>{
+      b.disabled=true;
+      try{ const {error} = await S.sb.rpc('almox_finalizar_inventario',{p_inventario_id:id});
+        if(error) throw error; f(); await depoisDeMovimentar('Inventário finalizado.');
+      }catch(e){ erro(e); b.disabled=false; }
+    }}]});
+}
+function cancelarInventario(id){
+  confirmar('Cancelar contagem','As contagens lançadas serão descartadas e nenhum ajuste será feito.',
+    async()=>{ const {error} = await S.sb.from('almox_inventarios').update({status:'CANCELADO',finalizado_em:new Date().toISOString()}).eq('id',id);
+      if(error) throw error; toast('Contagem cancelada.','ok'); render(); }, 'Cancelar contagem');
+}
+async function verInventario(id){
+  const [inv] = await q('almox_inventarios','*',b=>b.eq('id',id));
+  const itens = await q('almox_inventario_itens','*',b=>b.eq('inventario_id',id).not('saldo_contado','is',null));
+  const linhas = itens.map(i=>{ const e=S.estoque.find(x=>x.variacao_id===i.variacao_id)||{};
+    return {item:e.item||'?', tam:e.tamanho||'—', sis:i.saldo_sistema, cont:i.saldo_contado, dif:i.saldo_contado-i.saldo_sistema}; });
+  drawer({titulo:inv.codigo, sub:`${esc(inv.categoria_id?nomeCat(inv.categoria_id):'Todas as categorias')} · ${inv.status}`,
+    corpo: linhas.length?`<div class="tbl-wrap"><table><thead><tr><th>Item</th><th>Tam</th>
+      <th class="num">Sist.</th><th class="num">Cont.</th><th class="num">Dif.</th></tr></thead><tbody>
+      ${linhas.map(l=>`<tr><td>${esc(l.item)}</td><td>${esc(l.tam)}</td><td class="num">${l.sis}</td>
+        <td class="num">${l.cont}</td><td class="num">${l.dif?`<span class="tag ${l.dif>0?'sea':'zero'}">${l.dif>0?'+':''}${l.dif}</span>`:'—'}</td></tr>`).join('')}
+      </tbody></table></div>`:'<div class="empty">Sem contagens lançadas.</div>'});
+}
+
+/* =====================================================================
+   FUNCIONARIOS
+   ===================================================================== */
+let buscaFunc = '';
+async function viewFuncionarios(){
+  $('#topAcoes').innerHTML = `
+    <input class="inp" style="width:220px" placeholder="Buscar…" value="${esc(buscaFunc)}"
+      oninput="buscaFunc=this.value;listarFuncionarios()">
+    ${ehGestor()?`<button class="btn pri" onclick="formFuncionario()">Novo funcionário</button>`:''}`;
+  $('#view').innerHTML = `<div class="card"><div id="funcLista"></div></div>`;
+  await listarFuncionarios();
+}
+async function listarFuncionarios(){
+  const posse = await q('almox_vw_posse','funcionario_id,quantidade');
+  const porFunc = {}; posse.forEach(p=> porFunc[p.funcionario_id] = (porFunc[p.funcionario_id]||0)+p.quantidade);
+  const t = buscaFunc.trim().toLowerCase();
+  const lista = S.funcionarios.filter(f=> !t || (f.nome+' '+(f.setor||'')+' '+(f.matricula||'')).toLowerCase().includes(t));
+  $('#funcLista').innerHTML = lista.length? `
+    <div class="card-h"><h3>${lista.length} funcionários</h3><div class="sp"></div>
+      <span class="small muted">${S.funcionarios.filter(f=>f.ativo).length} ativos</span></div>
+    <div class="tbl-wrap"><table>
+    <thead><tr><th>Nome</th><th>Matrícula</th><th>Cargo</th><th>Setor</th><th class="num">Peças em posse</th><th></th></tr></thead>
+    <tbody>${lista.map(f=>`<tr style="cursor:pointer" onclick="fichaFuncionario(${f.id})">
+      <td><div class="it-nome">${esc(f.nome)}</div>${f.ativo?'':'<span class="tag">inativo</span>'}</td>
+      <td class="mono small">${esc(f.matricula||'—')}</td><td class="small">${esc(f.cargo||'—')}</td>
+      <td class="small">${esc(f.setor||'—')}</td>
+      <td class="num" style="font-weight:600">${porFunc[f.id]||0}</td>
+      <td style="text-align:right"><button class="btn sm">Ficha</button></td></tr>`).join('')}
+    </tbody></table></div>` : '<div class="empty"><b>Nenhum funcionário</b>Cadastre a equipe para começar a registrar entregas.</div>';
+}
+async function fichaFuncionario(id){
+  const f = S.funcionarios.find(x=>x.id===id);
+  const [posse, emps, hist, dota] = await Promise.all([
+    q('almox_vw_posse','*',b=>b.eq('funcionario_id',id)),
+    q('almox_vw_emprestimos','*',b=>b.eq('funcionario_id',id).order('data_saida',{ascending:false}).limit(20)),
+    q('almox_vw_movimentacoes','*',b=>b.eq('funcionario_id',id).order('data',{ascending:false}).limit(40)),
+    q('almox_vw_dotacao','*',b=>b.eq('funcionario_id',id))
+  ]);
+  drawer({titulo:f.nome, sub:`${esc(f.cargo||'—')} · ${esc(f.setor||'—')}${f.matricula?' · '+esc(f.matricula):''}`, corpo:`
+    <div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap">
+      ${podeOperar()?`<button class="btn sm pri" onclick="formSaidaFuncionario(null,${id})">Entregar peça</button>
+      <button class="btn sm" onclick="formEmprestimo(null,${id})">Emprestar</button>`:''}
+      ${ehGestor()?`<button class="btn sm" onclick="formFuncionario(${id})">Editar cadastro</button>`:''}
+    </div>
+    ${dota.length?`<h4 class="mono small muted" style="text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Dotação</h4>
+    <div class="lista-itens" style="margin-bottom:20px">${dota.map(d=>`
+      <div class="li"><span class="sp">${esc(d.grupo)}</span>
+        <span class="mono small muted">${d.em_posse} de ${d.quantidade_minima}${d.emprestado?` · ${d.emprestado} emprestada(s)`:''}</span>
+        <span class="tag ${d.falta?'zero':'ok'}">${d.falta? 'faltam '+d.falta : 'completo'}</span></div>`).join('')}</div>`:''}
+    <h4 class="mono small muted" style="text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Em posse hoje</h4>
+    ${posse.length?`<div class="lista-itens" style="margin-bottom:20px">${posse.map(p=>`
+      <div class="li"><span class="qt">${p.quantidade}×</span><span class="sp">${esc(p.item)} · ${esc(p.tamanho)}</span>
+      <span class="small muted">desde ${dt(p.ultima_entrega)}</span></div>`).join('')}</div>`
+      : '<p class="small muted" style="margin-bottom:20px">Nenhuma peça entregue em definitivo.</p>'}
+    <h4 class="mono small muted" style="text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Empréstimos</h4>
+    ${emps.length?`<div class="lista-itens" style="margin-bottom:20px">${emps.map(e=>`
+      <div class="li"><span class="mono">${esc(e.codigo)}</span><span class="sp small muted">${dt(e.data_saida)}</span>
+      <span class="tag ${e.atrasado?'zero':e.status==='DEVOLVIDO'?'ok':'sea'}">${STATUS_EMP[e.status]}</span>
+      <button class="btn sm" onclick="abrirEmprestimo(${e.id})">Ver</button></div>`).join('')}</div>`
+      : '<p class="small muted" style="margin-bottom:20px">Nenhum empréstimo.</p>'}
+    <h4 class="mono small muted" style="text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Histórico</h4>
+    ${hist.length?`<div class="tbl-wrap"><table><tbody>${hist.map(m=>`
+      <tr${m.cancelada?' style="opacity:.45"':''}><td class="small muted" style="width:86px">${dth(m.data)}</td>
+      <td><span class="tag ${m.e_entrada?'in':'out'}">${m.e_entrada?'+':'−'}${m.quantidade}</span>
+        <div class="it-meta">${esc(m.item)} ${esc(m.tamanho)} — ${esc(m.justificativa||'')}</div></td></tr>`).join('')}
+      </tbody></table></div>`:'<p class="small muted">Sem movimentações.</p>'}`});
+}
+function formFuncionario(id=null){
+  if(!exigeGestor()) return;
+  const f = id? S.funcionarios.find(x=>x.id===id) : {};
+  modal({titulo: id?'Editar funcionário':'Novo funcionário', corpo:`
+    <label class="field"><span>Nome completo <em>*</em></span><input class="inp" id="nNome" value="${esc(f.nome||'')}"></label>
+    <div class="row">
+      <label class="field"><span>Matrícula</span><input class="inp" id="nMat" value="${esc(f.matricula||'')}"></label>
+      <label class="field"><span>CPF</span><input class="inp" id="nCpf" value="${esc(f.cpf||'')}"></label>
+      <label class="field"><span>Cargo</span><input class="inp" id="nCargo" value="${esc(f.cargo||'')}"></label>
+      <label class="field"><span>Setor</span><input class="inp" id="nSetor" list="setores" value="${esc(f.setor||'')}">
+        <datalist id="setores">${[...new Set(S.funcionarios.map(x=>x.setor).filter(Boolean))]
+          .map(s=>`<option>${esc(s)}</option>`).join('')}</datalist></label>
+      <label class="field"><span>Admissão</span><input class="inp" id="nAdm" type="date" value="${f.data_admissao||''}"></label>
+    </div>
+    <label class="field"><span>Observações</span><textarea class="inp" id="nObs">${esc(f.observacoes||'')}</textarea></label>
+    <label class="check"><input type="checkbox" id="nAtivo" ${f.ativo!==false?'checked':''}> Funcionário ativo</label>`,
+    acoes:[{rotulo:'Cancelar'},{rotulo:'Salvar',classe:'pri',acao:async(o,fe,b)=>{
+      const nome = o.querySelector('#nNome').value.trim();
+      if(!nome) return toast('Informe o nome.','err');
+      b.disabled=true;
+      const reg = {nome, matricula:o.querySelector('#nMat').value.trim()||null, cpf:o.querySelector('#nCpf').value.trim()||null,
+        cargo:o.querySelector('#nCargo').value.trim()||null, setor:o.querySelector('#nSetor').value.trim()||null,
+        data_admissao:o.querySelector('#nAdm').value||null, observacoes:o.querySelector('#nObs').value||null,
+        ativo:o.querySelector('#nAtivo').checked, unidade_id:S.unidade?.id??null};
+      try{
+        const { error } = id ? await S.sb.from('almox_funcionarios').update(reg).eq('id',id)
+                             : await S.sb.from('almox_funcionarios').insert(reg);
+        if(error) throw error;
+        fe(); $('#drawer').innerHTML=''; await carregarBase(); toast('Cadastro salvo.','ok'); render();
+      }catch(e){ erro(e); b.disabled=false; }
+    }}]});
+}
+</script>
+<script>
+/* =====================================================================
+   CADASTROS — itens, categorias, grades/tamanhos, fornecedores, usuários
+   ===================================================================== */
+let abaCad = 'itens';
+async function viewCadastros(){
+  const abas = [['itens','Itens'],['grades','Grades e tamanhos'],['categorias','Categorias'],
+                ['regras','Regras de dotação'],['fornecedores','Fornecedores'],['usuarios','Usuários e acessos']];
+  $('#view').innerHTML = `<div class="tabs">${abas.map(([k,t])=>
+      `<button data-a="${k}" class="${abaCad===k?'on':''}">${t}</button>`).join('')}</div>
+    <div id="cadArea"></div>`;
+  $$('.tabs button').forEach(b=> b.onclick = ()=>{ abaCad=b.dataset.a;
+    $$('.tabs button').forEach(x=>x.classList.toggle('on',x.dataset.a===abaCad)); pintarCadastro(); });
+  pintarCadastro();
+}
+function pintarCadastro(){
+  ({itens:cadItens, grades:cadGrades, categorias:cadCategorias, regras:cadRegras,
+    fornecedores:cadFornecedores, usuarios:cadUsuarios})[abaCad]();
+}
+
+/* --- itens ---------------------------------------------------------- */
+function cadItens(){
+  $('#topAcoes').innerHTML = ehGestor()? `<button class="btn pri" onclick="formItem()">Novo item</button>`:'';
+  const saldos = {}; S.estoque.forEach(e=> saldos[e.item_id]=(saldos[e.item_id]||0)+e.saldo);
+  $('#cadArea').innerHTML = `<div class="card"><div class="tbl-wrap"><table>
+    <thead><tr><th>Item</th><th>Categoria</th><th>Grade</th><th>Dotação</th><th class="num">Mínimo</th>
+      <th class="num">Custo ref.</th><th class="num">Saldo</th><th>Marcações</th><th></th></tr></thead>
+    <tbody>${S.itens.map(i=>`<tr${i.ativo?'':' style="opacity:.5"'}>
+      <td><div class="it-nome">${esc(i.nome)}</div><div class="it-meta">${esc(i.codigo||'')}${i.cor?' · '+esc(i.cor):''}</div></td>
+      <td class="small">${esc(nomeCat(i.categoria_id))}</td>
+      <td class="small">${esc(S.grades.find(g=>g.id===i.grade_id)?.nome||'—')}</td>
+      <td class="small">${i.grupo_dotacao?`<span class="tag sea">${esc(i.grupo_dotacao)}</span>`:'—'}</td>
+      <td class="num">${i.estoque_minimo}</td>
+      <td class="num">${brl(i.custo_referencia)}</td>
+      <td class="num" style="font-weight:600">${num(saldos[i.id]||0)}</td>
+      <td>${i.epi?'<span class="tag low">EPI</span> ':''}${i.exige_devolucao?'<span class="tag sea">devolução</span>':''}${i.ativo?'':'<span class="tag">inativo</span>'}</td>
+      <td style="text-align:right">${ehGestor()?`<button class="btn sm" onclick="formItem(${i.id})">Editar</button>`:''}</td>
+    </tr>`).join('')}</tbody></table></div></div>`;
+}
+function formItem(id=null){
+  if(!exigeGestor()) return;
+  const i = id? S.itens.find(x=>x.id===id) : {};
+  modal({titulo: id?'Editar item':'Novo item de uniforme', wide:true, corpo:`
+    <div class="row">
+      <label class="field"><span>Nome <em>*</em></span><input class="inp" id="iNome" value="${esc(i.nome||'')}"
+        placeholder="Ex.: CAMISA (COM LOGO) VERDE"></label>
+      <label class="field"><span>Código interno</span><input class="inp mono" id="iCod" value="${esc(i.codigo||'')}"
+        placeholder="CAM-VER"></label>
+    </div>
+    <div class="row-3">
+      <label class="field"><span>Categoria</span><select class="inp" id="iCat">
+        ${S.categorias.map(c=>`<option value="${c.id}" ${i.categoria_id===c.id?'selected':''}>${esc(c.nome)}</option>`).join('')}
+      </select></label>
+      <label class="field"><span>Grade de tamanhos <em>*</em></span><select class="inp" id="iGrade">
+        ${S.grades.map(g=>`<option value="${g.id}" ${i.grade_id===g.id?'selected':''}>${esc(g.nome)}</option>`).join('')}
+      </select></label>
+      <label class="field"><span>Cor</span><input class="inp" id="iCor" value="${esc(i.cor||'')}"></label>
+    </div>
+    <div class="row-3">
+      <label class="field"><span>Estoque mínimo</span><input class="inp mono" id="iMin" type="number" min="0"
+        value="${i.estoque_minimo??3}"></label>
+      <label class="field"><span>Custo de referência (R$)</span><input class="inp mono" id="iCusto" type="number"
+        min="0" step="0.01" value="${i.custo_referencia??0}"></label>
+      <label class="field"><span>Vida útil (meses)</span><input class="inp mono" id="iVida" type="number" min="0"
+        value="${i.vida_util_meses??''}"></label>
+    </div>
+    <label class="field"><span>Grupo de dotação</span>
+      <input class="inp" id="iGrupo" list="gruposDot" value="${esc(i.grupo_dotacao||'')}"
+        placeholder="Ex.: Camisa, Calça/Bermuda — deixe vazio se não conta para a dotação mínima">
+      <datalist id="gruposDot">${[...new Set([...S.dotacoes.map(d=>d.grupo), ...S.itens.map(x=>x.grupo_dotacao)])]
+        .filter(Boolean).map(g=>`<option>${esc(g)}</option>`).join('')}</datalist></label>
+    <div class="row">
+      <label class="check"><input type="checkbox" id="iEpi" ${i.epi?'checked':''}> É EPI</label>
+      <label class="field ${i.epi?'':'hide'}" id="iCaBox"><span>Nº do CA</span>
+        <input class="inp mono" id="iCa" value="${esc(i.ca_epi||'')}"></label>
+    </div>
+    <label class="check"><input type="checkbox" id="iDev" ${i.exige_devolucao?'checked':''}> Exige devolução ao desligamento</label>
+    <label class="check"><input type="checkbox" id="iAtivo" ${i.ativo!==false?'checked':''}> Item ativo</label>
+    <p class="small muted">Ao salvar, o sistema cria automaticamente uma posição de estoque para cada tamanho da grade escolhida.</p>`,
+    acoes:[{rotulo:'Cancelar'},{rotulo:'Salvar item',classe:'pri',acao:async(o,f,b)=>{
+      const nome = o.querySelector('#iNome').value.trim();
+      if(!nome) return toast('Informe o nome do item.','err');
+      b.disabled=true;
+      const reg = {nome, codigo:o.querySelector('#iCod').value.trim()||null,
+        categoria_id:Number(o.querySelector('#iCat').value)||null, grade_id:Number(o.querySelector('#iGrade').value),
+        cor:o.querySelector('#iCor').value.trim()||null, estoque_minimo:Number(o.querySelector('#iMin').value||0),
+        custo_referencia:Number(o.querySelector('#iCusto').value||0),
+        vida_util_meses:o.querySelector('#iVida').value? Number(o.querySelector('#iVida').value):null,
+        grupo_dotacao:o.querySelector('#iGrupo').value.trim()||null,
+        epi:o.querySelector('#iEpi').checked, ca_epi:o.querySelector('#iCa').value.trim()||null,
+        exige_devolucao:o.querySelector('#iDev').checked, ativo:o.querySelector('#iAtivo').checked,
+        atualizado_em:new Date().toISOString()};
+      try{
+        let itemId = id;
+        if(id){ const {error} = await S.sb.from('almox_itens').update(reg).eq('id',id); if(error) throw error; }
+        else { const {data,error} = await S.sb.from('almox_itens').insert(reg).select().single();
+               if(error) throw error; itemId = data.id; }
+        await sincronizarVariacoes(itemId, reg.grade_id);
+        f(); await carregarBase(); await carregarEstoque(); montarNav(); toast('Item salvo.','ok'); pintarCadastro();
+      }catch(e){ erro(e); b.disabled=false; }
+    }}]
+    ,aoAbrir:o=>{ o.querySelector('#iEpi').onchange = e=>
+        o.querySelector('#iCaBox').classList.toggle('hide', !e.target.checked); }});
+}
+async function sincronizarVariacoes(itemId, gradeId){
+  const tams = tamanhosDaGrade(gradeId);
+  const exist = await q('almox_variacoes','tamanho_id',b=>b.eq('item_id',itemId));
+  const ja = new Set(exist.map(e=>e.tamanho_id));
+  const novos = tams.filter(t=>!ja.has(t.id)).map(t=>({item_id:itemId, tamanho_id:t.id}));
+  if(novos.length){ const {error} = await S.sb.from('almox_variacoes').insert(novos); if(error) throw error; }
+}
+
+/* --- grades e tamanhos ---------------------------------------------- */
+function cadGrades(){
+  $('#topAcoes').innerHTML = ehGestor()? `<button class="btn pri" onclick="formGrade()">Nova grade</button>`:'';
+  $('#cadArea').innerHTML = `<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(330px,1fr))">
+    ${S.grades.map(g=>{
+      const tams = S.tamanhos.filter(t=>t.grade_id===g.id).sort((a,b)=>a.ordem-b.ordem);
+      const usos = S.itens.filter(i=>i.grade_id===g.id).length;
+      return `<div class="card"><div class="card-h"><h3>${esc(g.nome)}</h3><div class="sp"></div>
+        <span class="small muted">${usos} itens</span>
+        ${ehGestor()?`<button class="btn sm" onclick="formGrade(${g.id})">Editar</button>`:''}</div>
+        <div class="card-b">
+          <p class="small muted" style="margin:0 0 10px">${esc(g.descricao||'')}</p>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            ${tams.map(t=>`<span class="tag ${t.ativo?'sea':''}" style="font-family:var(--mono)">${esc(t.rotulo)}
+              ${ehGestor()?`<button title="Remover tamanho" style="background:none;border:0;cursor:pointer;color:inherit;padding:0 0 0 3px"
+                onclick="removerTamanho(${t.id})">×</button>`:''}</span>`).join('') || '<span class="small muted">Sem tamanhos.</span>'}
+            ${ehGestor()?`<button class="btn sm" onclick="formTamanho(${g.id})">+ tamanho</button>`:''}
+          </div></div></div>`;
+    }).join('')}</div>`;
+}
+function formGrade(id=null){
+  if(!exigeGestor()) return;
+  const g = id? S.grades.find(x=>x.id===id):{};
+  modal({titulo:id?'Editar grade':'Nova grade de tamanhos', corpo:`
+    <label class="field"><span>Nome <em>*</em></span><input class="inp" id="gNome" value="${esc(g.nome||'')}"
+      placeholder="Ex.: Numérico calçado infantil"></label>
+    <label class="field"><span>Descrição</span><input class="inp" id="gDesc" value="${esc(g.descricao||'')}"></label>
+    ${id?'':`<label class="field"><span>Tamanhos (separados por vírgula)</span>
+      <input class="inp mono" id="gTams" placeholder="PP, P, M, G, GG"></label>`}`,
+    acoes:[{rotulo:'Cancelar'},{rotulo:'Salvar',classe:'pri',acao:async(o,f,b)=>{
+      const nome=o.querySelector('#gNome').value.trim(); if(!nome) return toast('Informe o nome.','err');
+      b.disabled=true;
+      try{
+        const reg={nome, descricao:o.querySelector('#gDesc').value.trim()||null};
+        if(id){ const {error}=await S.sb.from('almox_grades').update(reg).eq('id',id); if(error) throw error; }
+        else{
+          const {data,error}=await S.sb.from('almox_grades').insert(reg).select().single(); if(error) throw error;
+          const lista=(o.querySelector('#gTams').value||'').split(',').map(s=>s.trim()).filter(Boolean);
+          if(lista.length){ const {error:e2}=await S.sb.from('almox_tamanhos')
+              .insert(lista.map((r,ix)=>({grade_id:data.id, rotulo:r, ordem:ix+1}))); if(e2) throw e2; }
+        }
+        f(); await carregarBase(); toast('Grade salva.','ok'); pintarCadastro();
+      }catch(e){ erro(e); b.disabled=false; }
+    }}]});
+}
+function formTamanho(gradeId){
+  if(!exigeGestor()) return;
+  const ord = Math.max(0,...S.tamanhos.filter(t=>t.grade_id===gradeId).map(t=>t.ordem))+1;
+  modal({titulo:'Novo tamanho', corpo:`
+    <div class="row">
+      <label class="field"><span>Rótulo <em>*</em></span><input class="inp mono" id="tRot" placeholder="Ex.: 52 ou XGG"></label>
+      <label class="field"><span>Ordem na régua</span><input class="inp mono" id="tOrd" type="number" value="${ord}"></label>
+    </div>
+    <p class="small muted">O tamanho será criado para todos os itens que usam esta grade, com saldo zero.</p>`,
+    acoes:[{rotulo:'Cancelar'},{rotulo:'Adicionar',classe:'pri',acao:async(o,f,b)=>{
+      const rot=o.querySelector('#tRot').value.trim(); if(!rot) return toast('Informe o rótulo.','err');
+      b.disabled=true;
+      try{
+        const {error}=await S.sb.from('almox_tamanhos').insert(
+          {grade_id:gradeId, rotulo:rot, ordem:Number(o.querySelector('#tOrd').value||ord)});
+        if(error) throw error;
+        await carregarBase();
+        for(const it of S.itens.filter(i=>i.grade_id===gradeId)) await sincronizarVariacoes(it.id, gradeId);
+        f(); await carregarEstoque(); toast('Tamanho adicionado.','ok'); pintarCadastro();
+      }catch(e){ erro(e); b.disabled=false; }
+    }}]});
+}
+function removerTamanho(id){
+  if(!exigeGestor()) return;
+  const t = S.tamanhos.find(x=>x.id===id);
+  const comSaldo = S.estoque.filter(e=>e.tamanho_id===id && e.saldo>0);
+  confirmar('Remover tamanho',
+    comSaldo.length? `Existem ${comSaldo.length} posições com saldo neste tamanho. Ele será apenas desativado e sairá da grade, preservando o histórico.`
+                   : `O tamanho <b>${esc(t.rotulo)}</b> sairá da grade. Posições sem movimentação são apagadas; as demais ficam desativadas.`,
+    async()=>{
+      const { error } = await S.sb.from('almox_tamanhos').update({ativo:false}).eq('id',id);
+      if(error) throw error;
+      await S.sb.from('almox_variacoes').update({ativo:false}).eq('tamanho_id',id);
+      await carregarBase(); await carregarEstoque(); montarNav(); toast('Tamanho removido da grade.','ok'); pintarCadastro();
+    },'Remover');
+}
+
+/* --- categorias e fornecedores -------------------------------------- */
+function cadCategorias(){
+  $('#topAcoes').innerHTML = ehGestor()? `<button class="btn pri" onclick="formCategoria()">Nova categoria</button>`:'';
+  $('#cadArea').innerHTML = `<div class="card"><div class="tbl-wrap"><table>
+    <thead><tr><th>Categoria</th><th class="num">Itens</th><th class="num">Peças</th><th></th></tr></thead>
+    <tbody>${S.categorias.map(c=>{
+      const itens = S.itens.filter(i=>i.categoria_id===c.id).length;
+      const pecas = S.estoque.filter(e=>e.categoria_id===c.id).reduce((s,e)=>s+e.saldo,0);
+      return `<tr><td><span class="tag" style="border-left:3px solid ${esc(c.cor||'#0B4F53')}">${esc(c.nome)}</span></td>
+        <td class="num">${itens}</td><td class="num">${num(pecas)}</td>
+        <td style="text-align:right">${ehGestor()?`<button class="btn sm" onclick="formCategoria(${c.id})">Editar</button>`:''}</td></tr>`;
+    }).join('')}</tbody></table></div></div>`;
+}
+function formCategoria(id=null){
+  if(!exigeGestor()) return;
+  const c = id? S.categorias.find(x=>x.id===id):{};
+  modal({titulo:id?'Editar categoria':'Nova categoria', corpo:`
+    <label class="field"><span>Nome <em>*</em></span><input class="inp" id="cNome" value="${esc(c.nome||'')}"></label>
+    <div class="row">
+      <label class="field"><span>Cor</span><input class="inp" id="cCor" type="color" value="${c.cor||'#0B4F53'}"></label>
+      <label class="field"><span>Ordem</span><input class="inp mono" id="cOrd" type="number" value="${c.ordem??10}"></label>
+    </div>`,
+    acoes:[{rotulo:'Cancelar'},{rotulo:'Salvar',classe:'pri',acao:async(o,f,b)=>{
+      const nome=o.querySelector('#cNome').value.trim(); if(!nome) return toast('Informe o nome.','err');
+      b.disabled=true;
+      const reg={nome, cor:o.querySelector('#cCor').value, ordem:Number(o.querySelector('#cOrd').value||10)};
+      try{ const {error} = id? await S.sb.from('almox_categorias').update(reg).eq('id',id)
+                             : await S.sb.from('almox_categorias').insert(reg);
+        if(error) throw error; f(); await carregarBase(); toast('Categoria salva.','ok'); pintarCadastro();
+      }catch(e){ erro(e); b.disabled=false; }
+    }}]});
+}
+function cadFornecedores(){
+  $('#topAcoes').innerHTML = ehGestor()? `<button class="btn pri" onclick="formFornecedor()">Novo fornecedor</button>`:'';
+  $('#cadArea').innerHTML = `<div class="card"><div class="tbl-wrap"><table>
+    <thead><tr><th>Fornecedor</th><th>CNPJ</th><th>Contato</th><th>Telefone</th><th></th></tr></thead>
+    <tbody>${S.fornecedores.length? S.fornecedores.map(f=>`<tr${f.ativo?'':' style="opacity:.5"'}>
+      <td class="it-nome">${esc(f.nome)}</td><td class="mono small">${esc(f.cnpj||'—')}</td>
+      <td class="small">${esc(f.contato||'—')}</td><td class="small">${esc(f.telefone||'—')}</td>
+      <td style="text-align:right">${ehGestor()?`<button class="btn sm" onclick="formFornecedor(${f.id})">Editar</button>`:''}</td>
+    </tr>`).join('') : '<tr><td colspan="5"><div class="empty">Nenhum fornecedor cadastrado.</div></td></tr>'}
+    </tbody></table></div></div>`;
+}
+function formFornecedor(id=null){
+  if(!exigeGestor()) return;
+  const f = id? S.fornecedores.find(x=>x.id===id):{};
+  modal({titulo:id?'Editar fornecedor':'Novo fornecedor', corpo:`
+    <label class="field"><span>Nome <em>*</em></span><input class="inp" id="foNome" value="${esc(f.nome||'')}"></label>
+    <div class="row">
+      <label class="field"><span>CNPJ</span><input class="inp mono" id="foCnpj" value="${esc(f.cnpj||'')}"></label>
+      <label class="field"><span>Contato</span><input class="inp" id="foCont" value="${esc(f.contato||'')}"></label>
+      <label class="field"><span>Telefone</span><input class="inp" id="foTel" value="${esc(f.telefone||'')}"></label>
+      <label class="field"><span>E-mail</span><input class="inp" id="foMail" value="${esc(f.email||'')}"></label>
+    </div>
+    <label class="check"><input type="checkbox" id="foAtivo" ${f.ativo!==false?'checked':''}> Ativo</label>`,
+    acoes:[{rotulo:'Cancelar'},{rotulo:'Salvar',classe:'pri',acao:async(o,fe,b)=>{
+      const nome=o.querySelector('#foNome').value.trim(); if(!nome) return toast('Informe o nome.','err');
+      b.disabled=true;
+      const reg={nome, cnpj:o.querySelector('#foCnpj').value.trim()||null, contato:o.querySelector('#foCont').value.trim()||null,
+        telefone:o.querySelector('#foTel').value.trim()||null, email:o.querySelector('#foMail').value.trim()||null,
+        ativo:o.querySelector('#foAtivo').checked};
+      try{ const {error} = id? await S.sb.from('almox_fornecedores').update(reg).eq('id',id)
+                             : await S.sb.from('almox_fornecedores').insert(reg);
+        if(error) throw error; fe(); await carregarBase(); toast('Fornecedor salvo.','ok'); pintarCadastro();
+      }catch(e){ erro(e); b.disabled=false; }
+    }}]});
+}
+
+/* --- usuários -------------------------------------------------------- */
+async function cadUsuarios(){
+  $('#topAcoes').innerHTML = '';
+  if(!ehGestor()) return $('#cadArea').innerHTML = '<div class="card"><div class="empty">Somente o gestor administra acessos.</div></div>';
+  const us = await q('almox_usuarios','*',b=>b.order('nome'));
+  $('#cadArea').innerHTML = `<div class="card">
+    <div class="card-h"><h3>${us.length} usuários</h3><div class="sp"></div>
+      <span class="small muted">Novos usuários entram como “Consulta” até você liberar</span></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Nome</th><th>E-mail</th><th>Perfil</th><th>Ativo</th></tr></thead>
+      <tbody>${us.map(u=>`<tr>
+        <td class="it-nome">${esc(u.nome)}${u.id===S.user.id?' <span class="tag">você</span>':''}</td>
+        <td class="small mono">${esc(u.email||'—')}</td>
+        <td><select class="inp" style="width:150px" onchange="mudarPapel('${u.id}',this.value)" ${u.id===S.user.id?'disabled':''}>
+          ${['GESTOR','OPERADOR','LEITURA'].map(p=>`<option value="${p}" ${u.papel===p?'selected':''}>
+            ${{GESTOR:'Gestor — tudo',OPERADOR:'Operador — lançamentos',LEITURA:'Consulta'}[p]}</option>`).join('')}
+        </select></td>
+        <td><label class="check" style="margin:0"><input type="checkbox" ${u.ativo?'checked':''}
+          ${u.id===S.user.id?'disabled':''} onchange="mudarAtivo('${u.id}',this.checked)"></label></td>
+      </tr>`).join('')}</tbody></table></div></div>`;
+}
+async function mudarPapel(id,papel){
+  const {error} = await S.sb.from('almox_usuarios').update({papel}).eq('id',id);
+  error? erro(error) : toast('Perfil atualizado.','ok');
+}
+async function mudarAtivo(id,ativo){
+  const {error} = await S.sb.from('almox_usuarios').update({ativo}).eq('id',id);
+  error? erro(error) : toast(ativo?'Acesso liberado.':'Acesso bloqueado.','ok');
+}
+</script>
+<script>
+/* =====================================================================
+   LAVANDERIA — ciclo da peça suja
+   ===================================================================== */
+let FL = 'abertas';
+async function viewLavanderia(){
+  await carregarLavanderia();
+  const remessas = await q('almox_vw_remessas','*',b=>b.order('data_envio',{ascending:false}).limit(120));
+  const emLav = S.lavanderia.reduce((t,l)=>t+l.em_lavanderia,0);
+  const naLav = S.lavanderia.reduce((t,l)=>t+l.enviado,0);
+
+  $('#topAcoes').innerHTML = podeOperar()
+    ? `<button class="btn pri" ${S.aguardando?'':'disabled'} onclick="formEnviarLavanderia()">Enviar remessa</button>` : '';
+
+  const filtra = f => f==='abertas' ? remessas.filter(r=>r.status==='ENVIADA')
+                    : f==='recebidas' ? remessas.filter(r=>r.status==='RECEBIDA') : remessas;
+
+  $('#view').innerHTML = `
+    <div class="kpis" style="margin-bottom:18px">
+      <div class="kpi ${S.aguardando?'warn':''}"><div class="l">Aguardando envio</div><div class="v">${num(S.aguardando)}</div>
+        <div class="d">peças sujas paradas aqui</div></div>
+      <div class="kpi"><div class="l">Na lavanderia</div><div class="v">${num(naLav)}</div>
+        <div class="d">em remessas não recebidas</div></div>
+      <div class="kpi"><div class="l">Fora do estoque</div><div class="v">${num(emLav)}</div>
+        <div class="d">total sujo, não entregável</div></div>
+      <div class="kpi ${remessas.some(r=>r.demorada)?'bad':''}"><div class="l">Remessas abertas</div>
+        <div class="v">${num(remessas.filter(r=>r.status==='ENVIADA').length)}</div>
+        <div class="d">${remessas.filter(r=>r.demorada).length} há mais de 10 dias</div></div>
+    </div>
+
+    <div class="grid" style="grid-template-columns:1fr 1.3fr;align-items:start">
+      <div class="card">
+        <div class="card-h"><h3>Peças sujas por item</h3><div class="sp"></div>
+          <span class="small muted">aguardando · enviadas</span></div>
+        ${S.lavanderia.length?`<div class="tbl-wrap"><table><tbody>${S.lavanderia.map(l=>`
+          <tr><td><div class="it-nome">${esc(l.item)}</div><div class="it-meta">${esc(l.tamanho)} · ${esc(l.categoria||'—')}</div></td>
+            <td class="num" style="width:120px">
+              <span class="tag ${l.aguardando_envio?'low':''}">${l.aguardando_envio}</span>
+              <span class="tag sea">${l.enviado}</span></td></tr>`).join('')}</tbody></table></div>`
+          : '<div class="empty"><b>Nada sujo</b>Toda peça devolvida já voltou limpa ao estoque.</div>'}
+      </div>
+      <div class="card">
+        <div class="tabs" style="margin:0;padding:0 12px">
+          ${[['abertas','Na lavanderia'],['recebidas','Recebidas'],['todas','Todas']]
+            .map(([k,t])=>`<button data-l="${k}" class="${FL===k?'on':''}">${t}
+              <span class="mono small">(${filtra(k).length})</span></button>`).join('')}
+        </div>
+        <div id="remLista"></div>
+      </div>
+    </div>`;
+
+  const pintar = ()=>{
+    const l = filtra(FL);
+    $('#remLista').innerHTML = l.length ? `<div class="tbl-wrap"><table>
+      <thead><tr><th>Remessa</th><th>Lavanderia</th><th>Envio</th><th class="num">Peças</th>
+        <th class="num">Pendentes</th><th>Situação</th><th></th></tr></thead>
+      <tbody>${l.map(r=>`<tr>
+        <td class="mono" style="font-weight:600">${esc(r.codigo)}</td>
+        <td class="small">${esc(r.lavanderia||'—')}${r.custo?`<div class="it-meta">${brl(r.custo)}</div>`:''}</td>
+        <td class="small">${dt(r.data_envio)}${r.demorada?'<div class="it-meta" style="color:var(--red)">há mais de 10 dias</div>':''}</td>
+        <td class="num">${r.total_pecas}</td>
+        <td class="num" style="font-weight:600">${r.pendentes}</td>
+        <td><span class="tag ${r.status==='RECEBIDA'?'ok':r.demorada?'zero':'sea'}">${STATUS_REM[r.status]}</span>
+          ${r.condenadas?`<div class="it-meta">${r.condenadas} condenada(s)</div>`:''}</td>
+        <td style="text-align:right">${r.status==='ENVIADA'&&podeOperar()
+          ? `<button class="btn sm pri" onclick="formReceberLavanderia(${r.id})">Receber</button>`
+          : `<button class="btn sm" onclick="verRemessa(${r.id})">Ver</button>`}</td>
+      </tr>`).join('')}</tbody></table></div>`
+      : '<div class="empty"><b>Nenhuma remessa</b>Peças sujas viram remessa quando você as envia para lavar.</div>';
+  };
+  $$('.tabs button[data-l]').forEach(b=> b.onclick = ()=>{ FL=b.dataset.l;
+    $$('.tabs button[data-l]').forEach(x=>x.classList.toggle('on',x.dataset.l===FL)); pintar(); });
+  pintar();
+}
+
+function formEnviarLavanderia(){
+  if(!podeOperar()) return toast('Sem permissão.','err');
+  const disp = S.lavanderia.filter(l=>l.aguardando_envio>0);
+  if(!disp.length) return toast('Não há peças aguardando envio.','err');
+  modal({titulo:'Enviar remessa para a lavanderia', wide:true, corpo:`
+    <div class="row">
+      <label class="field"><span>Lavanderia</span><select class="inp" id="rFor">
+        <option value="">Não informada</option>
+        ${S.fornecedores.filter(f=>f.ativo).map(f=>`<option value="${f.id}">${esc(f.nome)}</option>`).join('')}
+      </select></label>
+      <label class="field"><span>Observações</span><input class="inp" id="rObs" placeholder="Ex.: retirada de sexta"></label>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:8px">
+      <button type="button" class="btn sm" id="rTudo">Selecionar tudo</button>
+      <button type="button" class="btn sm" id="rNada">Limpar</button></div>
+    <div class="tbl-wrap" style="border:1px solid var(--line);border-radius:6px"><table>
+      <thead><tr><th>Peça</th><th class="num">Aguardando</th><th class="num">Enviar</th></tr></thead>
+      <tbody>${disp.map(l=>`<tr>
+        <td><div class="it-nome">${esc(l.item)}</div><div class="it-meta">${esc(l.tamanho)}</div></td>
+        <td class="num muted">${l.aguardando_envio}</td>
+        <td class="num"><input class="inp mono" style="width:80px;text-align:right" type="number" min="0"
+          max="${l.aguardando_envio}" value="${l.aguardando_envio}" data-v="${l.variacao_id}"></td>
+      </tr>`).join('')}</tbody></table></div>`,
+    aoAbrir:o=>{
+      o.querySelector('#rTudo').onclick = ()=> o.querySelectorAll('input[data-v]').forEach(i=>i.value=i.max);
+      o.querySelector('#rNada').onclick = ()=> o.querySelectorAll('input[data-v]').forEach(i=>i.value=0);
+    },
+    acoes:[{rotulo:'Cancelar'},{rotulo:'Registrar envio',classe:'pri',acao:async(o,f,b)=>{
+      const itens = [...o.querySelectorAll('input[data-v]')]
+        .map(i=>({variacao_id:Number(i.dataset.v), quantidade:Number(i.value||0)}))
+        .filter(x=>x.quantidade>0);
+      if(!itens.length) return toast('Informe ao menos uma quantidade.','err');
+      b.disabled=true;
+      try{
+        const {data,error} = await S.sb.rpc('almox_enviar_lavanderia',{
+          p_itens:itens, p_fornecedor_id:o.querySelector('#rFor').value||null,
+          p_observacoes:o.querySelector('#rObs').value||null, p_unidade_id:S.unidade?.id??null});
+        if(error) throw error;
+        f(); await depoisDeMovimentar('Remessa '+data.codigo+' registrada.');
+      }catch(e){ erro(e); b.disabled=false; }
+    }}]});
+}
+
+async function formReceberLavanderia(id){
+  const [rem] = await q('almox_vw_remessas','*',b=>b.eq('id',id));
+  const itens = await q('almox_remessa_itens','*, almox_variacoes(almox_itens(nome), almox_tamanhos(rotulo))',
+                        b=>b.eq('remessa_id',id));
+  const pend = itens.filter(i=>i.quantidade > i.quantidade_retornada + i.quantidade_condenada);
+  if(!pend.length) return toast('Remessa já totalmente baixada.','err');
+  const nome = i => `${i.almox_variacoes.almox_itens.nome} · ${i.almox_variacoes.almox_tamanhos?.rotulo||'ÚNICO'}`;
+  modal({titulo:'Receber remessa '+rem.codigo, wide:true, corpo:`
+    <p class="small muted" style="margin-top:0">O que voltou limpo entra no estoque disponível. O que a lavanderia
+    condenou sai de vez, com a baixa registrada.</p>
+    <div class="tbl-wrap" style="border:1px solid var(--line);border-radius:6px;margin-bottom:14px"><table>
+      <thead><tr><th>Peça</th><th class="num">Pendente</th><th class="num">Voltou limpa</th><th class="num">Condenada</th></tr></thead>
+      <tbody>${pend.map(i=>{ const p = i.quantidade - i.quantidade_retornada - i.quantidade_condenada;
+        return `<tr><td>${esc(nome(i))}</td><td class="num muted">${p}</td>
+        <td class="num"><input class="inp mono" style="width:74px;text-align:right" type="number" min="0" max="${p}"
+          value="${p}" data-ret="${i.id}"></td>
+        <td class="num"><input class="inp mono" style="width:74px;text-align:right" type="number" min="0" max="${p}"
+          value="0" data-con="${i.id}"></td></tr>`; }).join('')}</tbody></table></div>
+    <div class="row">
+      <label class="field"><span>Custo da lavagem (R$)</span><input class="inp mono" id="rCusto" type="number"
+        min="0" step="0.01" value="${rem.custo??''}"></label>
+      <label class="field"><span>Observações</span><input class="inp" id="rObs2" value="${esc(rem.observacoes||'')}"></label>
+    </div>`,
+    acoes:[{rotulo:'Cancelar'},{rotulo:'Registrar retorno',classe:'pri',acao:async(o,f,b)=>{
+      const mapa = {};
+      o.querySelectorAll('input[data-ret]').forEach(i=> mapa[i.dataset.ret] = {remessa_item_id:Number(i.dataset.ret),
+        retornadas:Number(i.value||0), condenadas:0});
+      o.querySelectorAll('input[data-con]').forEach(i=> mapa[i.dataset.con].condenadas = Number(i.value||0));
+      const lista = Object.values(mapa).filter(x=>x.retornadas>0||x.condenadas>0);
+      if(!lista.length) return toast('Informe ao menos uma quantidade.','err');
+      b.disabled=true;
+      try{
+        const {error} = await S.sb.rpc('almox_receber_lavanderia',{
+          p_remessa_id:id, p_itens:lista,
+          p_custo:o.querySelector('#rCusto').value? Number(o.querySelector('#rCusto').value):null,
+          p_observacoes:o.querySelector('#rObs2').value||null});
+        if(error) throw error;
+        f(); await depoisDeMovimentar('Retorno registrado. Peças limpas de volta ao estoque.');
+      }catch(e){ erro(e); b.disabled=false; }
+    }}]});
+}
+
+async function verRemessa(id){
+  const [rem] = await q('almox_vw_remessas','*',b=>b.eq('id',id));
+  const itens = await q('almox_remessa_itens','*, almox_variacoes(almox_itens(nome), almox_tamanhos(rotulo))',
+                        b=>b.eq('remessa_id',id));
+  drawer({titulo:rem.codigo, sub:`${esc(rem.lavanderia||'sem lavanderia informada')} · ${STATUS_REM[rem.status]}`, corpo:`
+    <div class="rec-dados" style="grid-template-columns:1fr 1fr;font-size:12.5px;margin-bottom:18px">
+      <div><b>Envio</b>${dth(rem.data_envio)}</div>
+      <div><b>Retorno</b>${dth(rem.data_retorno)}</div>
+      <div><b>Custo</b>${rem.custo?brl(rem.custo):'—'}</div>
+      <div><b>Peças</b>${rem.total_pecas}</div>
+    </div>
+    ${rem.observacoes?`<p class="small muted">${esc(rem.observacoes)}</p>`:''}
+    <div class="lista-itens">${itens.map(i=>`<div class="li">
+      <span class="qt">${i.quantidade}×</span>
+      <span class="sp">${esc(i.almox_variacoes.almox_itens.nome)} · ${esc(i.almox_variacoes.almox_tamanhos?.rotulo||'ÚNICO')}</span>
+      <span class="tag ok">${i.quantidade_retornada} limpa(s)</span>
+      ${i.quantidade_condenada?`<span class="tag zero">${i.quantidade_condenada} condenada(s)</span>`:''}
+    </div>`).join('')}</div>`});
+}
+
+/* =====================================================================
+   DOTAÇÃO — quem tem menos peças do que deveria
+   ===================================================================== */
+let FD = 'faltando', buscaDot = '';
+async function viewDotacao(){
+  const dados = await q('almox_vw_dotacao','*',b=>b.order('funcionario').order('grupo'));
+  $('#topAcoes').innerHTML = `
+    <input class="inp" style="width:200px" placeholder="Buscar funcionário…" value="${esc(buscaDot)}"
+      oninput="buscaDot=this.value;pintarDotacao()">
+    <button class="btn" onclick="exportarDotacaoCSV()">Exportar CSV</button>
+    ${ehGestor()?`<button class="btn" onclick="abaCad='regras';irPara('cadastros')">Editar regras</button>`:''}`;
+
+  window._dot = dados;
+  const porFunc = {};
+  dados.forEach(d=>{ (porFunc[d.funcionario_id] ||= {nome:d.funcionario, setor:d.setor, cargo:d.cargo, linhas:[]});
+    porFunc[d.funcionario_id].linhas.push(d); });
+  window._dotFunc = porFunc;
+
+  $('#view').innerHTML = `
+    <div class="card" style="margin-bottom:14px"><div class="card-b" style="padding:12px 16px">
+      <p class="small muted" style="margin:0">A dotação mede o que cada funcionário tem <b>em posse definitiva</b>.
+      Peça emprestada não conta — ela volta. Peça na lavanderia também não, porque ainda não foi entregue a ninguém.</p>
+    </div></div>
+    <div class="tabs">
+      ${[['faltando','Abaixo do mínimo'],['completos','Completos'],['todos','Todos']]
+        .map(([k,t])=>`<button data-d="${k}" class="${FD===k?'on':''}">${t}</button>`).join('')}
+    </div>
+    <div class="card"><div id="dotLista"></div></div>`;
+  $$('.tabs button[data-d]').forEach(b=> b.onclick = ()=>{ FD=b.dataset.d;
+    $$('.tabs button[data-d]').forEach(x=>x.classList.toggle('on',x.dataset.d===FD)); pintarDotacao(); });
+  pintarDotacao();
+}
+function pintarDotacao(){
+  const t = buscaDot.trim().toLowerCase();
+  let lista = Object.entries(window._dotFunc||{}).map(([id,f])=>({id:Number(id),...f,
+    falta: f.linhas.reduce((s,l)=>s+l.falta,0)}));
+  if(FD==='faltando')  lista = lista.filter(f=>f.falta>0);
+  if(FD==='completos') lista = lista.filter(f=>f.falta===0);
+  if(t) lista = lista.filter(f=>(f.nome+' '+(f.setor||'')+' '+(f.cargo||'')).toLowerCase().includes(t));
+  lista.sort((a,b)=> b.falta-a.falta || a.nome.localeCompare(b.nome));
+
+  const grupos = [...new Set((window._dot||[]).map(d=>d.grupo))].sort();
+  $('#dotLista').innerHTML = lista.length? `
+    <div class="card-h"><h3>${lista.length} funcionários</h3><div class="sp"></div>
+      <span class="small muted">${lista.reduce((s,f)=>s+f.falta,0)} peças faltando no total</span></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Funcionário</th><th>Cargo / setor</th>
+        ${grupos.map(g=>`<th class="num" style="text-align:center">${esc(g)}</th>`).join('')}
+        <th class="num">Falta</th><th></th></tr></thead>
+      <tbody>${lista.map(f=>`<tr>
+        <td><div class="it-nome">${esc(f.nome)}</div></td>
+        <td class="small muted">${esc(f.cargo||'—')}${f.setor?' · '+esc(f.setor):''}</td>
+        ${grupos.map(g=>{ const l = f.linhas.find(x=>x.grupo===g);
+          if(!l) return '<td class="num muted" style="text-align:center">–</td>';
+          return `<td class="num" style="text-align:center"><span class="tag ${l.falta?'zero':'ok'}">
+            ${l.em_posse}/${l.quantidade_minima}</span></td>`; }).join('')}
+        <td class="num" style="font-weight:600">${f.falta||'—'}</td>
+        <td style="text-align:right">
+          <button class="btn sm" onclick="fichaFuncionario(${f.id})">Ficha</button>
+          ${f.falta&&podeOperar()?`<button class="btn sm pri" onclick="formSaidaFuncionario(null,${f.id})">Entregar</button>`:''}
+        </td></tr>`).join('')}</tbody></table></div>`
+    : '<div class="empty"><b>Nada aqui</b>Nenhum funcionário nesta situação.</div>';
+}
+function exportarDotacaoCSV(){
+  const l = [['Funcionario','Matricula','Cargo','Setor','Grupo','Minimo','Em posse','Emprestado','Falta']];
+  (window._dot||[]).forEach(d=>l.push([d.funcionario,d.matricula||'',d.cargo||'',d.setor||'',
+    d.grupo,d.quantidade_minima,d.em_posse,d.emprestado,d.falta]));
+  const csv = l.map(r=>r.map(c=>`"${String(c??'').replace(/"/g,'""')}"`).join(';')).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(["\uFEFF"+csv],{type:'text/csv;charset=utf-8'}));
+  a.download=`dotacao-${hoje()}.csv`; a.click();
+}
+
+/* --- cadastro das regras de dotação --------------------------------- */
+function cadRegras(){
+  $('#topAcoes').innerHTML = ehGestor()? `<button class="btn pri" onclick="formRegra()">Nova regra</button>`:'';
+  const itensSemGrupo = S.itens.filter(i=>i.ativo && !i.grupo_dotacao).length;
+  $('#cadArea').innerHTML = `
+    <div class="card" style="margin-bottom:14px"><div class="card-b">
+      <p class="small muted" style="margin:0">Cada regra define quantas peças de um grupo o funcionário precisa ter.
+      Sem cargo nem setor, a regra vale para todo mundo; preenchendo um deles, ela substitui a regra geral para
+      quem se encaixa. Um item só entra na conta se tiver um grupo de dotação preenchido no cadastro.
+      ${itensSemGrupo?`<b>${itensSemGrupo} item(ns) ativos ainda estão sem grupo.</b>`:''}</p>
+    </div></div>
+    <div class="card"><div class="tbl-wrap"><table>
+      <thead><tr><th>Grupo</th><th>Vale para</th><th class="num">Mínimo</th><th>Observação</th><th></th></tr></thead>
+      <tbody>${S.dotacoes.length? S.dotacoes.map(d=>`<tr${d.ativo?'':' style="opacity:.5"'}>
+        <td><span class="tag sea">${esc(d.grupo)}</span></td>
+        <td class="small">${d.cargo||d.setor
+          ? [d.cargo?'cargo '+esc(d.cargo):'', d.setor?'setor '+esc(d.setor):''].filter(Boolean).join(' · ')
+          : '<span class="muted">todos os funcionários</span>'}</td>
+        <td class="num" style="font-weight:600">${d.quantidade_minima}</td>
+        <td class="small muted">${esc(d.observacoes||'—')}</td>
+        <td style="text-align:right">${ehGestor()?`<button class="btn sm" onclick="formRegra(${d.id})">Editar</button>`:''}</td>
+      </tr>`).join('') : '<tr><td colspan="5"><div class="empty">Nenhuma regra cadastrada.</div></td></tr>'}
+    </tbody></table></div></div>`;
+}
+function formRegra(id=null){
+  if(!exigeGestor()) return;
+  const d = id? S.dotacoes.find(x=>x.id===id):{};
+  const grupos = [...new Set([...S.itens.map(i=>i.grupo_dotacao), ...S.dotacoes.map(x=>x.grupo)])].filter(Boolean);
+  modal({titulo:id?'Editar regra de dotação':'Nova regra de dotação', corpo:`
+    <div class="row">
+      <label class="field"><span>Grupo de peça <em>*</em></span>
+        <input class="inp" id="dGrupo" list="dGrupos" value="${esc(d.grupo||'')}" placeholder="Ex.: Camisa">
+        <datalist id="dGrupos">${grupos.map(g=>`<option>${esc(g)}</option>`).join('')}</datalist></label>
+      <label class="field"><span>Quantidade mínima <em>*</em></span>
+        <input class="inp mono" id="dQtd" type="number" min="1" value="${d.quantidade_minima??2}"></label>
+    </div>
+    <p class="small muted" style="margin:-4px 0 12px">Deixe cargo e setor em branco para a regra valer para todos.</p>
+    <div class="row">
+      <label class="field"><span>Só para o cargo</span><input class="inp" id="dCargo" list="cargosD" value="${esc(d.cargo||'')}">
+        <datalist id="cargosD">${[...new Set(S.funcionarios.map(f=>f.cargo).filter(Boolean))]
+          .map(c=>`<option>${esc(c)}</option>`).join('')}</datalist></label>
+      <label class="field"><span>Só para o setor</span><input class="inp" id="dSetor" list="setoresD" value="${esc(d.setor||'')}">
+        <datalist id="setoresD">${[...new Set(S.funcionarios.map(f=>f.setor).filter(Boolean))]
+          .map(c=>`<option>${esc(c)}</option>`).join('')}</datalist></label>
+    </div>
+    <label class="field"><span>Observação</span><input class="inp" id="dObsR" value="${esc(d.observacoes||'')}"></label>
+    <label class="check"><input type="checkbox" id="dAtivo" ${d.ativo!==false?'checked':''}> Regra ativa</label>`,
+    acoes:[{rotulo:'Cancelar'},{rotulo:'Salvar regra',classe:'pri',acao:async(o,f,b)=>{
+      const grupo = o.querySelector('#dGrupo').value.trim();
+      const qtd = Number(o.querySelector('#dQtd').value||0);
+      if(!grupo) return toast('Informe o grupo.','err');
+      if(qtd<1) return toast('A quantidade mínima precisa ser pelo menos 1.','err');
+      b.disabled=true;
+      const reg = {grupo, quantidade_minima:qtd,
+        cargo:o.querySelector('#dCargo').value.trim()||null, setor:o.querySelector('#dSetor').value.trim()||null,
+        observacoes:o.querySelector('#dObsR').value.trim()||null, ativo:o.querySelector('#dAtivo').checked};
+      try{ const {error} = id? await S.sb.from('almox_dotacoes').update(reg).eq('id',id)
+                             : await S.sb.from('almox_dotacoes').insert(reg);
+        if(error) throw error;
+        f(); await carregarBase(); await carregarDotacao(); montarNav(); toast('Regra salva.','ok'); pintarCadastro();
+      }catch(e){ erro(e); b.disabled=false; }
+    }}]});
+}
+</script>
+</body>
+</html>
