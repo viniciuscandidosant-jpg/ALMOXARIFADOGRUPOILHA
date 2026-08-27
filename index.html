@@ -9,13 +9,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:#0E1418; --ink-2:#38434D; --mut:#78838F; --line:#DCE3E8; --line-2:#EDF1F4;
-  --paper:#FFFFFF; --bg:#EBEFF2; --sur:#F6F8FA;
-  --sea:#0B4F53; --sea-d:#073A3D; --sea-l:#E4EFEF; --sea-t:#0E6B70;
-  --amber:#A85B06; --amber-l:#FBF0E0;
-  --red:#A82015; --red-l:#FBE9E7;
-  --green:#12734F; --green-l:#E3F1EA;
-  --r:6px; --sh:0 1px 2px rgba(14,20,24,.06), 0 6px 20px rgba(14,20,24,.06);
+  --ink:#1A1410; --ink-2:#443A33; --mut:#857A72; --line:#E4DCD6; --line-2:#F2EDE9;
+  --paper:#FFFFFF; --bg:#F1ECE8; --sur:#FAF7F5;
+  --brand:#D9500B; --brand-d:#7A2E05; --brand-l:#FDEDE1; --brand-t:#E8650F;
+  --amber:#8F6A00; --amber-l:#FBF2D6;
+  --red:#B3261E; --red-l:#FBE8E6;
+  --green:#1B7A4B; --green-l:#E2F2E9;
+  --r:6px; --sh:0 1px 2px rgba(26,20,16,.06), 0 6px 20px rgba(26,20,16,.07);
   --mono:'IBM Plex Mono',ui-monospace,monospace;
 }
 *{box-sizing:border-box}
@@ -26,35 +26,35 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 button,input,select,textarea{font:inherit;color:inherit}
-a{color:var(--sea-t)}
+a{color:var(--brand-t)}
 h1,h2,h3,h4{margin:0;font-weight:600;letter-spacing:-.01em}
 .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
 .hide{display:none !important}
 
 /* ---------- LOGIN / CONFIG ---------- */
 .gate{min-height:100dvh;display:grid;place-items:center;padding:24px;
-  background:linear-gradient(160deg,var(--sea-d),#0B4F53 60%,#0E6B70)}
+  background:linear-gradient(160deg,#5E2204,#B4420A 55%,#E8650F)}
 .gate-card{width:100%;max-width:400px;background:var(--paper);border-radius:10px;padding:32px;box-shadow:0 24px 60px rgba(0,0,0,.28)}
 .gate-card h1{font-size:19px}
 .gate-card .sub{color:var(--mut);font-size:13px;margin:6px 0 22px}
-.brandmark{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--sea-t);text-transform:uppercase;font-weight:600}
+.brandmark{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--brand-t);text-transform:uppercase;font-weight:600}
 
 /* ---------- SHELL ---------- */
 .shell{display:grid;grid-template-columns:236px 1fr;min-height:100dvh}
-.side{background:var(--sea-d);color:#CFE0E0;display:flex;flex-direction:column;position:sticky;top:0;height:100dvh}
+.side{background:var(--brand-d);color:#F2D9C7;display:flex;flex-direction:column;position:sticky;top:0;height:100dvh}
 .side-top{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.09)}
 .side-top .u{font-size:15px;color:#fff;font-weight:600;letter-spacing:-.01em}
-.side-top .brandmark{color:#7FB6B6}
+.side-top .brandmark{color:#F2A671}
 .nav{padding:10px 10px;flex:1;overflow:auto}
-.nav-lbl{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#5E8C8C;padding:14px 8px 6px}
-.nav a{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--r);color:#CFE0E0;text-decoration:none;font-size:13.5px}
+.nav-lbl{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#C08A62;padding:14px 8px 6px}
+.nav a{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--r);color:#F2D9C7;text-decoration:none;font-size:13.5px}
 .nav a:hover{background:rgba(255,255,255,.07);color:#fff}
-.nav a.on{background:var(--sea-t);color:#fff;font-weight:500}
+.nav a.on{background:var(--brand);color:#fff;font-weight:500}
 .nav a .ic{width:16px;text-align:center;opacity:.9;font-size:13px}
 .nav a .badge{margin-left:auto;background:var(--amber);color:#fff;border-radius:20px;padding:1px 7px;font-size:11px;font-family:var(--mono)}
-.side-foot{padding:12px 14px;border-top:1px solid rgba(255,255,255,.09);font-size:12px;color:#8FB3B3}
+.side-foot{padding:12px 14px;border-top:1px solid rgba(255,255,255,.09);font-size:12px;color:#D9B49A}
 .side-foot b{color:#fff;font-weight:500;display:block}
-.side-foot button{margin-top:8px;background:none;border:1px solid rgba(255,255,255,.2);color:#CFE0E0;padding:4px 10px;border-radius:var(--r);cursor:pointer;font-size:12px}
+.side-foot button{margin-top:8px;background:none;border:1px solid rgba(255,255,255,.22);color:#F2D9C7;padding:4px 10px;border-radius:var(--r);cursor:pointer;font-size:12px}
 .side-foot button:hover{background:rgba(255,255,255,.1)}
 
 .main{min-width:0;display:flex;flex-direction:column}
@@ -76,11 +76,11 @@ h1,h2,h3,h4{margin:0;font-weight:600;letter-spacing:-.01em}
 
 .btn{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:var(--r);border:1px solid var(--line);
   background:var(--paper);cursor:pointer;font-size:13px;font-weight:500;white-space:nowrap;transition:.12s}
-.btn:hover{background:var(--sur);border-color:#C6D0D8}
-.btn:focus-visible{outline:2px solid var(--sea-t);outline-offset:2px}
-.btn.pri{background:var(--sea);border-color:var(--sea);color:#fff}
-.btn.pri:hover{background:var(--sea-t);border-color:var(--sea-t)}
-.btn.dan{color:var(--red);border-color:#E8C4C0}
+.btn:hover{background:var(--sur);border-color:#D3C6BC}
+.btn:focus-visible{outline:2px solid var(--brand-t);outline-offset:2px}
+.btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.pri:hover{background:var(--brand-t);border-color:var(--brand-t)}
+.btn.dan{color:var(--red);border-color:#EBC7C3}
 .btn.dan:hover{background:var(--red-l)}
 .btn.sm{padding:5px 10px;font-size:12px}
 .btn:disabled{opacity:.5;cursor:not-allowed}
@@ -89,12 +89,12 @@ h1,h2,h3,h4{margin:0;font-weight:600;letter-spacing:-.01em}
 .field>span{display:block;font-size:12px;font-weight:500;color:var(--ink-2);margin-bottom:5px}
 .field>span em{color:var(--red);font-style:normal}
 .inp{width:100%;padding:8px 11px;border:1px solid var(--line);border-radius:var(--r);background:var(--paper);transition:.12s}
-.inp:focus{outline:none;border-color:var(--sea-t);box-shadow:0 0 0 3px rgba(14,107,112,.12)}
+.inp:focus{outline:none;border-color:var(--brand-t);box-shadow:0 0 0 3px rgba(217,80,11,.14)}
 textarea.inp{min-height:70px;resize:vertical}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
 .row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 14px}
 .check{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:13px;cursor:pointer}
-.check input{width:16px;height:16px;accent-color:var(--sea)}
+.check input{width:16px;height:16px;accent-color:var(--brand)}
 
 table{width:100%;border-collapse:collapse}
 th{text-align:left;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-family:var(--mono);
@@ -106,16 +106,16 @@ td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabu
 
 .tag{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:20px;font-size:11.5px;font-weight:500;
   background:var(--sur);border:1px solid var(--line);color:var(--ink-2);white-space:nowrap}
-.tag.ok{background:var(--green-l);border-color:#BFE0D0;color:var(--green)}
-.tag.low{background:var(--amber-l);border-color:#EDD4AC;color:var(--amber)}
-.tag.zero{background:var(--red-l);border-color:#EFC6C1;color:var(--red)}
-.tag.sea{background:var(--sea-l);border-color:#BFD9D9;color:var(--sea)}
-.tag.in{background:var(--green-l);border-color:#BFE0D0;color:var(--green)}
-.tag.out{background:#EFEAF7;border-color:#D9CEEC;color:#5B3E96}
+.tag.ok{background:var(--green-l);border-color:#B9DDC9;color:var(--green)}
+.tag.low{background:var(--amber-l);border-color:#E8D28C;color:var(--amber)}
+.tag.zero{background:var(--red-l);border-color:#F0C5C1;color:var(--red)}
+.tag.brand{background:var(--brand-l);border-color:#F5CDAF;color:var(--brand-d)}
+.tag.in{background:var(--green-l);border-color:#B9DDC9;color:var(--green)}
+.tag.out{background:#EFEBF5;border-color:#D5CBE6;color:#5A4189}
 
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
 .kpi{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:16px 18px;position:relative;overflow:hidden}
-.kpi::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--sea)}
+.kpi::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--brand)}
 .kpi.warn::after{background:var(--amber)} .kpi.bad::after{background:var(--red)} .kpi.good::after{background:var(--green)}
 .kpi .l{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
 .kpi .v{font-size:28px;font-weight:600;letter-spacing:-.02em;margin-top:6px;font-family:var(--mono);font-variant-numeric:tabular-nums}
@@ -123,9 +123,9 @@ td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabu
 
 /* ---------- ASSINATURA: MATRIZ DE ESTOQUE ---------- */
 .matriz{border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--paper);margin-bottom:18px}
-.matriz-h{padding:12px 16px;background:var(--sea);color:#fff;display:flex;align-items:center;gap:10px}
+.matriz-h{padding:12px 16px;background:var(--brand);color:#fff;display:flex;align-items:center;gap:10px}
 .matriz-h h3{font-size:13px;color:#fff}
-.matriz-h .g{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#9CC6C6;margin-left:auto}
+.matriz-h .g{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#F6C7A6;margin-left:auto}
 .matriz table{table-layout:auto}
 .matriz th.item-col,.matriz td.item-col{position:sticky;left:0;background:var(--paper);z-index:2;min-width:250px;border-right:1px solid var(--line)}
 .matriz th.item-col{background:var(--sur)}
@@ -134,19 +134,19 @@ td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabu
 .matriz td.item-col{padding:9px 12px;text-align:left}
 .cel{width:100%;min-width:58px;padding:11px 4px;border:0;background:none;cursor:pointer;font-family:var(--mono);
   font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink);transition:.1s}
-.cel:hover{background:var(--sea-l);box-shadow:inset 0 0 0 2px var(--sea-t)}
-.cel.zero{color:#C6CED4}
+.cel:hover{background:var(--brand-l);box-shadow:inset 0 0 0 2px var(--brand-t)}
+.cel.zero{color:#CFC5BD}
 .cel.low{background:var(--amber-l);color:var(--amber)}
 .cel.neg{background:var(--red-l);color:var(--red)}
 .cel .m{display:block;font-size:9.5px;font-weight:400;color:var(--mut);letter-spacing:.04em}
-.cel .lav{display:block;font-size:9px;font-weight:500;color:var(--sea-t);letter-spacing:.03em}
-.cel.na{cursor:default;color:#D5DCE1}
+.cel .lav{display:block;font-size:9px;font-weight:500;color:var(--brand-t);letter-spacing:.03em}
+.cel.na{cursor:default;color:#DED5CE}
 .cel.na:hover{background:none;box-shadow:none}
 .it-nome{font-weight:500;font-size:13px}
 .it-meta{font-size:11px;color:var(--mut);font-family:var(--mono)}
 
 /* ---------- MODAL / DRAWER ---------- */
-.ovl{position:fixed;inset:0;background:rgba(14,20,24,.44);z-index:60;display:flex;align-items:flex-start;justify-content:center;padding:5vh 16px;overflow:auto}
+.ovl{position:fixed;inset:0;background:rgba(26,20,16,.46);z-index:60;display:flex;align-items:flex-start;justify-content:center;padding:5vh 16px;overflow:auto}
 .mdl{background:var(--paper);border-radius:10px;width:100%;max-width:600px;box-shadow:0 30px 70px rgba(0,0,0,.3);animation:up .16s ease-out}
 .mdl.wide{max-width:900px}
 @keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -168,10 +168,10 @@ td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabu
 
 .tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:18px;overflow-x:auto}
 .tabs button{background:none;border:0;border-bottom:2px solid transparent;padding:9px 14px;cursor:pointer;font-size:13px;color:var(--mut);white-space:nowrap}
-.tabs button.on{color:var(--sea);border-bottom-color:var(--sea);font-weight:600}
+.tabs button.on{color:var(--brand);border-bottom-color:var(--brand);font-weight:600}
 
 .chart{width:100%;height:200px}
-.chart .bar-in{fill:var(--sea-t)} .chart .bar-out{fill:#8FA3B0}
+.chart .bar-in{fill:var(--brand-t)} .chart .bar-out{fill:#B09A8C}
 .chart .ax{stroke:var(--line)} .chart .lbl{font-size:10px;fill:var(--mut);font-family:var(--mono)}
 .legend{display:flex;gap:16px;font-size:12px;color:var(--mut);margin-top:6px}
 .legend i{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:5px}
@@ -226,7 +226,7 @@ td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabu
     <div class="side-top">
       <span class="brandmark">Grupo Ilha</span>
       <div class="u">Almoxarifado</div>
-      <div class="small" style="color:#7FB6B6" id="uniLbl">Ilha do Caranguejo — VIX</div>
+      <div class="small" style="color:#F2A671" id="uniLbl">Ilha do Caranguejo — VIX</div>
     </div>
     <nav class="nav" id="nav"></nav>
     <div class="side-foot">
@@ -276,8 +276,8 @@ function cfg(){
 const S = {
   sb:null, user:null, perfil:null, unidade:null, rota:'painel',
   unidades:[], categorias:[], grades:[], tamanhos:[], itens:[],
-  funcionarios:[], fornecedores:[], dotacoes:[], estoque:[], lavanderia:[],
-  alertas:0, atrasados:0, aguardando:0, semDotacao:0
+  funcionarios:[], fornecedores:[], dotacoes:[], estoque:[], lavanderia:[], parametros:{},
+  alertas:0, atrasados:0, aguardando:0, semDotacao:0, cobrancas:0
 };
 
 /* --- 3. UTILITARIOS ------------------------------------------------- */
@@ -411,7 +411,7 @@ async function q(tabela, sel='*', mod = b=>b){
   if(error) throw error; return data || [];
 }
 async function carregarBase(){
-  const [uni, cat, gra, tam, ite, fun, forn, dot] = await Promise.all([
+  const [uni, cat, gra, tam, ite, fun, forn, dot, par] = await Promise.all([
     q('almox_unidades','*',b=>b.order('codigo')),
     q('almox_categorias','*',b=>b.order('ordem').order('nome')),
     q('almox_grades','*',b=>b.order('nome')),
@@ -419,10 +419,12 @@ async function carregarBase(){
     q('almox_itens','*',b=>b.order('nome')),
     q('almox_funcionarios','*',b=>b.order('nome')),
     q('almox_fornecedores','*',b=>b.order('nome')),
-    q('almox_dotacoes','*',b=>b.order('grupo'))
+    q('almox_dotacoes','*',b=>b.order('grupo')),
+    q('almox_parametros','*')
   ]);
   S.unidades=uni; S.categorias=cat; S.grades=gra; S.tamanhos=tam;
   S.itens=ite; S.funcionarios=fun; S.fornecedores=forn; S.dotacoes=dot;
+  S.parametros = Object.fromEntries((par||[]).map(x=>[x.chave, x]));
   S.unidade = (S.perfil?.unidade_id && uni.find(u=>u.id===S.perfil.unidade_id))
               || uni.find(u=>u.codigo===CONFIG.UNIDADE_PADRAO) || uni[0] || null;
 }
@@ -433,6 +435,11 @@ async function carregarEstoque(){
 async function carregarLavanderia(){
   S.lavanderia = await q('almox_vw_lavanderia','*',b=>b.gt('em_lavanderia',0).order('item'));
   S.aguardando = S.lavanderia.reduce((t,l)=>t+l.aguardando_envio,0);
+}
+const param = (chave, padrao=0) => Number(S.parametros[chave]?.valor_num ?? padrao);
+async function carregarCobrancas(){
+  const c = await q('almox_cobrancas','id',b=>b.eq('status','PENDENTE'));
+  S.cobrancas = c.length;
 }
 async function carregarDotacao(){
   const d = await q('almox_vw_dotacao','funcionario_id,falta',b=>b.gt('falta',0));
@@ -459,7 +466,8 @@ const ROTAS = [
   {id:'funcionarios', t:'Funcionários',  ic:'☺', f:()=>viewFuncionarios()},
   {id:'dotacao',      t:'Dotação',       ic:'≡', f:()=>viewDotacao()},
   {g:'Cadastros'},
-  {id:'cadastros',    t:'Itens e grades',ic:'⚙', f:()=>viewCadastros()}
+  {id:'cadastros',    t:'Itens e grades',ic:'⚙', f:()=>viewCadastros()},
+  {id:'config',       t:'Configurações', ic:'☰', f:()=>viewConfig()}
 ];
 function montarNav(){
   $('#nav').innerHTML = ROTAS.map(r=>{
@@ -467,7 +475,8 @@ function montarNav(){
     const badge = r.id==='estoque' && S.alertas ? `<span class="badge">${S.alertas}</span>`
                : r.id==='emprestimos' && S.atrasados ? `<span class="badge">${S.atrasados}</span>`
                : r.id==='lavanderia' && S.aguardando ? `<span class="badge">${S.aguardando}</span>`
-               : r.id==='dotacao' && S.semDotacao ? `<span class="badge">${S.semDotacao}</span>` : '';
+               : r.id==='dotacao' && S.semDotacao ? `<span class="badge">${S.semDotacao}</span>`
+               : r.id==='emprestimos' && S.cobrancas && !S.atrasados ? `<span class="badge">${S.cobrancas}</span>` : '';
     return `<a href="#${r.id}" class="${S.rota===r.id?'on':''}"><span class="ic">${r.ic}</span>${r.t}${badge}</a>`;
   }).join('');
 }
@@ -500,7 +509,7 @@ async function iniciarSessao(){
   $('#userNome').textContent = perfil.nome;
   $('#userPapel').textContent = {GESTOR:'Gestor',OPERADOR:'Operador',LEITURA:'Consulta'}[perfil.papel];
   await carregarBase(); await carregarEstoque(); await carregarAtrasados();
-  await carregarLavanderia(); await carregarDotacao();
+  await carregarLavanderia(); await carregarDotacao(); await carregarCobrancas();
   $('#uniLbl').textContent = S.unidade ? S.unidade.nome : CONFIG.LOJA;
   const h = location.hash.slice(1);
   S.rota = ROTAS.some(r=>r.id===h) ? h : 'painel';
@@ -540,7 +549,7 @@ function chartBarras(dados, alt=190){
           <text class="lbl" x="${cx}" y="${h-8}" text-anchor="middle">${esc(d.r)}</text>`;
   });
   return `<svg class="chart" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet" role="img">${g}</svg>
-    <div class="legend"><span><i style="background:var(--sea-t)"></i>Entradas</span><span><i style="background:#8FA3B0"></i>Saídas</span></div>`;
+    <div class="legend"><span><i style="background:var(--brand-t)"></i>Entradas</span><span><i style="background:#B09A8C"></i>Saídas</span></div>`;
 }
 
 async function viewPainel(){
@@ -600,6 +609,8 @@ async function viewPainel(){
         <div class="d">funcionários sem o mínimo de peças</div></div>
       <div class="kpi"><div class="l">Saídas em 30 dias</div><div class="v">${num(saidas30)}</div>
         <div class="d">peças entregues ou emprestadas</div></div>
+      ${S.cobrancas?`<div class="kpi bad"><div class="l">Cobranças pendentes</div>
+        <div class="v">${num(S.cobrancas)}</div><div class="d">extravios a resolver</div></div>`:''}
     </div>
 
     <div class="grid" style="grid-template-columns:1.4fr 1fr;align-items:start">
@@ -857,7 +868,7 @@ async function gravarMovs(linhas){
 }
 async function depoisDeMovimentar(msg){
   await carregarEstoque(); await carregarAtrasados();
-  await carregarLavanderia(); await carregarDotacao(); montarNav();
+  await carregarLavanderia(); await carregarDotacao(); await carregarCobrancas(); montarNav();
   toast(msg,'ok'); render();
 }
 
@@ -918,7 +929,7 @@ function formSaidaFuncionario(varId=null, funcId=null){
     <label class="field hide" id="fJustOutroBox"><span>Descreva o motivo <em>*</em></span><input class="inp" id="fJustOutro"></label>
     ${htmlSeletor(false)}
     <label class="field" style="margin-top:14px"><span>Observações</span><textarea class="inp" id="fObs"></textarea></label>
-    <label class="check"><input type="checkbox" id="fRecibo" checked> Gerar comprovante de entrega para assinatura</label>`,
+    <label class="check"><input type="checkbox" id="fRecibo" checked> Imprimir termo de entrega para arquivo</label>`,
     aoAbrir:o=>{
       ligarSeletor(o, varId);
       if(funcId) o.querySelector('#fFunc').value = String(funcId);
@@ -934,7 +945,7 @@ function formSaidaFuncionario(varId=null, funcId=null){
       if(!exigirItens(o)) return;
       b.disabled=true;
       try{
-        const { error } = await S.sb.rpc('almox_saida_funcionario',{
+        const { data: codigo, error } = await S.sb.rpc('almox_saida_funcionario',{
           p_funcionario_id: Number(func),
           p_itens: o._itens.map(x=>({variacao_id:x.variacao_id, quantidade:x.quantidade})),
           p_justificativa: just,
@@ -943,9 +954,8 @@ function formSaidaFuncionario(varId=null, funcId=null){
         });
         if(error) throw error;
         const gerar = o.querySelector('#fRecibo').checked;
-        const dadosRecibo = {func:Number(func), just, itens:[...o._itens]};
-        f(); await depoisDeMovimentar('Entrega registrada.');
-        if(gerar) reciboEntrega(dadosRecibo);
+        f(); await depoisDeMovimentar('Entrega '+codigo+' registrada.');
+        if(gerar) termoEntrega(codigo);
       }catch(e){ erro(e); b.disabled=false; }
     }}]});
 }
@@ -1183,8 +1193,11 @@ async function carregarMovs(){
           ${m.documento?`<div class="it-meta">${esc(m.documento)}</div>`:''}</td>
         <td class="small muted">${esc(m.cancelada ? 'CANCELADA: '+(m.motivo_cancelamento||'') : (m.justificativa||'—'))}</td>
         <td class="num small muted">${m.saldo_posterior ?? ''}</td>
-        <td style="text-align:right">${(ehGestor() && !m.cancelada && !m.emprestimo_id)
-          ? `<button class="btn sm dan" onclick="cancelarMov(${m.id})">Cancelar</button>`:''}</td>
+        <td style="text-align:right;white-space:nowrap">
+          ${(m.documento||'').startsWith('ENT-')
+            ? `<button class="btn sm" onclick="termoEntrega('${esc(m.documento)}')">Termo</button>`:''}
+          ${(ehGestor() && !m.cancelada && !m.emprestimo_id)
+            ? `<button class="btn sm dan" onclick="cancelarMov(${m.id})">Cancelar</button>`:''}</td>
       </tr>`).join('')}</tbody></table></div>`;
 }
 function cancelarMov(id){
@@ -1218,7 +1231,8 @@ async function viewEmprestimos(){
   $('#topAcoes').innerHTML = podeOperar()
     ? `<button class="btn pri" onclick="formEmprestimo()">Novo empréstimo</button>` : '';
   const dados = await q('almox_vw_emprestimos','*',b=>b.order('data_saida',{ascending:false}).limit(300));
-  const filtra = f => f==='abertos' ? dados.filter(e=>['ABERTO','PARCIAL'].includes(e.status))
+  const filtra = f => f==='cobrancas' ? []
+                    : f==='abertos' ? dados.filter(e=>['ABERTO','PARCIAL'].includes(e.status))
                     : f==='atrasados' ? dados.filter(e=>e.atrasado)
                     : f==='encerrados' ? dados.filter(e=>['DEVOLVIDO','BAIXADO'].includes(e.status)) : dados;
   const render = ()=>{
@@ -1243,10 +1257,13 @@ async function viewEmprestimos(){
       ${[['abertos','Em aberto'],['atrasados','Atrasados'],['encerrados','Encerrados'],['todos','Todos']]
         .map(([k,t])=>`<button data-f="${k}" class="${FE===k?'on':''}">${t}
           <span class="mono small">(${filtra(k).length})</span></button>`).join('')}
+      <button data-f="cobrancas" class="${FE==='cobrancas'?'on':''}">Cobranças por extravio
+        ${S.cobrancas?`<span class="mono small">(${S.cobrancas} pendente${S.cobrancas>1?'s':''})</span>`:''}</button>
     </div><div class="card"><div id="empLista"></div></div>`;
   $$('.tabs button').forEach(b=> b.onclick = ()=>{ FE=b.dataset.f;
-    $$('.tabs button').forEach(x=>x.classList.toggle('on', x.dataset.f===FE)); render(); });
-  render();
+    $$('.tabs button').forEach(x=>x.classList.toggle('on', x.dataset.f===FE));
+    FE==='cobrancas'? listarCobrancas() : render(); });
+  FE==='cobrancas'? listarCobrancas() : render();
 }
 
 async function abrirEmprestimo(id){
@@ -1324,16 +1341,48 @@ async function formDevolverEmprestimo(id){
     }}]});
 }
 
-function formBaixarEmprestimo(id){
+async function formBaixarEmprestimo(id){
+  const [emp] = await q('almox_vw_emprestimos','*',b=>b.eq('id',id));
+  const padrao = param('custo_extravio_uniforme', 50);
   modal({titulo:'Dar baixa no empréstimo', corpo:`
-    <p style="margin-top:0">O que não voltou passa a contar como entrega definitiva ao funcionário e sai do controle de pendências.</p>
-    <label class="field"><span>Motivo <em>*</em></span><input class="inp" id="bMot" placeholder="Ex.: peça extraviada, desconto em folha"></label>`,
+    <p style="margin-top:0">As ${emp.pendentes} peça(s) que não voltaram passam a contar como entrega definitiva
+    ao funcionário e saem do controle de pendências.</p>
+    <label class="field"><span>Motivo <em>*</em></span>
+      <input class="inp" id="bMot" list="motivosBaixa" placeholder="Ex.: peça extraviada pelo funcionário">
+      <datalist id="motivosBaixa">
+        <option>Peça extraviada pelo funcionário</option>
+        <option>Peça danificada por uso indevido</option>
+        <option>Funcionário desligado sem devolver</option>
+        <option>Peça não localizada após cobrança</option>
+      </datalist></label>
+    <label class="check"><input type="checkbox" id="bCobrar" checked> Gerar cobrança por extravio</label>
+    <div id="bCobrarBox">
+      <div class="row">
+        <label class="field"><span>Valor por peça (R$)</span>
+          <input class="inp mono" id="bValor" type="number" min="0" step="0.01" value="${padrao.toFixed(2)}"></label>
+        <div class="field"><span>Total da cobrança</span>
+          <div class="inp mono" id="bTotal" style="background:var(--sur)">${brl(padrao*emp.pendentes)}</div></div>
+      </div>
+      <p class="small muted" style="margin:-6px 0 0">A cobrança nasce como pendente. O desconto em folha só pode
+      ser feito com a anuência do funcionário, conforme o art. 462 §1º da CLT.</p>
+    </div>`,
+    aoAbrir:o=>{
+      const rec=()=>{ o.querySelector('#bTotal').textContent =
+        brl(Number(o.querySelector('#bValor').value||0) * emp.pendentes); };
+      o.querySelector('#bValor').oninput = rec;
+      o.querySelector('#bCobrar').onchange = e =>
+        o.querySelector('#bCobrarBox').classList.toggle('hide', !e.target.checked);
+    },
     acoes:[{rotulo:'Voltar'},{rotulo:'Dar baixa',classe:'dan',acao:async(o,f,b)=>{
       const mot = o.querySelector('#bMot').value.trim();
       if(!mot) return toast('Informe o motivo.','err');
+      const cobrar = o.querySelector('#bCobrar').checked;
       b.disabled=true;
-      try{ const {error} = await S.sb.rpc('almox_baixar_emprestimo',{p_emprestimo_id:id,p_motivo:mot});
-        if(error) throw error; f(); $('#drawer').innerHTML=''; await depoisDeMovimentar('Empréstimo baixado.');
+      try{ const {error} = await S.sb.rpc('almox_baixar_emprestimo',{
+          p_emprestimo_id:id, p_motivo:mot, p_cobrar:cobrar,
+          p_valor_unitario: cobrar? Number(o.querySelector('#bValor').value||0) : null});
+        if(error) throw error; f(); $('#drawer').innerHTML='';
+        await depoisDeMovimentar(cobrar? 'Empréstimo baixado e cobrança gerada.' : 'Empréstimo baixado.');
       }catch(e){ erro(e); b.disabled=false; }
     }}]});
 }
@@ -1349,23 +1398,6 @@ function cabecalhoRecibo(titulo, codigo){
 }
 const TERMO_EMPRESTIMO = `Declaro ter recebido, a título de empréstimo, os itens relacionados acima, em bom estado de conservação e em quantidade conferida por mim. Comprometo-me a utilizá-los exclusivamente no exercício das minhas funções, a zelar pela sua conservação e higiene e a devolvê-los ao almoxarifado até a data prevista de devolução ou imediatamente quando solicitado, bem como no ato do desligamento. Estou ciente de que a perda, o extravio ou o dano por uso indevido poderão ser objeto de reposição ou de desconto, conforme o artigo 462, §1º, da CLT, mediante minha anuência. No caso de equipamentos de proteção individual, declaro ter recebido orientação sobre o uso correto, a guarda e a conservação, nos termos da NR-6.`;
 const TERMO_ENTREGA = `Declaro ter recebido do almoxarifado os itens relacionados acima, conferidos por mim quanto a tipo, tamanho e quantidade, em perfeitas condições de uso. Comprometo-me a utilizá-los exclusivamente no exercício das minhas funções, a mantê-los limpos e conservados e a devolvê-los no ato do desligamento ou quando substituídos. Estou ciente de que a perda ou o dano por uso indevido poderá ser objeto de reposição, conforme o artigo 462, §1º, da CLT, mediante minha anuência. No caso de equipamentos de proteção individual, declaro ter recebido orientação sobre uso, guarda e conservação, nos termos da NR-6, e me responsabilizo pelo seu uso durante toda a jornada.`;
-
-function imprimir(html){
-  $('#print').innerHTML = html;
-  setTimeout(()=>window.print(), 60);
-}
-function tabelaRecibo(linhas){
-  return `<table><thead><tr><th style="width:44px">Qtd</th><th>Item</th><th style="width:90px">Tamanho</th>
-    <th style="width:110px">Código</th></tr></thead><tbody>
-    ${linhas.map(l=>`<tr><td class="mono" style="text-align:center">${l.q}</td><td>${esc(l.n)}</td>
-      <td style="text-align:center">${esc(l.t)}</td><td class="mono">${esc(l.s||'')}</td></tr>`).join('')}
-    </tbody></table>`;
-}
-function assinaturas(nomeFunc){
-  return `<div class="rec-ass">
-    <div>${esc(nomeFunc)}<br><span style="font-size:10px;color:#555">Funcionário — assinatura e data</span></div>
-    <div>${esc(S.perfil?.nome||'')}<br><span style="font-size:10px;color:#555">Almoxarifado — responsável pela entrega</span></div></div>`;
-}
 
 async function reciboEmprestimo(id){
   const [emp] = await q('almox_vw_emprestimos','*',b=>b.eq('id',id));
@@ -1389,21 +1421,63 @@ async function reciboEmprestimo(id){
       Devolução — preenchimento no retorno das peças: data ____/____/______ &nbsp;&nbsp;
       recebido por ______________________________ &nbsp;&nbsp; observações ____________________________________</div>`);
 }
-function reciboEntrega({func, just, itens}){
-  const f = S.funcionarios.find(x=>x.id===func) || {};
-  const linhas = itens.map(x=>{ const v = S.estoque.find(e=>e.variacao_id===x.variacao_id)||{};
-    return {q:x.quantidade, n:v.item, t:v.tamanho, s:v.sku}; });
-  imprimir(`${cabecalhoRecibo('Comprovante de entrega', 'ENT-'+(S.unidade?.codigo||'VIX')+'-'+hoje().replace(/-/g,'').slice(2))}
+async function termoEntrega(codigo){
+  const [ent] = await q('almox_vw_entregas','*',b=>b.eq('codigo',codigo));
+  if(!ent) return toast('Termo não encontrado.','err');
+  const linhas = await q('almox_vw_movimentacoes','*',
+    b=>b.eq('documento',codigo).eq('tipo','SAIDA_FUNCIONARIO').order('item'));
+  imprimir(`${cabecalhoRecibo('Termo de entrega de uniforme', ent.codigo)}
+    <div style="background:#eee;border:1px solid #999;padding:5px 8px;font-size:10px;
+                letter-spacing:.08em;text-transform:uppercase;font-weight:700;margin-bottom:14px">
+      Via da empresa — arquivar no dossiê do funcionário</div>
     <div class="rec-dados">
-      <div><b>Funcionário</b>${esc(f.nome||'')}</div>
-      <div><b>Matrícula</b>${esc(f.matricula||'—')}</div>
-      <div><b>Cargo</b>${esc(f.cargo||'—')}</div>
-      <div><b>Setor</b>${esc(f.setor||'—')}</div>
-      <div style="grid-column:1/-1"><b>Motivo da entrega</b>${esc(just)}</div>
+      <div><b>Funcionário</b>${esc(ent.funcionario)}</div>
+      <div><b>Matrícula</b>${esc(ent.matricula||'—')}</div>
+      <div><b>Cargo</b>${esc(ent.cargo||'—')}</div>
+      <div><b>Setor</b>${esc(ent.setor||'—')}</div>
+      <div><b>Data da entrega</b>${dth(ent.data)}</div>
+      <div><b>Entregue por</b>${esc(ent.entregue_por||'—')}</div>
+      <div style="grid-column:1/-1"><b>Motivo da entrega</b>${esc(ent.motivo||'—')}</div>
+      ${ent.observacoes?`<div style="grid-column:1/-1"><b>Observações</b>${esc(ent.observacoes)}</div>`:''}
     </div>
-    ${tabelaRecibo(linhas)}
+    ${tabelaRecibo(linhas.map(l=>({q:l.quantidade, n:l.item, t:l.tamanho, s:l.sku})))}
     <div class="rec-termo"><b>TERMO DE RECEBIMENTO E RESPONSABILIDADE</b><br>${TERMO_ENTREGA}</div>
-    ${assinaturas(f.nome||'')}`);
+    ${assinaturas(ent.funcionario)}
+    <div style="margin-top:22px;font-size:9.5px;color:#666;border-top:1px solid #ccc;padding-top:6px">
+      Documento gerado pelo sistema de almoxarifado em ${new Date().toLocaleString('pt-BR')}.
+      Guardar assinado no prontuário do funcionário. Documento ${esc(ent.codigo)}.</div>`);
+}
+
+function termoCobranca(cb){
+  imprimir(`${cabecalhoRecibo('Comunicado de extravio de uniforme', cb.codigo)}
+    <div style="background:#eee;border:1px solid #999;padding:5px 8px;font-size:10px;
+                letter-spacing:.08em;text-transform:uppercase;font-weight:700;margin-bottom:14px">
+      Via da empresa — arquivar no dossiê do funcionário</div>
+    <div class="rec-dados">
+      <div><b>Funcionário</b>${esc(cb.funcionario)}</div>
+      <div><b>Matrícula</b>${esc(cb.matricula||'—')}</div>
+      <div><b>Cargo</b>${esc(cb.cargo||'—')}</div>
+      <div><b>Setor</b>${esc(cb.setor||'—')}</div>
+      <div><b>Empréstimo de origem</b>${esc(cb.emprestimo||'—')}</div>
+      <div><b>Data</b>${dth(cb.data)}</div>
+    </div>
+    ${tabelaRecibo([{q:cb.quantidade, n:cb.item||'Uniforme', t:cb.tamanho||'—', s:''}])}
+    <table><tbody>
+      <tr><td style="width:60%"><b>Valor por peça</b></td><td class="mono">${brl(cb.valor_unitario)}</td></tr>
+      <tr><td><b>Quantidade não devolvida</b></td><td class="mono">${cb.quantidade}</td></tr>
+      <tr><td><b>Total apurado</b></td><td class="mono" style="font-weight:700">${brl(cb.valor_total)}</td></tr>
+    </tbody></table>
+    <div class="rec-termo"><b>CIÊNCIA</b><br>
+      Declaro estar ciente de que os itens acima, recebidos a título de empréstimo, não foram devolvidos ao
+      almoxarifado, e do valor apurado para sua reposição. Estou ciente de que eventual desconto em folha
+      depende da minha anuência expressa, nos termos do artigo 462, §1º, da CLT, e que posso apresentar
+      justificativa ou devolver as peças antes de qualquer desconto.
+      <div style="margin-top:10px">
+        (&nbsp;&nbsp;) Autorizo o desconto em folha &nbsp;&nbsp;&nbsp;
+        (&nbsp;&nbsp;) Não autorizo &nbsp;&nbsp;&nbsp;
+        (&nbsp;&nbsp;) Vou repor a peça até ____/____/______
+      </div></div>
+    ${assinaturas(cb.funcionario)}`);
 }
 </script>
 <script>
@@ -1462,7 +1536,7 @@ async function telaContagem(inv){
 
   const contados = enriquecido.filter(i=>i.saldo_contado!==null).length;
   $('#topAcoes').innerHTML = `
-    <span class="tag sea mono">${esc(inv.codigo)}</span>
+    <span class="tag brand mono">${esc(inv.codigo)}</span>
     <button class="btn" onclick="cancelarInventario(${inv.id})">Cancelar contagem</button>
     <button class="btn pri" onclick="revisarInventario(${inv.id})">Revisar e finalizar</button>`;
   $('#view').innerHTML = `
@@ -1575,11 +1649,13 @@ async function listarFuncionarios(){
 }
 async function fichaFuncionario(id){
   const f = S.funcionarios.find(x=>x.id===id);
-  const [posse, emps, hist, dota] = await Promise.all([
+  const [posse, emps, hist, dota, entregas, cobs] = await Promise.all([
     q('almox_vw_posse','*',b=>b.eq('funcionario_id',id)),
     q('almox_vw_emprestimos','*',b=>b.eq('funcionario_id',id).order('data_saida',{ascending:false}).limit(20)),
     q('almox_vw_movimentacoes','*',b=>b.eq('funcionario_id',id).order('data',{ascending:false}).limit(40)),
-    q('almox_vw_dotacao','*',b=>b.eq('funcionario_id',id))
+    q('almox_vw_dotacao','*',b=>b.eq('funcionario_id',id)),
+    q('almox_vw_entregas','*',b=>b.eq('funcionario_id',id).order('data',{ascending:false}).limit(20)),
+    q('almox_vw_cobrancas','*',b=>b.eq('funcionario_id',id).order('data',{ascending:false}).limit(20))
   ]);
   drawer({titulo:f.nome, sub:`${esc(f.cargo||'—')} · ${esc(f.setor||'—')}${f.matricula?' · '+esc(f.matricula):''}`, corpo:`
     <div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap">
@@ -1603,6 +1679,18 @@ async function fichaFuncionario(id){
       <span class="tag ${e.atrasado?'zero':e.status==='DEVOLVIDO'?'ok':'sea'}">${STATUS_EMP[e.status]}</span>
       <button class="btn sm" onclick="abrirEmprestimo(${e.id})">Ver</button></div>`).join('')}</div>`
       : '<p class="small muted" style="margin-bottom:20px">Nenhum empréstimo.</p>'}
+    <h4 class="mono small muted" style="text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Termos de entrega</h4>
+    ${entregas.length?`<div class="lista-itens" style="margin-bottom:20px">${entregas.map(t=>`
+      <div class="li"><span class="mono small">${esc(t.codigo)}</span>
+        <span class="sp small muted">${dt(t.data)} · ${t.total_pecas} peça(s)</span>
+        <button class="btn sm" onclick="termoEntrega('${esc(t.codigo)}')">Imprimir</button></div>`).join('')}</div>`
+      : '<p class="small muted" style="margin-bottom:20px">Nenhum termo emitido.</p>'}
+    ${cobs.length?`<h4 class="mono small muted" style="text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Cobranças</h4>
+    <div class="lista-itens" style="margin-bottom:20px">${cobs.map(x=>`
+      <div class="li"><span class="mono small">${esc(x.codigo)}</span>
+        <span class="sp small">${esc(x.item||'Uniforme')} · ${brl(x.valor_total)}</span>
+        <span class="tag ${x.status==='PENDENTE'?'zero':x.status==='DESCONTADA'?'ok':''}">${STATUS_COB[x.status]}</span>
+      </div>`).join('')}</div>`:''}
     <h4 class="mono small muted" style="text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Histórico</h4>
     ${hist.length?`<div class="tbl-wrap"><table><tbody>${hist.map(m=>`
       <tr${m.cancelada?' style="opacity:.45"':''}><td class="small muted" style="width:86px">${dth(m.data)}</td>
@@ -1674,11 +1762,11 @@ function cadItens(){
       <td><div class="it-nome">${esc(i.nome)}</div><div class="it-meta">${esc(i.codigo||'')}${i.cor?' · '+esc(i.cor):''}</div></td>
       <td class="small">${esc(nomeCat(i.categoria_id))}</td>
       <td class="small">${esc(S.grades.find(g=>g.id===i.grade_id)?.nome||'—')}</td>
-      <td class="small">${i.grupo_dotacao?`<span class="tag sea">${esc(i.grupo_dotacao)}</span>`:'—'}</td>
+      <td class="small">${i.grupo_dotacao?`<span class="tag brand">${esc(i.grupo_dotacao)}</span>`:'—'}</td>
       <td class="num">${i.estoque_minimo}</td>
       <td class="num">${brl(i.custo_referencia)}</td>
       <td class="num" style="font-weight:600">${num(saldos[i.id]||0)}</td>
-      <td>${i.epi?'<span class="tag low">EPI</span> ':''}${i.exige_devolucao?'<span class="tag sea">devolução</span>':''}${i.ativo?'':'<span class="tag">inativo</span>'}</td>
+      <td>${i.epi?'<span class="tag low">EPI</span> ':''}${i.exige_devolucao?'<span class="tag brand">devolução</span>':''}${i.ativo?'':'<span class="tag">inativo</span>'}</td>
       <td style="text-align:right">${ehGestor()?`<button class="btn sm" onclick="formItem(${i.id})">Editar</button>`:''}</td>
     </tr>`).join('')}</tbody></table></div></div>`;
 }
@@ -1973,7 +2061,7 @@ async function viewLavanderia(){
           <tr><td><div class="it-nome">${esc(l.item)}</div><div class="it-meta">${esc(l.tamanho)} · ${esc(l.categoria||'—')}</div></td>
             <td class="num" style="width:120px">
               <span class="tag ${l.aguardando_envio?'low':''}">${l.aguardando_envio}</span>
-              <span class="tag sea">${l.enviado}</span></td></tr>`).join('')}</tbody></table></div>`
+              <span class="tag brand">${l.enviado}</span></td></tr>`).join('')}</tbody></table></div>`
           : '<div class="empty"><b>Nada sujo</b>Toda peça devolvida já voltou limpa ao estoque.</div>'}
       </div>
       <div class="card">
@@ -2202,7 +2290,7 @@ function cadRegras(){
     <div class="card"><div class="tbl-wrap"><table>
       <thead><tr><th>Grupo</th><th>Vale para</th><th class="num">Mínimo</th><th>Observação</th><th></th></tr></thead>
       <tbody>${S.dotacoes.length? S.dotacoes.map(d=>`<tr${d.ativo?'':' style="opacity:.5"'}>
-        <td><span class="tag sea">${esc(d.grupo)}</span></td>
+        <td><span class="tag brand">${esc(d.grupo)}</span></td>
         <td class="small">${d.cargo||d.setor
           ? [d.cargo?'cargo '+esc(d.cargo):'', d.setor?'setor '+esc(d.setor):''].filter(Boolean).join(' · ')
           : '<span class="muted">todos os funcionários</span>'}</td>
@@ -2250,6 +2338,148 @@ function formRegra(id=null){
         f(); await carregarBase(); await carregarDotacao(); montarNav(); toast('Regra salva.','ok'); pintarCadastro();
       }catch(e){ erro(e); b.disabled=false; }
     }}]});
+}
+</script>
+<script>
+/* =====================================================================
+   COBRANÇAS POR EXTRAVIO
+   ===================================================================== */
+const STATUS_COB = {PENDENTE:'Pendente',DESCONTADA:'Descontada',PERDOADA:'Perdoada',CANCELADA:'Cancelada'};
+
+async function listarCobrancas(){
+  const el = $('#empLista');
+  el.innerHTML = '<div class="empty">Carregando…</div>';
+  const c = await q('almox_vw_cobrancas','*',b=>b.order('data',{ascending:false}).limit(300));
+  const pend = c.filter(x=>x.status==='PENDENTE');
+  const totalPend = pend.reduce((s,x)=>s+Number(x.valor_total||0),0);
+  const recebido = c.filter(x=>x.status==='DESCONTADA').reduce((s,x)=>s+Number(x.valor_total||0),0);
+
+  el.innerHTML = c.length ? `
+    <div class="card-h"><h3>${c.length} cobranças</h3><div class="sp"></div>
+      <span class="tag ${pend.length?'zero':'ok'}">${brl(totalPend)} pendente</span>
+      <span class="tag ok">${brl(recebido)} descontado</span></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Código</th><th>Funcionário</th><th>Peça</th><th>Origem</th>
+        <th class="num">Qtd</th><th class="num">Valor</th><th>Situação</th><th></th></tr></thead>
+      <tbody>${c.map(x=>`<tr>
+        <td class="mono small">${esc(x.codigo)}<div class="it-meta">${dt(x.data)}</div></td>
+        <td>${esc(x.funcionario)}<div class="it-meta">${esc(x.setor||'—')}${x.funcionario_ativo?'':' · inativo'}</div></td>
+        <td class="small">${esc(x.item||'—')}${x.tamanho?` · ${esc(x.tamanho)}`:''}</td>
+        <td class="mono small muted">${esc(x.emprestimo||'—')}</td>
+        <td class="num">${x.quantidade}</td>
+        <td class="num" style="font-weight:600">${brl(x.valor_total)}
+          <div class="it-meta">${brl(x.valor_unitario)}/peça</div></td>
+        <td><span class="tag ${x.status==='PENDENTE'?'zero':x.status==='DESCONTADA'?'ok':''}">${STATUS_COB[x.status]}</span>
+          ${x.observacoes?`<div class="it-meta">${esc(x.observacoes.slice(0,40))}</div>`:''}</td>
+        <td style="text-align:right;white-space:nowrap">
+          <button class="btn sm" onclick='termoCobranca(${JSON.stringify(x).replace(/'/g,"&#39;")})'>Comunicado</button>
+          ${ehGestor() && x.status==='PENDENTE'?`<button class="btn sm pri" onclick="formBaixarCobranca(${x.id})">Baixar</button>`:''}
+        </td></tr>`).join('')}</tbody></table></div>`
+    : `<div class="empty"><b>Nenhuma cobrança</b>Cobranças nascem quando um empréstimo é baixado sem a peça voltar.</div>`;
+}
+
+function formBaixarCobranca(id){
+  if(!exigeGestor()) return;
+  modal({titulo:'Baixar cobrança', corpo:`
+    <label class="field"><span>Situação <em>*</em></span><select class="inp" id="cbSt">
+      <option value="DESCONTADA">Descontada em folha (com anuência do funcionário)</option>
+      <option value="PERDOADA">Perdoada — não será cobrada</option>
+      <option value="CANCELADA">Cancelada — lançamento indevido</option>
+    </select></label>
+    <label class="field"><span>Observação</span><input class="inp" id="cbObs"
+      placeholder="Ex.: descontado na folha de setembro"></label>
+    <p class="small muted" style="margin:0">Perdoar ou cancelar exige justificativa.</p>`,
+    acoes:[{rotulo:'Voltar'},{rotulo:'Confirmar',classe:'pri',acao:async(o,f,b)=>{
+      b.disabled=true;
+      try{ const {error} = await S.sb.rpc('almox_baixar_cobranca',{
+          p_cobranca_id:id, p_status:o.querySelector('#cbSt').value,
+          p_observacoes:o.querySelector('#cbObs').value||null});
+        if(error) throw error;
+        f(); await carregarCobrancas(); montarNav(); toast('Cobrança baixada.','ok'); listarCobrancas();
+      }catch(e){ erro(e); b.disabled=false; }
+    }}]});
+}
+
+/* =====================================================================
+   CONFIGURAÇÕES
+   ===================================================================== */
+async function viewConfig(){
+  $('#topAcoes').innerHTML = '';
+  $('#view').innerHTML = `
+    <div class="grid" style="grid-template-columns:1fr 1fr;align-items:start">
+      <div class="card">
+        <div class="card-h"><h3>Seu perfil</h3></div>
+        <div class="card-b">
+          <label class="field"><span>Como você quer ser chamado</span>
+            <input class="inp" id="cfNome" maxlength="60" value="${esc(S.perfil.nome)}"></label>
+          <p class="small muted" style="margin:-8px 0 14px">É este nome que aparece no menu, nos termos de
+          entrega e no histórico de quem lançou cada movimentação.</p>
+          <div class="row">
+            <div class="field"><span>E-mail de acesso</span>
+              <div class="inp mono small" style="background:var(--sur)">${esc(S.perfil.email||'—')}</div></div>
+            <div class="field"><span>Seu perfil</span>
+              <div class="inp small" style="background:var(--sur)">
+                ${{GESTOR:'Gestor — acesso total',OPERADOR:'Operador — lançamentos',LEITURA:'Consulta'}[S.perfil.papel]}</div></div>
+          </div>
+          <button class="btn pri" id="cfSalvar">Salvar meu nome</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><h3>Regras do almoxarifado</h3></div>
+        <div class="card-b">
+          ${ehGestor()? `
+          <label class="field"><span>Custo por uniforme emprestado não devolvido (R$)</span>
+            <input class="inp mono" id="cfExtravio" type="number" min="0" step="0.01"
+              value="${param('custo_extravio_uniforme',50).toFixed(2)}"></label>
+          <p class="small muted" style="margin:-8px 0 14px">Valor sugerido por peça quando um empréstimo é baixado
+          sem a peça voltar. Dá para alterar na hora da baixa, caso a peça valha mais ou menos.</p>
+          <button class="btn pri" id="cfSalvarPar">Salvar regra</button>`
+          : `<p class="small muted" style="margin:0">Custo por uniforme extraviado:
+             <b>${brl(param('custo_extravio_uniforme',50))}</b> por peça. Só o gestor altera.</p>`}
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <div class="card-h"><h3>Sobre o sistema</h3></div>
+      <div class="card-b small muted">
+        Almoxarifado de uniformes e EPI do ${esc(CONFIG.LOJA)}.
+        Unidade ativa: <b>${esc(S.unidade?.nome || '—')}</b>.
+        Estoque com ${num(S.estoque.filter(e=>e.variacao_ativa && e.item_ativo).length)} posições item/tamanho
+        em ${S.categorias.length} categorias.
+      </div>
+    </div>`;
+
+  $('#cfSalvar').onclick = async e => {
+    const nome = $('#cfNome').value.trim();
+    if(nome.length < 2) return toast('Informe ao menos 2 caracteres.','err');
+    e.target.disabled = true;
+    try{
+      const {data, error} = await S.sb.rpc('almox_atualizar_meu_nome',{p_nome:nome});
+      if(error) throw error;
+      S.perfil = data;
+      $('#userNome').textContent = data.nome;
+      toast('Pronto, agora te chamo de '+data.nome+'.','ok');
+    }catch(err){ erro(err); }
+    e.target.disabled = false;
+  };
+
+  const bp = $('#cfSalvarPar');
+  if(bp) bp.onclick = async e => {
+    const v = Number($('#cfExtravio').value||0);
+    if(v < 0) return toast('Valor inválido.','err');
+    e.target.disabled = true;
+    try{
+      const {error} = await S.sb.from('almox_parametros')
+        .update({valor_num:v, atualizado_em:new Date().toISOString()})
+        .eq('chave','custo_extravio_uniforme');
+      if(error) throw error;
+      await carregarBase();
+      toast('Regra salva: '+brl(v)+' por peça extraviada.','ok');
+    }catch(err){ erro(err); }
+    e.target.disabled = false;
+  };
 }
 </script>
 </body>
