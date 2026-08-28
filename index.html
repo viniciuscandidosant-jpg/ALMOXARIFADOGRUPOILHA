@@ -340,6 +340,7 @@ const TIPOS = {
 };
 const STATUS_REM = {ENVIADA:'Em lavagem',RECEBIDA:'Concluído',CANCELADA:'Cancelado'};
 const VINCULOS = {EFETIVO:'Efetivo', EXPERIENCIA:'Experiência', INTERMITENTE:'Intermitente'};
+const SETORES = ['Administrativo','Atendimento','Cozinha','Limpeza','Manutenção'];
 const STATUS_EMP = {ABERTO:'Em aberto',PARCIAL:'Devolução parcial',DEVOLVIDO:'Devolvido',BAIXADO:'Baixado'};
 
 function toast(msg,tipo=''){
@@ -893,7 +894,12 @@ async function drawerVariacao(id){
   if(!e) return;
   const d = drawer({
     titulo: e.item,
-    sub: `${esc(e.tamanho)} · ${esc(e.categoria||'—')} · <span class="mono">${esc(e.sku||'')}</span>`,
+    sub: `${esc(e.tamanho)} · ${esc(e.categoria||'—')} · <span class="mono">${esc(e.sku||'')}</span>${
+      (S.itens.find(x=>x.id===e.item_id)?.setores_uso||[]).length
+        ? '<br>Usado por: '+esc((S.itens.find(x=>x.id===e.item_id).setores_uso||[]).join(', '))
+          + (S.itens.find(x=>x.id===e.item_id).observacao_uso
+             ? ' — '+esc(S.itens.find(x=>x.id===e.item_id).observacao_uso) : '')
+        : ''}`,
     corpo: `
       ${(S.itens.find(x=>x.id===e.item_id)||{}).foto_url
         ? `<img src="${esc(S.itens.find(x=>x.id===e.item_id).foto_url)}" alt=""
@@ -1416,7 +1422,8 @@ async function viewEmprestimos(){
         <td class="small">${dth(e.data_saida)}</td>
         <td class="small">${e.atrasado?`<span class="tag zero">${dt(e.previsao_devolucao)}</span>`:dt(e.previsao_devolucao)}</td>
         <td class="num">${e.total_itens}</td>
-        <td class="num" style="font-weight:600">${e.pendentes}</td>
+        <td class="num" style="font-weight:600">${e.pendentes}
+          ${e.pendentes?`<div class="it-meta">${brl(e.valor_em_aberto)}</div>`:''}</td>
         <td><span class="tag ${e.status==='DEVOLVIDO'?'ok':e.status==='BAIXADO'?'':'brand'}">${STATUS_EMP[e.status]}</span>
           ${e.recibo_assinado?'<div class="it-meta">recibo assinado</div>':'<div class="it-meta">aguardando assinatura</div>'}</td>
         <td style="text-align:right"><button class="btn sm" onclick="abrirEmprestimo(${e.id})">Abrir</button></td>
@@ -1448,7 +1455,11 @@ async function abrirEmprestimo(id){
       <div><b>Previsão de devolução</b>${dt(emp.previsao_devolucao)}${emp.atrasado?' <span class="tag zero">atrasado</span>':''}</div>
       <div><b>Setor</b>${esc(emp.setor||'—')}</div>
       <div><b>Motivo</b>${esc(emp.motivo||'—')}</div>
+      <div><b>Valor de reposição</b>${brl(emp.valor_reposicao)}</div>
+      <div><b>Em aberto</b>${brl(emp.valor_em_aberto)}</div>
     </div>
+    ${emp.termo_assinado_em?'':`<p class="small" style="color:var(--red);margin:-8px 0 12px">
+      Funcionário sem termo de compromisso assinado.</p>`}
     ${emp.observacoes?`<p class="small muted">${esc(emp.observacoes)}</p>`:''}
     <div class="lista-itens" style="margin-bottom:18px">
       ${itens.map(i=>`<div class="li"><span class="qt">${i.quantidade}×</span>
@@ -1513,10 +1524,19 @@ async function formDevolverEmprestimo(id){
 
 async function formBaixarEmprestimo(id){
   const [emp] = await q('almox_vw_emprestimos','*',b=>b.eq('id',id));
-  const padrao = param('custo_extravio_uniforme', 50);
-  modal({titulo:'Dar baixa no empréstimo', corpo:`
+  const itens = await q('almox_emprestimo_itens','*, almox_variacoes(almox_itens(nome), almox_tamanhos(rotulo))',
+                        b=>b.eq('emprestimo_id',id));
+  const pend = itens.filter(i=>i.quantidade > i.quantidade_devolvida);
+  const total = pend.reduce((t,i)=>t+(i.quantidade-i.quantidade_devolvida)*Number(i.valor_unitario_reposicao||0),0);
+  modal({titulo:'Dar baixa no empréstimo', wide:true, corpo:`
     <p style="margin-top:0">As ${emp.pendentes} peça(s) que não voltaram passam a contar como entrega definitiva
     ao funcionário e saem do controle de pendências.</p>
+    ${!emp.termo_assinado_em?`<div class="card" style="border-color:#EBC7C3;background:var(--red-l);margin-bottom:14px">
+      <div class="card-b" style="padding:10px 12px"><b style="color:var(--red)">Sem termo de compromisso assinado</b>
+      <p class="small" style="margin:4px 0 0">O desconto em folha depende de acordo prévio (CLT art. 462, §1º).
+      Sem o termo assinado <b>antes</b> do empréstimo, a cobrança fica frágil e só se sustenta com dolo comprovado.
+      Você pode registrar a cobrança assim mesmo, mas trate como valor a negociar — e regularize o termo com
+      ${esc(emp.funcionario.split(' ')[0])}.</p></div>`:''}
     <label class="field"><span>Motivo <em>*</em></span>
       <input class="inp" id="bMot" list="motivosBaixa" placeholder="Ex.: peça extraviada pelo funcionário">
       <datalist id="motivosBaixa">
@@ -1525,32 +1545,47 @@ async function formBaixarEmprestimo(id){
         <option>Funcionário desligado sem devolver</option>
         <option>Peça não localizada após cobrança</option>
       </datalist></label>
-    <label class="check"><input type="checkbox" id="bCobrar" checked> Gerar cobrança por extravio</label>
+    <label class="check"><input type="checkbox" id="bCobrar" checked>
+      Gerar cobrança pelo valor de reposição assinado no recibo</label>
     <div id="bCobrarBox">
-      <div class="row">
-        <label class="field"><span>Valor por peça (R$)</span>
-          <input class="inp mono" id="bValor" type="number" min="0" step="0.01" value="${padrao.toFixed(2)}"></label>
-        <div class="field"><span>Total da cobrança</span>
-          <div class="inp mono" id="bTotal" style="background:var(--sur)">${brl(padrao*emp.pendentes)}</div></div>
-      </div>
-      <p class="small muted" style="margin:-6px 0 0">A cobrança nasce como pendente. O desconto em folha só pode
-      ser feito com a anuência do funcionário, conforme o art. 462 §1º da CLT.</p>
+      <div class="tbl-wrap" style="border:1px solid var(--line);border-radius:6px;margin-bottom:10px"><table>
+        <thead><tr><th>Peça não devolvida</th><th class="num">Qtd</th><th class="num">Valor no recibo</th>
+          <th class="num">Total</th></tr></thead>
+        <tbody>${pend.map(i=>{ const q=i.quantidade-i.quantidade_devolvida;
+          return `<tr><td>${esc(i.almox_variacoes.almox_itens.nome)} ·
+            ${esc(i.almox_variacoes.almox_tamanhos?.rotulo||'ÚNICO')}</td>
+            <td class="num">${q}</td>
+            <td class="num mono">${brl(i.valor_unitario_reposicao)}</td>
+            <td class="num mono">${brl(q*Number(i.valor_unitario_reposicao||0))}</td></tr>`; }).join('')}
+          <tr><td colspan="3" style="text-align:right;font-weight:600">Total</td>
+            <td class="num mono" style="font-weight:700">${brl(total)}</td></tr>
+        </tbody></table></div>
+      <label class="check"><input type="checkbox" id="bOutro"> Cobrar valor diferente do assinado</label>
+      <label class="field hide" id="bValorBox"><span>Valor por peça (R$)</span>
+        <input class="inp mono" id="bValor" type="number" min="0" step="0.01" value="">
+        <span class="small muted">Cobrar acima do valor assinado no recibo é enriquecimento sem causa e
+        derruba a cobrança inteira. Use só para cobrar <b>menos</b>.</span></label>
+      <p class="small muted" style="margin:8px 0 0">A cobrança nasce pendente. O desconto em folha depende da
+      anuência do funcionário (CLT art. 462, §1º) e, na rescisão, não pode passar de um mês de remuneração
+      (art. 477, §5º).</p>
     </div>`,
     aoAbrir:o=>{
-      const rec=()=>{ o.querySelector('#bTotal').textContent =
-        brl(Number(o.querySelector('#bValor').value||0) * emp.pendentes); };
-      o.querySelector('#bValor').oninput = rec;
       o.querySelector('#bCobrar').onchange = e =>
         o.querySelector('#bCobrarBox').classList.toggle('hide', !e.target.checked);
+      o.querySelector('#bOutro').onchange = e =>
+        o.querySelector('#bValorBox').classList.toggle('hide', !e.target.checked);
     },
     acoes:[{rotulo:'Voltar'},{rotulo:'Dar baixa',classe:'dan',acao:async(o,f,b)=>{
       const mot = o.querySelector('#bMot').value.trim();
       if(!mot) return toast('Informe o motivo.','err');
       const cobrar = o.querySelector('#bCobrar').checked;
+      const outro  = o.querySelector('#bOutro').checked;
+      const vAlt   = Number(o.querySelector('#bValor').value||0);
+      if(cobrar && outro && !vAlt) return toast('Informe o valor alternativo ou desmarque a opção.','err');
       b.disabled=true;
       try{ const {error} = await S.sb.rpc('almox_baixar_emprestimo',{
           p_emprestimo_id:id, p_motivo:mot, p_cobrar:cobrar,
-          p_valor_unitario: cobrar? Number(o.querySelector('#bValor').value||0) : null});
+          p_valor_unitario: (cobrar && outro) ? vAlt : null});
         if(error) throw error; f(); $('#drawer').innerHTML='';
         await depoisDeMovimentar(cobrar? 'Empréstimo baixado e cobrança gerada.' : 'Empréstimo baixado.');
       }catch(e){ erro(e); b.disabled=false; }
@@ -1569,7 +1604,15 @@ function cabecalhoRecibo(titulo, codigo){
       <div class="rec-cod">${esc(codigo)}</div>
       <div class="s" style="text-align:right">${new Date().toLocaleString('pt-BR')}</div></div></div>`;
 }
-const TERMO_EMPRESTIMO = `Declaro ter recebido, a título de empréstimo, os itens relacionados acima, em bom estado de conservação e em quantidade conferida por mim. Comprometo-me a utilizá-los exclusivamente no exercício das minhas funções, a zelar pela sua conservação e higiene e a devolvê-los ao almoxarifado até a data prevista de devolução ou imediatamente quando solicitado, bem como no ato do desligamento. Estou ciente de que a perda, o extravio ou o dano por uso indevido poderão ser objeto de reposição ou de desconto, conforme o artigo 462, §1º, da CLT, mediante minha anuência. No caso de equipamentos de proteção individual, declaro ter recebido orientação sobre o uso correto, a guarda e a conservação, nos termos da NR-6.`;
+const TERMO_EMPRESTIMO = `Declaro ter recebido, a título de empréstimo, as peças relacionadas acima, em bom estado de conservação e em quantidade e tamanho conferidos por mim, e reconheço o valor de reposição de cada uma, indicado nesta tabela e correspondente ao custo de aquisição pela empresa.
+
+Comprometo-me a utilizá-las exclusivamente no exercício das minhas funções, a zelar pela sua conservação e higiene, e a devolvê-las ao almoxarifado até a data prevista, ou imediatamente quando solicitado, e no ato do desligamento.
+
+Estou ciente de que <b>o valor acima não constitui multa nem punição</b> e <b>nada será cobrado se eu devolver as peças</b> no prazo e nas condições em que as recebi, ressalvado o desgaste natural do uso. A cobrança do valor de reposição ocorrerá somente se a peça não for devolvida, ou se for devolvida em estado que inviabilize seu reaproveitamento por dano decorrente de uso indevido.
+
+Concordo, desde já, que nessa hipótese o valor de reposição aqui declarado poderá ser descontado da minha remuneração, nos termos do artigo 462, §1º, da CLT, respeitado o limite do artigo 477, §5º, da CLT no acerto rescisório, e assegurado o meu direito de apresentar justificativa ou de repor a peça antes de qualquer desconto.
+
+No caso de equipamento de proteção individual, declaro ter recebido orientação sobre uso correto, guarda e conservação, nos termos da NR-6.`;
 const TERMO_ENTREGA = `Declaro ter recebido do almoxarifado os itens relacionados acima, conferidos por mim quanto a tipo, tamanho e quantidade, em perfeitas condições de uso. Comprometo-me a utilizá-los exclusivamente no exercício das minhas funções, a mantê-los limpos e conservados e a devolvê-los no ato do desligamento ou quando substituídos. Estou ciente de que a perda ou o dano por uso indevido poderá ser objeto de reposição, conforme o artigo 462, §1º, da CLT, mediante minha anuência. No caso de equipamentos de proteção individual, declaro ter recebido orientação sobre uso, guarda e conservação, nos termos da NR-6, e me responsabilizo pelo seu uso durante toda a jornada.`;
 
 function imprimir(html){
@@ -1593,7 +1636,8 @@ async function reciboEmprestimo(id){
   const [emp] = await q('almox_vw_emprestimos','*',b=>b.eq('id',id));
   const itens = await q('almox_emprestimo_itens','*, almox_variacoes(sku, almox_itens(nome), almox_tamanhos(rotulo))',
                         b=>b.eq('emprestimo_id',id));
-  imprimir(`${cabecalhoRecibo('Recibo de empréstimo', emp.codigo)}
+  const total = itens.reduce((t,i)=>t + i.quantidade*Number(i.valor_unitario_reposicao||0), 0);
+  imprimir(`${cabecalhoRecibo('Recibo de empréstimo de uniforme', emp.codigo)}
     <div class="rec-dados">
       <div><b>Funcionário</b>${esc(emp.funcionario)}</div>
       <div><b>Matrícula</b>${esc(emp.matricula||'—')}</div>
@@ -1603,13 +1647,29 @@ async function reciboEmprestimo(id){
       <div><b>Devolução prevista</b>${dt(emp.previsao_devolucao)}</div>
       <div style="grid-column:1/-1"><b>Motivo</b>${esc(emp.motivo||'—')}</div>
     </div>
-    ${tabelaRecibo(itens.map(i=>({q:i.quantidade, n:i.almox_variacoes.almox_itens.nome,
-        t:i.almox_variacoes.almox_tamanhos?.rotulo||'ÚNICO', s:i.almox_variacoes.sku})))}
+    <table><thead><tr><th style="width:40px">Qtd</th><th>Peça</th><th style="width:80px">Tamanho</th>
+      <th style="width:92px">Valor unit.</th><th style="width:92px">Valor total</th></tr></thead>
+      <tbody>${itens.map(i=>`<tr>
+        <td class="mono" style="text-align:center">${i.quantidade}</td>
+        <td>${esc(i.almox_variacoes.almox_itens.nome)}</td>
+        <td style="text-align:center">${esc(i.almox_variacoes.almox_tamanhos?.rotulo||'ÚNICO')}</td>
+        <td class="mono" style="text-align:right">${brl(i.valor_unitario_reposicao)}</td>
+        <td class="mono" style="text-align:right">${brl(i.quantidade*Number(i.valor_unitario_reposicao||0))}</td>
+      </tr>`).join('')}
+      <tr><td colspan="4" style="text-align:right;font-weight:700">Valor total de reposição</td>
+        <td class="mono" style="text-align:right;font-weight:700">${brl(total)}</td></tr>
+      </tbody></table>
     <div class="rec-termo"><b>TERMO DE RESPONSABILIDADE</b><br>${TERMO_EMPRESTIMO}</div>
     ${assinaturas(emp.funcionario)}
-    <div style="margin-top:26px;border-top:1px dashed #999;padding-top:8px;font-size:10px;color:#555">
-      Devolução — preenchimento no retorno das peças: data ____/____/______ &nbsp;&nbsp;
-      recebido por ______________________________ &nbsp;&nbsp; observações ____________________________________</div>`);
+    <div style="margin-top:22px;border-top:1px dashed #999;padding-top:8px;font-size:10px;color:#555">
+      Devolução — preencher no retorno das peças: data ____/____/______ &nbsp;&nbsp;
+      recebido por ______________________________ &nbsp;&nbsp; estado das peças ______________________________</div>
+    ${blocoLegal('Fundamentação legal', [
+      'CLT, art. 462, §1º — o desconto por dano causado pelo empregado é lícito quando previamente acordado, como neste instrumento, ou em caso de dolo.',
+      'CLT, art. 477, §5º — no acerto rescisório, a compensação não pode exceder o equivalente a um mês de remuneração do empregado.',
+      'CLT, art. 2º — o risco da atividade econômica é do empregador: o desgaste natural do uniforme não é cobrado do empregado.',
+      'NR-6, itens 6.6.1 e 6.7.1 — obrigações do empregador e do empregado quanto ao equipamento de proteção individual.'
+    ])}`);
 }
 async function termoEntrega(codigo){
   const [ent] = await q('almox_vw_entregas','*',b=>b.eq('codigo',codigo));
@@ -1816,8 +1876,9 @@ async function viewFuncionarios(){
     <input class="inp" style="width:200px" placeholder="Buscar…" value="${esc(buscaFunc)}"
       oninput="buscaFunc=this.value;agendarFuncionarios()">
     <select class="inp" style="width:175px" onchange="filtroVinculo=this.value;listarFuncionarios()">
-      ${[['ATIVOS','Todos os ativos'],['EFETIVO','Efetivos'],['EXPERIENCIA','Em experiência'],
-         ['INTERMITENTE','Intermitentes'],['INATIVOS','Desligados'],['TODOS','Todos']]
+      ${[['ATIVOS','Todos os ativos'],['LIDERANCA','Lideranças'],['EFETIVO','Efetivos'],
+         ['EXPERIENCIA','Em experiência'],['INTERMITENTE','Intermitentes'],
+         ...SETORES.map(x=>['S:'+x, x]), ['INATIVOS','Desligados'],['TODOS','Todos']]
         .map(([k,t])=>`<option value="${k}" ${filtroVinculo===k?'selected':''}>${t}</option>`).join('')}
     </select>
     ${ehGestor()?`<button class="btn pri" onclick="formFuncionario()">Novo funcionário</button>`:''}`;
@@ -1831,9 +1892,11 @@ async function listarFuncionarios(){
   const porFunc = {}; posse.forEach(p=> porFunc[p.funcionario_id] = (porFunc[p.funcionario_id]||0)+p.quantidade);
   const t = buscaFunc.trim().toLowerCase();
   let lista = S.funcionarios.filter(f=> !t || (f.nome+' '+(f.setor||'')+' '+(f.cargo||'')+' '+(f.matricula||'')).toLowerCase().includes(t));
-  if(filtroVinculo === 'ATIVOS')      lista = lista.filter(f=>f.ativo);
-  else if(filtroVinculo === 'INATIVOS') lista = lista.filter(f=>!f.ativo);
-  else if(filtroVinculo !== 'TODOS')  lista = lista.filter(f=>f.ativo && (f.vinculo||'EFETIVO')===filtroVinculo);
+  if(filtroVinculo === 'ATIVOS')        lista = lista.filter(f=>f.ativo);
+  else if(filtroVinculo === 'INATIVOS')  lista = lista.filter(f=>!f.ativo);
+  else if(filtroVinculo === 'LIDERANCA') lista = lista.filter(f=>f.ativo && f.lideranca);
+  else if(filtroVinculo.startsWith('S:')) lista = lista.filter(f=>f.ativo && f.setor===filtroVinculo.slice(2));
+  else if(filtroVinculo !== 'TODOS')     lista = lista.filter(f=>f.ativo && (f.vinculo||'EFETIVO')===filtroVinculo);
   $('#funcLista').innerHTML = lista.length? `
     <div class="card-h"><h3>${lista.length} funcionários de ${esc(S.unidade.nome)}</h3><div class="sp"></div>
       <span class="small muted">${S.funcionarios.filter(f=>f.ativo).length} ativos ·
@@ -1843,7 +1906,8 @@ async function listarFuncionarios(){
     <tbody>${lista.map(f=>`<tr style="cursor:pointer" onclick="fichaFuncionario(${f.id})">
       <td><div class="it-nome">${esc(f.nome)}</div>
         <div class="it-meta">${esc(f.matricula||'sem matrícula')}${f.ativo?'':' · desligado '+dt(f.data_desligamento)}</div></td>
-      <td><span class="tag ${f.vinculo==='EFETIVO'?'ok':f.vinculo==='EXPERIENCIA'?'low':'brand'}">${VINCULOS[f.vinculo||'EFETIVO']}</span></td>
+      <td><span class="tag ${f.vinculo==='EFETIVO'?'ok':f.vinculo==='EXPERIENCIA'?'low':'brand'}">${VINCULOS[f.vinculo||'EFETIVO']}</span>
+        ${f.lideranca?'<div class="it-meta">liderança</div>':''}</td>
       <td class="small">${esc(f.cargo||'—')}</td>
       <td class="small">${esc(f.setor||'—')}</td>
       <td class="num" style="font-weight:600">${porFunc[f.id]||0}</td>
@@ -1868,6 +1932,19 @@ async function fichaFuncionario(id){
       ${ehGestor() && f.ativo?`<button class="btn sm dan" onclick="formDesligar(${id})">Registrar desligamento</button>`:''}
       ${ehGestor() && !f.ativo?`<button class="btn sm" onclick="reativarFuncionario(${id})">Reativar</button>`:''}
     </div>
+    <div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;align-items:center">
+      <button class="btn sm" onclick="formTermoUniforme(${id})">Termo de compromisso</button>
+      <button class="btn sm" onclick="fichaEPI(${id})">Ficha de EPI</button>
+      ${f.termo_assinado_em
+        ? `<span class="tag ok">termo assinado em ${dt(f.termo_assinado_em)}</span>
+           ${ehGestor()?`<button class="btn sm" onclick="formTermoAssinado(${id})">Alterar data</button>`:''}`
+        : `<span class="tag zero">sem termo assinado</span>
+           ${ehGestor()?`<button class="btn sm pri" onclick="formTermoAssinado(${id})">Registrar assinatura</button>`:''}`}
+    </div>
+    ${!f.termo_assinado_em?`<div class="card" style="border-color:#EBC7C3;background:var(--red-l);margin-bottom:18px">
+      <div class="card-b" style="padding:10px 12px"><b style="color:var(--red)">Termo de compromisso pendente</b>
+      <p class="small" style="margin:4px 0 0">Sem termo assinado, cobrança por peça não devolvida depende de dolo
+      comprovado. Imprima o termo, colha a assinatura e registre a data aqui.</p></div></div>`:''}
     ${!f.ativo && posse.length?`<div class="card" style="border-color:#EBC7C3;background:var(--red-l);margin-bottom:18px">
       <div class="card-b" style="padding:12px 14px"><b style="color:var(--red)">Pendência de devolução</b>
       <p class="small" style="margin:4px 0 0">Saiu da empresa com ${posse.reduce((s,p)=>s+p.quantidade,0)} peça(s)
@@ -1916,9 +1993,10 @@ function formFuncionario(id=null){
       <label class="field"><span>Matrícula</span><input class="inp" id="nMat" value="${esc(f.matricula||'')}"></label>
       <label class="field"><span>CPF</span><input class="inp" id="nCpf" value="${esc(f.cpf||'')}"></label>
       <label class="field"><span>Cargo</span><input class="inp" id="nCargo" value="${esc(f.cargo||'')}"></label>
-      <label class="field"><span>Setor</span><input class="inp" id="nSetor" list="setores" value="${esc(f.setor||'')}">
-        <datalist id="setores">${[...new Set(S.funcionarios.map(x=>x.setor).filter(Boolean))]
-          .map(s=>`<option>${esc(s)}</option>`).join('')}</datalist></label>
+      <label class="field"><span>Setor <em>*</em></span><select class="inp" id="nSetor">
+        <option value="">Selecione…</option>
+        ${SETORES.map(x=>`<option value="${x}" ${f.setor===x?'selected':''}>${x}</option>`).join('')}
+      </select></label>
       <label class="field"><span>Admissão</span><input class="inp" id="nAdm" type="date" value="${f.data_admissao||''}"></label>
       <label class="field"><span>Vínculo <em>*</em></span><select class="inp" id="nVinc">
         ${Object.entries(VINCULOS).map(([k,v])=>
@@ -1926,16 +2004,19 @@ function formFuncionario(id=null){
       </select></label>
     </div>
     <label class="field"><span>Observações</span><textarea class="inp" id="nObs">${esc(f.observacoes||'')}</textarea></label>
+    <label class="check"><input type="checkbox" id="nLider" ${f.lideranca?'checked':''}>
+      É liderança (coordenação, chefia ou supervisão)</label>
     <label class="check"><input type="checkbox" id="nAtivo" ${f.ativo!==false?'checked':''}> Funcionário ativo</label>
     ${id && f.ativo===false && f.data_desligamento?`<p class="small muted" style="margin:0">Desligado em ${dt(f.data_desligamento)}.</p>`:''}`,
     acoes:[{rotulo:'Cancelar'},{rotulo:'Salvar',classe:'pri',acao:async(o,fe,b)=>{
       const nome = o.querySelector('#nNome').value.trim();
       if(!nome) return toast('Informe o nome.','err');
+      if(!o.querySelector('#nSetor').value) return toast('Selecione o setor.','err');
       b.disabled=true;
       const reg = {nome, matricula:o.querySelector('#nMat').value.trim()||null, cpf:o.querySelector('#nCpf').value.trim()||null,
         cargo:o.querySelector('#nCargo').value.trim()||null, setor:o.querySelector('#nSetor').value.trim()||null,
         data_admissao:o.querySelector('#nAdm').value||null, observacoes:o.querySelector('#nObs').value||null,
-        vinculo:o.querySelector('#nVinc').value,
+        vinculo:o.querySelector('#nVinc').value, lideranca:o.querySelector('#nLider').checked,
         ativo:o.querySelector('#nAtivo').checked, unidade_id:S.unidade?.id??null};
       try{
         const { error } = id ? await S.sb.from('almox_funcionarios').update(reg).eq('id',id)
@@ -1972,14 +2053,17 @@ function cadItens(){
   $('#topAcoes').innerHTML = ehGestor()? `<button class="btn pri" onclick="formItem()">Novo item</button>`:'';
   const saldos = {}; S.estoque.forEach(e=> saldos[e.item_id]=(saldos[e.item_id]||0)+e.saldo);
   $('#cadArea').innerHTML = `<div class="card"><div class="tbl-wrap"><table>
-    <thead><tr><th>Item</th><th>Categoria</th><th>Grade</th><th>Dotação</th><th class="num">Mínimo</th>
+    <thead><tr><th>Item</th><th>Setores que usam</th><th>Grade</th><th>Dotação</th><th class="num">Mínimo</th>
       <th class="num">Custo ref.</th><th class="num">Saldo</th><th>Marcações</th><th></th></tr></thead>
     <tbody>${S.itens.map(i=>`<tr${i.ativo?'':' style="opacity:.5"'}>
       <td><div class="it-linha">
         ${i.foto_url?`<img class="mini" src="${esc(i.foto_url)}" alt="" loading="lazy">`:'<div class="mini-vazia"></div>'}
         <div><div class="it-nome">${esc(i.nome)}</div>
         <div class="it-meta">${esc(i.codigo||'')}${i.cor?' · '+esc(i.cor):''}</div></div></div></td>
-      <td class="small">${esc(nomeCat(i.categoria_id))}</td>
+      <td class="small">${(i.setores_uso||[]).length
+          ? (i.setores_uso||[]).map(x=>`<span class="tag">${esc(x)}</span>`).join(' ')
+          : '<span class="muted">—</span>'}
+        ${i.observacao_uso?`<div class="it-meta">${esc(i.observacao_uso)}</div>`:''}</td>
       <td class="small">${esc(S.grades.find(g=>g.id===i.grade_id)?.nome||'—')}</td>
       <td class="small">${i.grupo_dotacao?`<span class="tag brand">${esc(i.grupo_dotacao)}</span>`:'—'}</td>
       <td class="num">${i.estoque_minimo}</td>
@@ -2028,6 +2112,16 @@ function formItem(id=null){
         </div></div>
       <input type="hidden" id="iFotoUrl" value="${esc(i.foto_url||'')}">
     </div>
+    <div class="field"><span>Setores que usam esta peça</span>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;padding:8px 0">
+        ${SETORES.map(x=>`<label class="check" style="margin:0">
+          <input type="checkbox" class="iSetor" value="${x}" ${(i.setores_uso||[]).includes(x)?'checked':''}> ${x}</label>`).join('')}
+      </div>
+      <input class="inp" id="iObsUso" value="${esc(i.observacao_uso||'')}"
+        placeholder="Detalhe opcional: Cumim, Garçons, Operador de câmara fria…">
+      <p class="small muted" style="margin:6px 0 0">Serve como orientação de quem usa o quê.
+      <b>Não bloqueia a entrega</b> para outro setor — o gestor decide na hora.</p>
+    </div>
     <label class="field"><span>Grupo de dotação</span>
       <input class="inp" id="iGrupo" list="gruposDot" value="${esc(i.grupo_dotacao||'')}"
         placeholder="Ex.: Camisa, Calça/Bermuda — deixe vazio se não conta para a dotação mínima">
@@ -2053,6 +2147,8 @@ function formItem(id=null){
         vida_util_meses:o.querySelector('#iVida').value? Number(o.querySelector('#iVida').value):null,
         grupo_dotacao:o.querySelector('#iGrupo').value.trim()||null,
         foto_url:o.querySelector('#iFotoUrl').value||null,
+        setores_uso:[...o.querySelectorAll('.iSetor:checked')].map(c=>c.value),
+        observacao_uso:o.querySelector('#iObsUso').value.trim()||null,
         epi:o.querySelector('#iEpi').checked, ca_epi:o.querySelector('#iCa').value.trim()||null,
         exige_devolucao:o.querySelector('#iDev').checked, ativo:o.querySelector('#iAtivo').checked,
         atualizado_em:new Date().toISOString(), unidade_id:S.unidade.id};
@@ -2807,9 +2903,15 @@ async function formCobrarPendencia(funcId){
   const itens = (window._pend||[]).filter(x=>x.funcionario_id===funcId && !x.tem_cobranca);
   if(!itens.length) return toast('Todas as peças deste ex-funcionário já têm cobrança.','err');
   const padrao = param('custo_extravio_uniforme', 50);
+  const fnc = S.funcionarios.find(x=>x.id===funcId) || {};
   modal({titulo:'Gerar cobrança pelas peças não devolvidas', wide:true, corpo:`
     <p class="small muted" style="margin-top:0">Registra a cobrança para acerto de rescisão. Nasce pendente e
-    depende da anuência do ex-funcionário para virar desconto, conforme o art. 462 §1º da CLT.</p>
+    depende da anuência do ex-funcionário para virar desconto (CLT art. 462, §1º), limitada a um mês de
+    remuneração no acerto rescisório (art. 477, §5º).</p>
+    ${!fnc.termo_assinado_em?`<div class="card" style="border-color:#EBC7C3;background:var(--red-l);margin-bottom:12px">
+      <div class="card-b" style="padding:10px 12px"><b style="color:var(--red)">Sem termo de compromisso assinado</b>
+      <p class="small" style="margin:4px 0 0">Não há acordo prévio registrado para esta pessoa. A cobrança pode
+      ser lançada, mas o desconto dependerá de negociação ou de dolo comprovado.</p></div></div>`:''}
     <div class="tbl-wrap" style="border:1px solid var(--line);border-radius:6px;margin-bottom:14px"><table>
       <thead><tr><th>Peça</th><th class="num">Qtd</th><th class="num">Valor por peça</th></tr></thead>
       <tbody>${itens.map(i=>`<tr>
@@ -2846,6 +2948,33 @@ async function formCobrarPendencia(funcId){
 }
 
 /* --------- desligamento e reativação --------- */
+function formTermoAssinado(id){
+  if(!exigeGestor()) return;
+  const f = S.funcionarios.find(x=>x.id===id);
+  modal({titulo:'Registrar assinatura do termo', corpo:`
+    <p class="small muted" style="margin-top:0">Anote a data em que ${esc(f.nome.split(' ')[0])} assinou o termo
+    de compromisso de uniforme. É esse acordo prévio que sustenta a cobrança por peça não devolvida.</p>
+    <label class="field"><span>Data da assinatura</span>
+      <input class="inp" id="taData" type="date" max="${hoje()}" value="${f.termo_assinado_em || hoje()}"></label>
+    <p class="small muted" style="margin:0">Guarde a via assinada no dossiê. O sistema registra a data,
+    não substitui o papel.</p>`,
+    acoes:[ ...(f.termo_assinado_em?[{rotulo:'Limpar', classe:'dan', acao:async(o,fe,b)=>{
+        b.disabled=true;
+        try{ const {error}=await S.sb.from('almox_funcionarios').update({termo_assinado_em:null}).eq('id',id);
+          if(error) throw error; fe(); $('#drawer').innerHTML='';
+          await carregarBase(); toast('Registro removido.','ok'); render();
+        }catch(e){ erro(e); b.disabled=false; } }}]:[]),
+      {rotulo:'Cancelar'},
+      {rotulo:'Salvar',classe:'pri',acao:async(o,fe,b)=>{
+        const d = o.querySelector('#taData').value;
+        if(!d) return toast('Informe a data.','err');
+        b.disabled=true;
+        try{ const {error}=await S.sb.from('almox_funcionarios').update({termo_assinado_em:d}).eq('id',id);
+          if(error) throw error; fe(); $('#drawer').innerHTML='';
+          await carregarBase(); toast('Assinatura registrada.','ok'); render();
+        }catch(e){ erro(e); b.disabled=false; } }}]});
+}
+
 function formDesligar(id){
   if(!exigeGestor()) return;
   const f = S.funcionarios.find(x=>x.id===id);
@@ -2893,7 +3022,7 @@ async function cadUnidades(){
 
     <div class="card" style="margin-bottom:14px">
       <div class="card-h"><h3>Unidade em que você está</h3><div class="sp"></div>
-        ${ehGestor()?`<button class="btn sm" onclick="formRenomearUnidade()">Renomear</button>`:''}</div>
+        ${ehGestor()?`<button class="btn sm" onclick="formDadosUnidade()">Dados para documentos</button>`:''}</div>
       <div class="card-b">
         <div class="kpis" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
           <div class="kpi"><div class="l">Código</div><div class="v" style="font-size:22px">${esc(u.codigo)}</div>
@@ -2916,25 +3045,6 @@ async function cadUnidades(){
           <span><b>${esc(a.nome)}</b><small>${{GESTOR:'Gestor',OPERADOR:'Operador',LEITURA:'Consulta'}[a.papel]}</small></span>
           <span class="seta">→</span></button>`).join('')}
       </div></div></div>`:''}`;
-}
-
-function formRenomearUnidade(){
-  if(!exigeGestor()) return;
-  const u = S.unidade;
-  modal({titulo:'Renomear unidade', corpo:`
-    <label class="field"><span>Código</span>
-      <input class="inp mono" value="${esc(u.codigo)}" readonly style="background:var(--sur)"></label>
-    <label class="field"><span>Nome <em>*</em></span><input class="inp" id="unNome" value="${esc(u.nome)}"></label>`,
-    acoes:[{rotulo:'Cancelar'},{rotulo:'Salvar',classe:'pri',acao:async(o,f,b)=>{
-      const nome = o.querySelector('#unNome').value.trim();
-      if(!nome) return toast('Informe o nome.','err');
-      b.disabled=true;
-      try{ const {error} = await S.sb.from('almox_unidades').update({nome}).eq('id',u.id);
-        if(error) throw error;
-        S.unidade.nome = nome; const a = S.acessos.find(x=>x.id===u.id); if(a) a.nome = nome;
-        f(); pintarUnidade(); toast('Unidade renomeada.','ok'); pintarCadastro();
-      }catch(e){ erro(e); b.disabled=false; }
-    }}]});
 }
 
 function formNovaUnidade(){
@@ -3074,6 +3184,229 @@ function removerAcesso(id, nome){
     O login continua existindo e mantém o acesso a outras unidades, se tiver.`,
     async()=>{ const {error} = await S.sb.from('almox_acessos').delete().eq('id',id);
       if(error) throw error; toast('Acesso removido.','ok'); pintarCadastro(); }, 'Remover');
+}
+</script>
+<script>
+/* =====================================================================
+   DOCUMENTOS LEGAIS
+   Termo de compromisso de uniforme e Ficha de controle de EPI (NR-6).
+   Base legal citada no rodapé de cada documento. Não substitui a revisão
+   do RH ou do advogado trabalhista da empresa.
+   ===================================================================== */
+
+const BASE_UNIFORME = [
+  'CLT, art. 2º — o poder diretivo e disciplinar do empregador abrange a definição do padrão de apresentação e a aplicação de advertência.',
+  'CLT, art. 456-A — cabe ao empregador definir o padrão de vestimenta no ambiente de trabalho, e ao empregado a higienização do uniforme, salvo quando exigir procedimento ou produto diverso do uso comum.',
+  'CLT, art. 462, §1º — o desconto por dano causado pelo empregado depende de acordo expresso ou de comprovação de dolo.',
+  'CLT, art. 482, alíneas "e" e "h" — a desídia e a indisciplina reiteradas podem configurar falta grave, precedidas das medidas disciplinares cabíveis.',
+  'RDC ANVISA nº 216/2004, itens 4.6.4 a 4.6.6 — o manipulador de alimentos deve usar uniforme compatível com a atividade, limpo, em bom estado de conservação, trocado diariamente, e proteção para os cabelos.'
+];
+const BASE_EPI = [
+  'CLT, art. 157, I e II — cabe ao empregador cumprir e fazer cumprir as normas de segurança e instruir os empregados quanto às precauções para evitar acidentes e doenças ocupacionais.',
+  'CLT, art. 158, parágrafo único, alínea "b" — constitui ato faltoso do empregado a recusa injustificada ao uso dos equipamentos de proteção individual fornecidos pela empresa.',
+  'CLT, art. 166 — a empresa está obrigada a fornecer gratuitamente EPI adequado ao risco e em perfeito estado de conservação e funcionamento.',
+  'NR-6, item 6.6.1 — cabe ao empregador adquirir o EPI adequado, exigir seu uso, fornecê-lo gratuitamente, orientar e treinar, substituir quando danificado ou extraviado, responsabilizar-se pela higienização e manutenção, e registrar o seu fornecimento ao trabalhador.',
+  'NR-6, item 6.7.1 — cabe ao empregado usar o EPI apenas para a finalidade a que se destina, responsabilizar-se pela guarda e conservação, comunicar qualquer alteração que o torne impróprio e cumprir as determinações do empregador sobre seu uso.',
+  'NR-6, item 6.9.3 — o registro do fornecimento pode ser feito em livro, ficha ou sistema eletronizado.'
+];
+const BASE_FRIO = 'CLT, art. 253 e NR-15, Anexo 9 — o trabalho em câmara frigorífica exige vestimenta adequada ao frio e intervalo de 20 minutos de repouso a cada 1h40 de trabalho contínuo.';
+
+function blocoLegal(titulo, itens){
+  return `<div style="border-top:1px solid #999;margin-top:18px;padding-top:8px">
+    <div style="font-size:9px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:4px">${titulo}</div>
+    <ol style="margin:0;padding-left:16px;font-size:8.5px;line-height:1.5;color:#333">
+      ${itens.map(x=>`<li>${x}</li>`).join('')}</ol></div>`;
+}
+function dadosFuncionario(f){
+  return `<div class="rec-dados">
+    <div><b>Funcionário</b>${esc(f.nome)}</div>
+    <div><b>Matrícula</b>${esc(f.matricula||'—')}</div>
+    <div><b>CPF</b>${esc(f.cpf||'—')}</div>
+    <div><b>Cargo</b>${esc(f.cargo||'—')}${f.lideranca?' (liderança)':''}</div>
+    <div><b>Setor</b>${esc(f.setor||'—')}</div>
+    <div><b>Vínculo</b>${VINCULOS[f.vinculo||'EFETIVO']}</div>
+    <div><b>Admissão</b>${dt(f.data_admissao)}</div>
+    <div><b>Unidade</b>${esc(S.unidade.nome)}</div>
+  </div>`;
+}
+
+/* ---------- 1. TERMO DE COMPROMISSO DE UNIFORME ---------- */
+async function formTermoUniforme(funcId){
+  const f = S.funcionarios.find(x=>x.id===funcId);
+  if(!f) return;
+  const posse = await q('almox_vw_posse','*',b=>b.eq('funcionario_id',funcId));
+  modal({titulo:'Termo de compromisso de uniforme', wide:true, corpo:`
+    <p class="small muted" style="margin-top:0">Marque as peças que constarão do termo. Vêm marcadas as que
+    ${esc(f.nome.split(' ')[0])} tem em posse hoje; dá para incluir qualquer outra e ajustar a quantidade.</p>
+    <div class="tbl-wrap" style="border:1px solid var(--line);border-radius:6px;max-height:320px;overflow:auto">
+      <table><thead><tr><th style="width:34px"></th><th>Peça</th><th class="num" style="width:90px">Qtd</th></tr></thead>
+      <tbody>${S.estoque.filter(e=>e.item_ativo && e.variacao_ativa)
+        .sort((a,b)=>a.item.localeCompare(b.item)||a.tamanho_ordem-b.tamanho_ordem)
+        .map(e=>{ const p = posse.find(x=>x.variacao_id===e.variacao_id);
+        return `<tr><td><input type="checkbox" class="tuSel" value="${e.variacao_id}" ${p?'checked':''}></td>
+          <td>${esc(e.item)} · ${esc(e.tamanho)}${p?' <span class="tag ok">em posse</span>':''}</td>
+          <td class="num"><input class="inp mono" style="width:70px;text-align:right" type="number" min="1"
+            value="${p?p.quantidade:1}" data-v="${e.variacao_id}"></td></tr>`; }).join('')}
+      </tbody></table></div>
+    <label class="field" style="margin-top:12px"><span>Observação no termo</span>
+      <input class="inp" id="tuObs" placeholder="Opcional"></label>`,
+    acoes:[{rotulo:'Cancelar'},{rotulo:'Imprimir termo',classe:'pri',acao:(o,fe)=>{
+      const linhas = [...o.querySelectorAll('.tuSel:checked')].map(c=>{
+        const e = S.estoque.find(x=>x.variacao_id===Number(c.value));
+        const q = Number(o.querySelector(`input[data-v="${c.value}"]`).value||1);
+        return {q, n:e.item, t:e.tamanho, s:e.sku, epi:e.epi};
+      });
+      if(!linhas.length) return toast('Selecione ao menos uma peça.','err');
+      fe(); imprimirTermoUniforme(f, linhas, o.querySelector('#tuObs').value);
+    }}]});
+}
+
+function imprimirTermoUniforme(f, linhas, obs){
+  const temEpi = linhas.some(l=>l.epi);
+  imprimir(`${cabecalhoRecibo('Termo de compromisso de uniforme',
+      'TCU-'+(S.unidade.codigo)+'-'+hoje().replace(/-/g,'').slice(2))}
+    <div style="background:#eee;border:1px solid #999;padding:5px 8px;font-size:10px;
+                letter-spacing:.08em;text-transform:uppercase;font-weight:700;margin-bottom:14px">
+      Via da empresa — arquivar no dossiê do funcionário</div>
+    ${dadosFuncionario(f)}
+    ${tabelaRecibo(linhas)}
+    ${obs?`<p style="font-size:11px;margin:-6px 0 12px"><b>Observação:</b> ${esc(obs)}</p>`:''}
+    <div class="rec-termo">
+      <b>DECLARAÇÃO E COMPROMISSO</b><br><br>
+      Declaro ter recebido de ${esc(CONFIG.EMPRESA)} — ${esc(S.unidade.nome)} as peças de uniforme
+      relacionadas acima, nas quantidades e tamanhos discriminados, conferidas por mim e em perfeitas
+      condições de uso, e assumo os seguintes compromissos:<br><br>
+
+      <b>1. Uso e apresentação.</b> Comprometo-me a comparecer ao trabalho devidamente uniformizado em toda a
+      jornada, com o uniforme limpo, íntegro e adequado à minha função, observando o padrão de vestimenta
+      definido pela empresa e as regras de higiene aplicáveis aos serviços de alimentação.<br><br>
+
+      <b>2. Conservação e higienização.</b> Responsabilizo-me pela guarda, conservação e higienização das peças
+      recebidas, devolvendo-as sempre que substituídas e no ato do desligamento.<br><br>
+
+      <b>3. Esquecimento ou não uso.</b> Estou ciente de que comparecer ao trabalho sem o uniforme completo,
+      ou com o uniforme em condições inadequadas, caracteriza descumprimento de norma interna e poderá
+      ensejar a aplicação de <b>advertência</b>, no exercício regular do poder disciplinar do empregador,
+      sem prejuízo das medidas cabíveis em caso de reiteração.<br><br>
+
+      <b>4. Empréstimo de peça.</b> Quando eu receber peça a título de empréstimo, comprometo-me a devolvê-la
+      no prazo combinado e <b>nas mesmas condições em que a recebi</b>, ressalvado o desgaste natural do uso.
+      Estou ciente de que a não devolução, ou a devolução em estado que inviabilize o reaproveitamento por
+      dano decorrente de uso indevido, poderá gerar cobrança do valor de reposição, cujo desconto em folha
+      <b>depende da minha anuência expressa</b> ou da comprovação de dolo, nos termos da lei.<br><br>
+
+      <b>5. Extravio e dano.</b> Estou ciente de que a perda, o extravio ou o dano causado por uso indevido
+      poderão ser objeto de reposição ou de ressarcimento, observada a mesma regra do item anterior, e de que
+      me será assegurado o direito de apresentar justificativa antes de qualquer desconto.
+      ${temEpi?`<br><br><b>6. Equipamentos de proteção individual.</b> Declaro ter recebido orientação sobre o uso
+      correto, a guarda e a conservação dos EPI acima assinalados, e estou ciente de que a recusa injustificada
+      ao seu uso constitui ato faltoso, conforme a legislação de segurança do trabalho.`:''}
+    </div>
+    ${assinaturas(f.nome)}
+    ${blocoLegal('Fundamentação legal', temEpi ? BASE_UNIFORME.concat([BASE_EPI[1]]) : BASE_UNIFORME)}
+    <div style="margin-top:10px;font-size:8.5px;color:#666">
+      Documento gerado pelo ${esc(CONFIG.SISTEMA)} em ${new Date().toLocaleString('pt-BR')}.
+      Recomenda-se a revisão do texto pelo RH ou pela assessoria jurídica trabalhista da empresa antes da adoção
+      em larga escala.</div>`);
+}
+
+/* ---------- 2. FICHA DE CONTROLE DE EPI (NR-6) ---------- */
+async function fichaEPI(funcId){
+  const f = S.funcionarios.find(x=>x.id===funcId);
+  if(!f) return;
+  const movs = await q('almox_vw_movimentacoes','*',
+    b=>b.eq('funcionario_id',funcId).eq('cancelada',false)
+        .in('tipo',['SAIDA_FUNCIONARIO','SAIDA_EMPRESTIMO','ENTRADA_DEVOLUCAO','ENTRADA_RETORNO_EMPRESTIMO'])
+        .order('data'));
+  const epis = new Set(S.itens.filter(i=>i.epi).map(i=>i.nome));
+  const linhas = movs.filter(m=>epis.has(m.item));
+  if(!linhas.length) return toast('Este funcionário ainda não recebeu nenhum EPI.','err');
+
+  const caDe = nome => S.itens.find(i=>i.nome===nome)?.ca_epi || '';
+  const semCA = [...new Set(linhas.filter(l=>!caDe(l.item)).map(l=>l.item))];
+
+  imprimir(`${cabecalhoRecibo('Ficha de controle de EPI',
+      'EPI-'+(S.unidade.codigo)+'-'+String(f.id).padStart(4,'0'))}
+    <div style="background:#eee;border:1px solid #999;padding:5px 8px;font-size:10px;
+                letter-spacing:.08em;text-transform:uppercase;font-weight:700;margin-bottom:6px">
+      Registro de fornecimento de equipamento de proteção individual — NR-6, item 6.6.1</div>
+    <div style="font-size:9.5px;color:#444;margin-bottom:12px">
+      ${esc(CONFIG.EMPRESA)} — ${esc(S.unidade.nome)}${S.unidade.cnpj?' · CNPJ '+esc(S.unidade.cnpj):''}
+      ${S.unidade.endereco?'<br>'+esc(S.unidade.endereco):''}</div>
+    ${dadosFuncionario(f)}
+    <table><thead><tr>
+      <th style="width:70px">Data</th><th>Equipamento</th><th style="width:70px">Tamanho</th>
+      <th style="width:70px">CA</th><th style="width:34px">Qtd</th><th style="width:78px">Motivo</th>
+      <th style="width:150px">Assinatura do empregado</th></tr></thead>
+      <tbody>${linhas.map(l=>`<tr>
+        <td class="mono" style="font-size:10px">${dt(l.data)}</td>
+        <td style="font-size:10.5px">${esc(l.item)}</td>
+        <td style="text-align:center;font-size:10.5px">${esc(l.tamanho)}</td>
+        <td class="mono" style="font-size:10px;text-align:center">${esc(caDe(l.item) || '—')}</td>
+        <td style="text-align:center" class="mono">${l.quantidade}</td>
+        <td style="font-size:9px">${l.e_entrada ? 'Devolução'
+            : l.tipo==='SAIDA_EMPRESTIMO' ? 'Empréstimo' : 'Fornecimento'}</td>
+        <td></td></tr>`).join('')}
+        ${Array.from({length:Math.max(0, 6-linhas.length)}).map(()=>
+          `<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`).join('')}
+      </tbody></table>
+    ${semCA.length?`<p style="font-size:9.5px;color:#8a2b00;border:1px solid #d9a06a;background:#fdf3e9;
+       padding:6px 8px;margin:-6px 0 12px"><b>Atenção:</b> sem número de CA cadastrado para:
+       ${esc(semCA.join('; '))}. O Certificado de Aprovação é exigido pela fiscalização — preencha no cadastro do item.</p>`:''}
+    <div class="rec-termo">
+      <b>DECLARAÇÃO DO EMPREGADO</b><br>
+      Declaro que recebi gratuitamente da empresa os equipamentos de proteção individual acima relacionados,
+      adequados ao risco da minha atividade e em perfeito estado de conservação e funcionamento, e que fui
+      orientado e treinado quanto ao seu uso correto, guarda, conservação e higienização.<br><br>
+      Comprometo-me a: usar o EPI apenas para a finalidade a que se destina e durante toda a exposição ao risco;
+      responsabilizar-me pela guarda e conservação; comunicar imediatamente ao responsável qualquer alteração
+      que o torne impróprio para uso; e cumprir as determinações da empresa sobre o seu uso.<br><br>
+      Estou ciente de que <b>a recusa injustificada ao uso do EPI constitui ato faltoso</b>, sujeito às medidas
+      disciplinares cabíveis, e de que a perda ou danificação por uso indevido deve ser comunicada para
+      substituição.
+    </div>
+    <div class="rec-ass">
+      <div>${esc(f.nome)}<br><span style="font-size:10px;color:#555">Empregado — assinatura e data</span></div>
+      <div>${esc(S.unidade.responsavel_epi || S.perfil.nome)}<br>
+        <span style="font-size:10px;color:#555">Responsável pela entrega — assinatura e data</span></div>
+    </div>
+    ${blocoLegal('Fundamentação legal', BASE_EPI.concat(
+       linhas.some(l=>/TÉRMICA|JAPONA|BALACLAVA/i.test(l.item)) ? [BASE_FRIO] : []))}
+    <div style="margin-top:10px;font-size:8.5px;color:#666">
+      Ficha gerada pelo ${esc(CONFIG.SISTEMA)} em ${new Date().toLocaleString('pt-BR')} a partir dos
+      lançamentos registrados. Guardar assinada e disponível para a fiscalização.
+      Registro eletrônico admitido pela NR-6, item 6.9.3.</div>`);
+}
+
+/* ---------- dados da unidade para os documentos ---------- */
+function formDadosUnidade(){
+  if(!exigeGestor()) return;
+  const u = S.unidade;
+  modal({titulo:'Dados da unidade nos documentos', corpo:`
+    <p class="small muted" style="margin-top:0">Aparecem no cabeçalho da ficha de EPI, que é o documento
+    que a fiscalização pede.</p>
+    <label class="field"><span>Razão social / nome no documento</span>
+      <input class="inp" id="duNome" value="${esc(u.nome)}"></label>
+    <label class="field"><span>CNPJ</span><input class="inp mono" id="duCnpj" value="${esc(u.cnpj||'')}"
+      placeholder="00.000.000/0000-00"></label>
+    <label class="field"><span>Endereço</span><input class="inp" id="duEnd" value="${esc(u.endereco||'')}"></label>
+    <label class="field"><span>Responsável pela entrega de EPI</span>
+      <input class="inp" id="duResp" value="${esc(u.responsavel_epi||'')}"
+        placeholder="Quem assina a ficha pela empresa"></label>`,
+    acoes:[{rotulo:'Cancelar'},{rotulo:'Salvar',classe:'pri',acao:async(o,f,b)=>{
+      b.disabled=true;
+      const reg = {nome:o.querySelector('#duNome').value.trim(),
+        cnpj:o.querySelector('#duCnpj').value.trim()||null,
+        endereco:o.querySelector('#duEnd').value.trim()||null,
+        responsavel_epi:o.querySelector('#duResp').value.trim()||null};
+      if(!reg.nome) return toast('Informe o nome.','err');
+      try{ const {error} = await S.sb.from('almox_unidades').update(reg).eq('id',u.id);
+        if(error) throw error;
+        Object.assign(S.unidade, reg);
+        const a = S.acessos.find(x=>x.id===u.id); if(a) Object.assign(a, reg);
+        f(); pintarUnidade(); toast('Dados salvos.','ok'); pintarCadastro();
+      }catch(e){ erro(e); b.disabled=false; }
+    }}]});
 }
 </script>
 </body>
