@@ -225,6 +225,8 @@ td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabu
   .shell,.ovl,.drw,.toast{display:none !important}
   #print{display:block !important;padding:0;font-size:12px;color:#000}
   @page{size:A4;margin:14mm}
+  .pagina{page-break-after:always}
+  .pagina:last-child{page-break-after:auto}
   .folha table{page-break-inside:auto}
   .folha tr{page-break-inside:avoid;page-break-after:auto}
   .folha .gr{page-break-after:avoid}
@@ -317,7 +319,7 @@ const CONFIG = {
   SUPABASE_ANON_KEY: 'sb_publishable_QpfTr4uyVBrbig-CVlynzg_U_cWqRzz',
   SISTEMA: 'NEXUS — Almoxarifado',
   EMPRESA: 'Grupo Ilha',
-  VERSAO: '2.3.0'
+  VERSAO: '2.7.0'
 };
 
 const LOGO_SRC = 'data:image/png;base64,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';
@@ -1671,6 +1673,43 @@ Concordo, desde já, que nessa hipótese o valor de reposição aqui declarado p
 No caso de equipamento de proteção individual, declaro ter recebido orientação sobre uso correto, guarda e conservação, nos termos da NR-6.`;
 const TERMO_ENTREGA = `Declaro ter recebido do almoxarifado os itens relacionados acima, conferidos por mim quanto a tipo, tamanho e quantidade, em perfeitas condições de uso. Comprometo-me a utilizá-los exclusivamente no exercício das minhas funções, a mantê-los limpos e conservados e a devolvê-los no ato do desligamento ou quando substituídos. Estou ciente de que a perda ou o dano por uso indevido poderá ser objeto de reposição, conforme o artigo 462, §1º, da CLT, mediante minha anuência. No caso de equipamentos de proteção individual, declaro ter recebido orientação sobre uso, guarda e conservação, nos termos da NR-6, e me responsabilizo pelo seu uso durante toda a jornada.`;
 
+const VIAS = {EMPRESA:'Via da empresa — arquivar no dossiê do funcionário',
+              FUNCIONARIO:'Via do funcionário — entregar a ele'};
+
+function faixaVia(via){
+  return `<div style="background:${via==='FUNCIONARIO'?'#fff':'#eee'};border:1px solid #999;padding:5px 8px;
+    font-size:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;margin-bottom:14px">
+    ${VIAS[via]}</div>`;
+}
+
+// Pergunta qual via imprimir e chama de volta com a lista escolhida.
+function escolherVia(titulo, aoEscolher){
+  modal({titulo, corpo:`
+    <p class="small muted" style="margin-top:0">O funcionário assina as duas vias: uma fica com a empresa,
+    a outra vai com ele. Imprimir as duas é o padrão.</p>
+    <div class="uni-lista">
+      <button class="uni-op" data-v="AMBAS"><span class="cod">2 vias</span>
+        <span><b>As duas</b><small>empresa e funcionário, uma folha cada</small></span><span class="seta">→</span></button>
+      <button class="uni-op" data-v="EMPRESA"><span class="cod">Empresa</span>
+        <span><b>Só a via da empresa</b><small>para arquivar no dossiê</small></span><span class="seta">→</span></button>
+      <button class="uni-op" data-v="FUNCIONARIO"><span class="cod">Func.</span>
+        <span><b>Só a via do funcionário</b><small>segunda via, para entregar a ele</small></span><span class="seta">→</span></button>
+    </div>`,
+    aoAbrir:o=>{
+      o.querySelectorAll('.uni-op').forEach(b=> b.onclick = ()=>{
+        const v = b.dataset.v;
+        o.remove();
+        aoEscolher(v==='AMBAS' ? ['EMPRESA','FUNCIONARIO'] : [v]);
+      });
+    },
+    acoes:[{rotulo:'Cancelar'}]});
+}
+
+// Monta uma folha por via, com quebra de página entre elas.
+function imprimirVias(vias, montar){
+  imprimir(vias.map(v=>`<div class="pagina">${montar(v)}</div>`).join(''));
+}
+
 function imprimir(html){
   $('#print').innerHTML = html;
   setTimeout(()=>window.print(), 80);
@@ -1685,15 +1724,17 @@ function tabelaRecibo(linhas){
 function assinaturas(nomeFunc){
   return `<div class="rec-ass">
     <div>${esc(nomeFunc)}<br><span style="font-size:10px;color:#555">Funcionário — assinatura e data</span></div>
-    <div>${esc(S.perfil?.nome||'')}<br><span style="font-size:10px;color:#555">Almoxarifado — responsável</span></div></div>`;
+    <div>${esc(S.perfil?.nome||'')}<br><span style="font-size:10px;color:#555">RH Local — responsável</span></div></div>`;
 }
 
-async function reciboEmprestimo(id){
+async function reciboEmprestimo(id, vias){
+  if(!vias) return escolherVia('Imprimir recibo de empréstimo', v => reciboEmprestimo(id, v));
   const [emp] = await q('almox_vw_emprestimos','*',b=>b.eq('id',id));
   const itens = await q('almox_emprestimo_itens','*, almox_variacoes(sku, almox_itens(nome), almox_tamanhos(rotulo))',
                         b=>b.eq('emprestimo_id',id));
   const total = itens.reduce((t,i)=>t + i.quantidade*Number(i.valor_unitario_reposicao||0), 0);
-  imprimir(`${cabecalhoRecibo('Recibo de empréstimo de uniforme', emp.codigo)}
+  imprimirVias(vias, via => `${cabecalhoRecibo('Recibo de empréstimo de uniforme', emp.codigo)}
+    ${faixaVia(via)}
     <div class="rec-dados">
       <div><b>Funcionário</b>${esc(emp.funcionario)}</div>
       <div><b>Matrícula</b>${esc(emp.matricula||'—')}</div>
@@ -1727,15 +1768,16 @@ async function reciboEmprestimo(id){
       'NR-6, itens 6.6.1 e 6.7.1 — obrigações do empregador e do empregado quanto ao equipamento de proteção individual.'
     ])}`);
 }
-async function termoEntrega(codigo){
+async function termoEntrega(codigo, vias){
+  if(!vias) return escolherVia('Imprimir termo de entrega ' + codigo,
+    v => termoEntrega(codigo, v));
   const [ent] = await q('almox_vw_entregas','*',b=>b.eq('codigo',codigo));
   if(!ent) return toast('Termo não encontrado.','err');
   const linhas = await q('almox_vw_movimentacoes','*',
     b=>b.eq('documento',codigo).eq('tipo','SAIDA_FUNCIONARIO').order('item'));
-  imprimir(`${cabecalhoRecibo('Termo de entrega de uniforme', ent.codigo)}
-    <div style="background:#eee;border:1px solid #999;padding:5px 8px;font-size:10px;
-                letter-spacing:.08em;text-transform:uppercase;font-weight:700;margin-bottom:14px">
-      Via da empresa — arquivar no dossiê do funcionário</div>
+
+  imprimirVias(vias, via => `${cabecalhoRecibo('Termo de entrega de uniforme', ent.codigo)}
+    ${faixaVia(via)}
     <div class="rec-dados">
       <div><b>Funcionário</b>${esc(ent.funcionario)}</div>
       <div><b>Matrícula</b>${esc(ent.matricula||'—')}</div>
@@ -1750,15 +1792,16 @@ async function termoEntrega(codigo){
     <div class="rec-termo"><b>TERMO DE RECEBIMENTO E RESPONSABILIDADE</b><br>${TERMO_ENTREGA}</div>
     ${assinaturas(ent.funcionario)}
     <div style="margin-top:22px;font-size:9.5px;color:#666;border-top:1px solid #ccc;padding-top:6px">
-      Documento gerado pelo sistema de almoxarifado em ${new Date().toLocaleString('pt-BR')}.
-      Guardar assinado no prontuário do funcionário. Documento ${esc(ent.codigo)}.</div>`);
+      Documento ${esc(ent.codigo)} · gerado pelo ${esc(CONFIG.SISTEMA)} em ${new Date().toLocaleString('pt-BR')}.
+      ${via==='EMPRESA' ? 'Guardar assinado no prontuário do funcionário.'
+                        : 'Esta é a sua via. Guarde-a: ela comprova o que você recebeu e em que data.'}</div>`);
 }
 
-function termoCobranca(cb){
-  imprimir(`${cabecalhoRecibo('Comunicado de extravio de uniforme', cb.codigo)}
-    <div style="background:#eee;border:1px solid #999;padding:5px 8px;font-size:10px;
-                letter-spacing:.08em;text-transform:uppercase;font-weight:700;margin-bottom:14px">
-      Via da empresa — arquivar no dossiê do funcionário</div>
+
+function termoCobranca(cb, vias){
+  if(!vias) return escolherVia('Imprimir comunicado de extravio', v => termoCobranca(cb, v));
+  imprimirVias(vias, via => `${cabecalhoRecibo('Comunicado de extravio de uniforme', cb.codigo)}
+    ${faixaVia(via)}
     <div class="rec-dados">
       <div><b>Funcionário</b>${esc(cb.funcionario)}</div>
       <div><b>Matrícula</b>${esc(cb.matricula||'—')}</div>
@@ -1951,7 +1994,15 @@ function formFolhaContagem(inv){
           <input type="checkbox" class="fcCat" value="${esc(c)}" checked> ${esc(c)}</label>
           <span class="mono small muted">${cats[c]} posições</span></div>`).join('')}
       </div></div>`}
-    <label class="check" style="margin-top:12px"><input type="checkbox" id="fcCega" checked>
+    <div style="display:flex;gap:8px;margin:10px 0">
+      <button type="button" class="btn sm" id="fcSoEpi">Contar só os EPI</button>
+      <button type="button" class="btn sm" id="fcSemEpi">Contar só uniforme</button>
+    </div>
+    <label class="check"><input type="checkbox" id="fcSepararEpi" checked>
+      Separar os EPI em bloco próprio, no início da folha</label>
+    <p class="small muted" style="margin:-4px 0 10px">EPI é o que a fiscalização confere. Em bloco próprio,
+    com o CA impresso, a contagem dele não se perde no meio do uniforme.</p>
+    <label class="check"><input type="checkbox" id="fcCega" checked>
       Contagem cega — não imprimir o saldo do sistema</label>
     <p class="small muted" style="margin:-4px 0 10px">Recomendado. Se o papel já traz o saldo, quem conta tende
     a copiar o número em vez de conferir a prateleira.</p>
@@ -1965,6 +2016,14 @@ function formFolhaContagem(inv){
       const t = o.querySelector('#fcTudo'), n = o.querySelector('#fcNada');
       if(t) t.onclick = ()=> o.querySelectorAll('.fcCat').forEach(c=>c.checked=true);
       if(n) n.onclick = ()=> o.querySelectorAll('.fcCat').forEach(c=>c.checked=false);
+      o.querySelector('#fcSoEpi').onclick  = ()=>{ o._filtroEpi='SO';   marcarEpi(o, true);  };
+      o.querySelector('#fcSemEpi').onclick = ()=>{ o._filtroEpi='SEM';  marcarEpi(o, false); };
+      function marcarEpi(o, soEpi){
+        const catsEpi = new Set(S.estoque.filter(e=>e.epi).map(e=>e.categoria||'Sem categoria'));
+        o.querySelectorAll('.fcCat').forEach(c=>{
+          c.checked = soEpi ? catsEpi.has(c.value) : true; });
+        toast(soEpi ? 'Folha só com os EPI.' : 'Folha só com uniforme.','ok');
+      }
     },
     acoes:[{rotulo:'Cancelar'},{rotulo:'Imprimir folha',classe:'pri',acao:(o,f)=>{
       let cats2;
@@ -1978,36 +2037,47 @@ function formFolhaContagem(inv){
         inv, categorias: cats2,
         cega: o.querySelector('#fcCega').checked,
         zerados: o.querySelector('#fcZerados').checked,
+        separarEpi: o.querySelector('#fcSepararEpi').checked,
+        filtroEpi: o._filtroEpi || null,
         quem: o.querySelector('#fcQuem').value.trim()
       });
     }}]});
 }
 
-function imprimirFolhaContagem({inv, categorias, cega, zerados, quem}){
+function imprimirFolhaContagem({inv, categorias, cega, zerados, quem, separarEpi=true, filtroEpi=null}){
   // Inclui item inativo que ainda tem peça: ele está na prateleira e precisa ser contado.
   let dados = S.estoque.filter(e=> (e.variacao_ativa && e.item_ativo) || e.saldo!==0 || e.saldo_lavanderia!==0);
   if(categorias && categorias.length)
     dados = dados.filter(e=> categorias.includes(e.categoria || 'Sem categoria'));
   if(!zerados) dados = dados.filter(e=> e.saldo>0 || e.saldo_lavanderia>0);
+  if(filtroEpi === 'SO')  dados = dados.filter(e=> e.epi);
+  if(filtroEpi === 'SEM') dados = dados.filter(e=> !e.epi);
   if(!dados.length) return toast('Nada a contar com esse filtro.','err');
 
+  // Com separarEpi, o EPI vira bloco proprio e vai na frente.
   const porGrade = {};
   dados.forEach(e=>{
-    (porGrade[e.grade_id] ||= {grade:e.grade, grade_id:e.grade_id, itens:{}});
-    (porGrade[e.grade_id].itens[e.item_id] ||= {
-      nome:e.item, cat:e.categoria, inativo:!(e.item_ativo && e.variacao_ativa), cels:{}});
-    porGrade[e.grade_id].itens[e.item_id].cels[e.tamanho_id ?? 'u'] = e;
+    const ehEpi = separarEpi && e.epi;
+    const chave = (ehEpi?'EPI-':'UNI-') + e.grade_id;
+    (porGrade[chave] ||= {grade:e.grade, grade_id:e.grade_id, epi:ehEpi, itens:{}});
+    (porGrade[chave].itens[e.item_id] ||= {
+      nome:e.item, cat:e.categoria, epi:e.epi,
+      ca:(S.itens.find(i=>i.id===e.item_id)||{}).ca_epi || '',
+      inativo:!(e.item_ativo && e.variacao_ativa), cels:{}});
+    porGrade[chave].itens[e.item_id].cels[e.tamanho_id ?? 'u'] = e;
   });
-  const grades = Object.values(porGrade)
-    .sort((a,b)=> Object.keys(b.itens).length - Object.keys(a.itens).length);
+  const grades = Object.values(porGrade).sort((a,b)=>
+      (b.epi?1:0) - (a.epi?1:0) || Object.keys(b.itens).length - Object.keys(a.itens).length);
 
   const totalItens = grades.reduce((t,g)=>t+Object.keys(g.itens).length,0);
-  const resumo = grades.map(g=>`${esc(g.grade)}: ${Object.keys(g.itens).length}`).join(' · ');
+  const totalEpi = grades.reduce((t,g)=>t+Object.values(g.itens).filter(i=>i.epi).length,0);
+  const resumo = grades.map((g,i)=>`${i+1}. ${g.epi?'EPI ':''}${esc(g.grade)} (${Object.keys(g.itens).length})`).join(' · ');
 
   const tabelas = grades.map((g,ix)=>{
     const tams = tamanhosDaGrade(g.grade_id);
     const itens = Object.values(g.itens).sort((a,b)=>a.nome.localeCompare(b.nome));
-    return `<div class="gr">Bloco ${ix+1} de ${grades.length} — ${esc(g.grade)}
+    return `<div class="gr" ${g.epi?'style="background:#7a2e05"':''}>Bloco ${ix+1} de ${grades.length} —
+      ${g.epi?'EPI · ':''}${esc(g.grade)}
       <span style="float:right;font-weight:400">${itens.length} itens</span></div>
       <table><thead><tr>
         <th style="text-align:left">Item</th>
@@ -2015,7 +2085,8 @@ function imprimirFolhaContagem({inv, categorias, cega, zerados, quem}){
         <th style="width:52px">Total</th></tr></thead>
       <tbody>${itens.map(it=>`<tr>
         <td class="it"><b>${esc(it.nome)}</b>${it.inativo?' <span style="font-size:8px">(INATIVO — contar se houver)</span>':''}<br>
-          <span style="font-size:8.5px;color:#666">${esc(it.cat||'')}</span></td>
+          <span style="font-size:8.5px;color:#666">${esc(it.cat||'')}${
+            it.epi ? ' · EPI' + (it.ca ? ' · CA '+esc(it.ca) : ' · SEM CA') : ''}</span></td>
         ${tams.map(t=>{ const c = it.cels[t.id];
           if(!c) return '<td class="cx na"></td>';
           return `<td class="cx">${cega?'':`<span style="font-size:8px;color:#aaa">${c.saldo}</span>`}</td>`;
@@ -2039,7 +2110,8 @@ function imprimirFolhaContagem({inv, categorias, cega, zerados, quem}){
       ${cega ? 'Esta é uma contagem cega: o saldo do sistema não foi impresso de propósito.'
              : 'O número pequeno em cinza é o saldo do sistema, apenas para conferência.'}
       Quadro hachurado é tamanho que não existe para aquele item.<br>
-      <b>Esta folha tem ${grades.length} bloco(s), ${totalItens} itens e ${dados.length} posições.</b>
+      <b>Esta folha tem ${grades.length} bloco(s), ${totalItens} itens${
+        totalEpi?` — sendo ${totalEpi} de EPI`:''} e ${dados.length} posições.</b>
       Confira se recebeu todos os blocos: ${resumo}.
     </p>
     ${tabelas}
@@ -2122,13 +2194,14 @@ async function listarFuncionarios(){
 }
 async function fichaFuncionario(id){
   const f = S.funcionarios.find(x=>x.id===id);
-  const [posse, emps, hist, dota, entregas, cobs] = await Promise.all([
+  const [posse, emps, hist, dota, entregas, cobs, treinos] = await Promise.all([
     q('almox_vw_posse','*',b=>b.eq('funcionario_id',id)),
     q('almox_vw_emprestimos','*',b=>b.eq('funcionario_id',id).order('data_saida',{ascending:false}).limit(20)),
     q('almox_vw_movimentacoes','*',b=>b.eq('funcionario_id',id).order('data',{ascending:false}).limit(40)),
     q('almox_vw_dotacao','*',b=>b.eq('funcionario_id',id)),
     q('almox_vw_entregas','*',b=>b.eq('funcionario_id',id).order('data',{ascending:false}).limit(20)),
-    q('almox_vw_cobrancas','*',b=>b.eq('funcionario_id',id).order('data',{ascending:false}).limit(20))
+    q('almox_vw_cobrancas','*',b=>b.eq('funcionario_id',id).order('data',{ascending:false}).limit(20)),
+    q('almox_treinamentos_epi','*',b=>b.eq('funcionario_id',id).order('data',{ascending:false}))
   ]);
   drawer({titulo:f.nome, sub:`${esc(f.cargo||'—')} · ${esc(f.setor||'—')}${f.matricula?' · '+esc(f.matricula):''}`, corpo:`
     <div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap">
@@ -2141,6 +2214,10 @@ async function fichaFuncionario(id){
     <div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;align-items:center">
       <button class="btn sm" onclick="formTermoUniforme(${id})">Termo de compromisso</button>
       <button class="btn sm" onclick="fichaEPI(${id})">Ficha de EPI</button>
+      ${podeOperar()?`<button class="btn sm" onclick="formTreinamento(${id})">Registrar treinamento de EPI</button>`:''}
+      ${treinos.length
+        ? `<span class="tag ok">treinado em ${dt(treinos[0].data)}</span>`
+        : '<span class="tag zero">sem treinamento de EPI</span>'}
       ${f.termo_assinado_em
         ? `<span class="tag ok">termo assinado em ${dt(f.termo_assinado_em)}</span>
            ${ehGestor()?`<button class="btn sm" onclick="formTermoAssinado(${id})">Alterar data</button>`:''}`
@@ -2174,6 +2251,16 @@ async function fichaFuncionario(id){
       <span class="tag ${e.atrasado?'zero':e.status==='DEVOLVIDO'?'ok':'brand'}">${STATUS_EMP[e.status]}</span>
       <button class="btn sm" onclick="abrirEmprestimo(${e.id})">Ver</button></div>`).join('')}</div>`
       : '<p class="small muted" style="margin-bottom:20px">Nenhum empréstimo.</p>'}
+    ${!treinos.length && posse.length ? `<div class="card" style="border-color:#EBC7C3;background:var(--red-l);margin-bottom:18px">
+      <div class="card-b" style="padding:10px 12px"><b style="color:var(--red)">Treinamento de EPI não registrado</b>
+      <p class="small" style="margin:4px 0 0">A NR-6, item 6.6.1 "d", obriga orientar e treinar quanto ao uso,
+      guarda e conservação. Sem esse registro, a ficha de EPI fica incompleta numa fiscalização.</p></div></div>`:''}
+    ${treinos.length?`<h4 class="mono small muted" style="text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Treinamento de EPI</h4>
+    <div class="lista-itens" style="margin-bottom:20px">${treinos.map(t=>`
+      <div class="li"><span class="tag ${t.tipo==='INICIAL'?'brand':'ok'}">${
+        {INICIAL:'Inicial',RECICLAGEM:'Reciclagem',MUDANCA_FUNCAO:'Mudança de função'}[t.tipo]}</span>
+        <span class="sp small">${dt(t.data)}${t.responsavel?' · '+esc(t.responsavel):''}${t.carga_horaria?' · '+t.carga_horaria+'h':''}</span>
+      </div>`).join('')}</div>`:''}
     <h4 class="mono small muted" style="text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Termos de entrega</h4>
     ${entregas.length?`<div class="lista-itens" style="margin-bottom:20px">${entregas.map(t=>`
       <div class="li"><span class="mono small">${esc(t.codigo)}</span>
@@ -2335,7 +2422,15 @@ function cadItens(){
       <td class="num">${i.estoque_minimo}</td>
       <td class="num">${brl(i.custo_referencia)}</td>
       <td class="num" style="font-weight:600">${num(saldos[i.id]||0)}</td>
-      <td>${i.epi?'<span class="tag low">EPI</span> ':''}${i.exige_devolucao?'<span class="tag brand">devolução</span>':''}${i.ativo?'':'<span class="tag">inativo</span>'}</td>
+      <td>${i.epi?(()=>{
+          const v = i.ca_validade ? Math.ceil((new Date(i.ca_validade+'T12:00:00')-new Date())/864e5) : null;
+          if(!i.ca_epi) return '<span class="tag zero">EPI sem CA</span>';
+          if(v===null)  return `<span class="tag low">CA ${esc(i.ca_epi)} · sem validade</span>`;
+          if(v<0)       return `<span class="tag zero">CA ${esc(i.ca_epi)} · vencido</span>`;
+          if(v<60)      return `<span class="tag low">CA ${esc(i.ca_epi)} · vence em ${v}d</span>`;
+          return `<span class="tag ok">CA ${esc(i.ca_epi)}</span>`;
+        })():''}
+        ${i.exige_devolucao?'<span class="tag brand">devolução</span>':''}${i.ativo?'':'<span class="tag">inativo</span>'}</td>
       <td style="text-align:right">${ehGestor()?`<button class="btn sm" onclick="formItem(${i.id})">Editar</button>`:''}</td>
     </tr>`).join('')}</tbody></table></div></div>`;
 }
@@ -2395,8 +2490,10 @@ function formItem(id=null){
         .filter(Boolean).map(g=>`<option>${esc(g)}</option>`).join('')}</datalist></label>
     <div class="row">
       <label class="check"><input type="checkbox" id="iEpi" ${i.epi?'checked':''}> É EPI</label>
-      <label class="field ${i.epi?'':'hide'}" id="iCaBox"><span>Nº do CA</span>
-        <input class="inp mono" id="iCa" value="${esc(i.ca_epi||'')}"></label>
+      <label class="field ${i.epi?'':'hide'}" id="iCaBox"><span>Nº do CA <em>*</em></span>
+        <input class="inp mono" id="iCa" value="${esc(i.ca_epi||'')}" placeholder="Ex.: 38412"></label>
+      <label class="field ${i.epi?'':'hide'}" id="iCaValBox"><span>CA válido até <em>*</em></span>
+        <input class="inp" id="iCaVal" type="date" value="${i.ca_validade||''}"></label>
     </div>
     <label class="check"><input type="checkbox" id="iDev" ${i.exige_devolucao?'checked':''}> Exige devolução ao desligamento</label>
     <label class="check"><input type="checkbox" id="iAtivo" ${i.ativo!==false?'checked':''}> Item ativo</label>
@@ -2405,6 +2502,8 @@ function formItem(id=null){
     acoes:[{rotulo:'Cancelar'},{rotulo:'Salvar item',classe:'pri',acao:async(o,f,b)=>{
       const nome = o.querySelector('#iNome').value.trim();
       if(!nome) return toast('Informe o nome do item.','err');
+      if(o.querySelector('#iEpi').checked && !o.querySelector('#iCa').value.trim())
+        return toast('EPI sem número de CA não comprova aprovação na fiscalização. Preencha o CA.','err');
       b.disabled=true;
       const reg = {nome, codigo:o.querySelector('#iCod').value.trim()||null,
         categoria_id:Number(o.querySelector('#iCat').value)||null, grade_id:Number(o.querySelector('#iGrade').value),
@@ -2416,6 +2515,7 @@ function formItem(id=null){
         setores_uso:[...o.querySelectorAll('.iSetor:checked')].map(c=>c.value),
         observacao_uso:o.querySelector('#iObsUso').value.trim()||null,
         epi:o.querySelector('#iEpi').checked, ca_epi:o.querySelector('#iCa').value.trim()||null,
+        ca_validade:o.querySelector('#iCaVal').value||null,
         exige_devolucao:o.querySelector('#iDev').checked, ativo:o.querySelector('#iAtivo').checked,
         atualizado_em:new Date().toISOString(), unidade_id:S.unidade.id};
       try{
@@ -2428,8 +2528,9 @@ function formItem(id=null){
       }catch(e){ erro(e); b.disabled=false; }
     }}]
     ,aoAbrir:o=>{
-      o.querySelector('#iEpi').onchange = e=>
+      o.querySelector('#iEpi').onchange = e=>{
         o.querySelector('#iCaBox').classList.toggle('hide', !e.target.checked);
+        o.querySelector('#iCaValBox').classList.toggle('hide', !e.target.checked); };
       const del = o.querySelector('#iFotoDel');
       if(del) del.onclick = ()=>{ o.querySelector('#iFotoUrl').value='';
         o.querySelector('#iFotoPrev').innerHTML='<span>sem foto</span>'; del.remove(); };
@@ -3254,6 +3355,47 @@ async function formCobrarPendencia(funcId){
 }
 
 /* --------- desligamento e reativação --------- */
+function formTreinamento(funcId){
+  if(!podeOperar()) return toast('Sem permissão.','err');
+  const f = S.funcionarios.find(x=>x.id===funcId);
+  modal({titulo:'Registrar treinamento de EPI', corpo:`
+    <p class="small muted" style="margin-top:0">A NR-6, item 6.6.1 alínea "d", obriga a empresa a orientar e
+    treinar o trabalhador sobre o uso correto, a guarda e a conservação do EPI. Este registro é a prova disso,
+    e sai impresso na ficha de EPI de ${esc(f.nome.split(' ')[0])}.</p>
+    <div class="row">
+      <label class="field"><span>Data <em>*</em></span>
+        <input class="inp" id="trData" type="date" max="${hoje()}" value="${hoje()}"></label>
+      <label class="field"><span>Tipo <em>*</em></span><select class="inp" id="trTipo">
+        <option value="INICIAL">Inicial — na admissão ou primeira entrega</option>
+        <option value="RECICLAGEM">Reciclagem</option>
+        <option value="MUDANCA_FUNCAO">Mudança de função</option>
+      </select></label>
+      <label class="field"><span>Quem treinou <em>*</em></span>
+        <input class="inp" id="trResp" value="${esc(S.unidade.responsavel_epi||'')}"
+          placeholder="Nome de quem ministrou"></label>
+      <label class="field"><span>Carga horária</span>
+        <input class="inp mono" id="trCarga" type="number" min="0" step="0.5" placeholder="Ex.: 1"></label>
+    </div>
+    <label class="field"><span>Conteúdo</span>
+      <textarea class="inp" id="trConteudo">Uso correto do EPI para a função, obrigatoriedade de uso durante toda a exposição ao risco, guarda e conservação, higienização, comunicação de danos ou extravio para substituição imediata, e consequências da recusa injustificada de uso.</textarea></label>`,
+    acoes:[{rotulo:'Cancelar'},{rotulo:'Registrar',classe:'pri',acao:async(o,fe,b)=>{
+      const data = o.querySelector('#trData').value;
+      const resp = o.querySelector('#trResp').value.trim();
+      if(!data) return toast('Informe a data.','err');
+      if(!resp) return toast('Informe quem ministrou o treinamento.','err');
+      b.disabled=true;
+      try{
+        const {error} = await S.sb.from('almox_treinamentos_epi').insert({
+          unidade_id:S.unidade.id, funcionario_id:funcId, data,
+          tipo:o.querySelector('#trTipo').value, responsavel:resp,
+          carga_horaria:Number(o.querySelector('#trCarga').value)||null,
+          conteudo:o.querySelector('#trConteudo').value.trim()||null, usuario_id:S.user.id});
+        if(error) throw error;
+        fe(); $('#drawer').innerHTML=''; toast('Treinamento registrado.','ok'); fichaFuncionario(funcId);
+      }catch(e){ erro(e); b.disabled=false; }
+    }}]});
+}
+
 function formTermoAssinado(id){
   if(!exigeGestor()) return;
   const f = S.funcionarios.find(x=>x.id===id);
@@ -3691,17 +3833,17 @@ async function formTermoUniforme(funcId){
         return {q, n:e.item, t:e.tamanho, s:e.sku, epi:e.epi};
       });
       if(!linhas.length) return toast('Selecione ao menos uma peça.','err');
-      fe(); imprimirTermoUniforme(f, linhas, o.querySelector('#tuObs').value);
+      const obs = o.querySelector('#tuObs').value;
+      fe(); escolherVia('Imprimir termo de compromisso',
+        v => imprimirTermoUniforme(f, linhas, obs, v));
     }}]});
 }
 
-function imprimirTermoUniforme(f, linhas, obs){
+function imprimirTermoUniforme(f, linhas, obs, vias=['EMPRESA','FUNCIONARIO']){
   const temEpi = linhas.some(l=>l.epi);
-  imprimir(`${cabecalhoRecibo('Termo de compromisso de uniforme',
+  imprimirVias(vias, via => `${cabecalhoRecibo('Termo de compromisso de uniforme',
       'TCU-'+(S.unidade.codigo)+'-'+hoje().replace(/-/g,'').slice(2))}
-    <div style="background:#eee;border:1px solid #999;padding:5px 8px;font-size:10px;
-                letter-spacing:.08em;text-transform:uppercase;font-weight:700;margin-bottom:14px">
-      Via da empresa — arquivar no dossiê do funcionário</div>
+    ${faixaVia(via)}
     ${dadosFuncionario(f)}
     ${tabelaRecibo(linhas)}
     ${obs?`<p style="font-size:11px;margin:-6px 0 12px"><b>Observação:</b> ${esc(obs)}</p>`:''}
@@ -3739,15 +3881,15 @@ function imprimirTermoUniforme(f, linhas, obs){
     ${assinaturas(f.nome)}
     ${blocoLegal('Fundamentação legal', temEpi ? BASE_UNIFORME.concat([BASE_EPI[1]]) : BASE_UNIFORME)}
     <div style="margin-top:10px;font-size:8.5px;color:#666">
-      Documento gerado pelo ${esc(CONFIG.SISTEMA)} em ${new Date().toLocaleString('pt-BR')}.
-      Recomenda-se a revisão do texto pelo RH ou pela assessoria jurídica trabalhista da empresa antes da adoção
-      em larga escala.</div>`);
+      Gerado pelo ${esc(CONFIG.SISTEMA)} em ${new Date().toLocaleString('pt-BR')}.
+      ${via==='FUNCIONARIO'?'Esta é a sua via — guarde-a.':'Arquivar assinado no dossiê.'}</div>`);
 }
 
 /* ---------- 2. FICHA DE CONTROLE DE EPI (NR-6) ---------- */
-async function fichaEPI(funcId){
+async function fichaEPI(funcId, vias){
   const f = S.funcionarios.find(x=>x.id===funcId);
   if(!f) return;
+  if(!vias) return escolherVia('Imprimir ficha de EPI', v => fichaEPI(funcId, v));
   const movs = await q('almox_vw_movimentacoes','*',
     b=>b.eq('funcionario_id',funcId).eq('cancelada',false)
         .in('tipo',['SAIDA_FUNCIONARIO','SAIDA_EMPRESTIMO','ENTRADA_DEVOLUCAO','ENTRADA_RETORNO_EMPRESTIMO'])
@@ -3756,11 +3898,20 @@ async function fichaEPI(funcId){
   const linhas = movs.filter(m=>epis.has(m.item));
   if(!linhas.length) return toast('Este funcionário ainda não recebeu nenhum EPI.','err');
 
-  const caDe = nome => S.itens.find(i=>i.nome===nome)?.ca_epi || '';
-  const semCA = [...new Set(linhas.filter(l=>!caDe(l.item)).map(l=>l.item))];
+  const treinos = await q('almox_treinamentos_epi','*',
+    b=>b.eq('funcionario_id',funcId).order('data',{ascending:false}));
+  const itemDe = nome => S.itens.find(i=>i.nome===nome) || {};
+  const caDe   = nome => itemDe(nome).ca_epi || '';
+  const semCA  = [...new Set(linhas.filter(l=>!caDe(l.item)).map(l=>l.item))];
+  // CA vencido na data da entrega invalida o fornecimento
+  const vencidos = [...new Set(linhas.filter(l=>{
+    const v = itemDe(l.item).ca_validade;
+    return v && !l.e_entrada && new Date(l.data) > new Date(v+'T23:59:59');
+  }).map(l=>l.item))];
 
-  imprimir(`${cabecalhoRecibo('Ficha de controle de EPI',
+  imprimirVias(vias, via => `${cabecalhoRecibo('Ficha de controle de EPI',
       'EPI-'+(S.unidade.codigo)+'-'+String(f.id).padStart(4,'0'))}
+    ${faixaVia(via)}
     <div style="background:#eee;border:1px solid #999;padding:5px 8px;font-size:10px;
                 letter-spacing:.08em;text-transform:uppercase;font-weight:700;margin-bottom:6px">
       Registro de fornecimento de equipamento de proteção individual — NR-6, item 6.6.1</div>
@@ -3770,23 +3921,44 @@ async function fichaEPI(funcId){
     ${dadosFuncionario(f)}
     <table><thead><tr>
       <th style="width:70px">Data</th><th>Equipamento</th><th style="width:70px">Tamanho</th>
-      <th style="width:70px">CA</th><th style="width:34px">Qtd</th><th style="width:78px">Motivo</th>
-      <th style="width:150px">Assinatura do empregado</th></tr></thead>
+      <th style="width:60px">CA</th><th style="width:64px">CA válido até</th>
+      <th style="width:32px">Qtd</th><th style="width:74px">Motivo</th>
+      <th style="width:130px">Assinatura do empregado</th></tr></thead>
       <tbody>${linhas.map(l=>`<tr>
         <td class="mono" style="font-size:10px">${dt(l.data)}</td>
         <td style="font-size:10.5px">${esc(l.item)}</td>
         <td style="text-align:center;font-size:10.5px">${esc(l.tamanho)}</td>
         <td class="mono" style="font-size:10px;text-align:center">${esc(caDe(l.item) || '—')}</td>
+        <td class="mono" style="font-size:9.5px;text-align:center">${
+          itemDe(l.item).ca_validade ? dt(itemDe(l.item).ca_validade) : '—'}</td>
         <td style="text-align:center" class="mono">${l.quantidade}</td>
         <td style="font-size:9px">${l.e_entrada ? 'Devolução'
             : l.tipo==='SAIDA_EMPRESTIMO' ? 'Empréstimo' : 'Fornecimento'}</td>
         <td></td></tr>`).join('')}
         ${Array.from({length:Math.max(0, 6-linhas.length)}).map(()=>
-          `<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`).join('')}
+          `<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`).join('')}
       </tbody></table>
-    ${semCA.length?`<p style="font-size:9.5px;color:#8a2b00;border:1px solid #d9a06a;background:#fdf3e9;
-       padding:6px 8px;margin:-6px 0 12px"><b>Atenção:</b> sem número de CA cadastrado para:
-       ${esc(semCA.join('; '))}. O Certificado de Aprovação é exigido pela fiscalização — preencha no cadastro do item.</p>`:''}
+    <table style="margin-bottom:12px"><thead><tr>
+      <th colspan="4" style="text-align:left">Treinamento e orientação sobre EPI — NR-6, item 6.6.1 "d"</th></tr>
+      <tr><th style="width:70px">Data</th><th style="width:110px">Tipo</th>
+        <th>Ministrado por</th><th style="width:60px">Carga</th></tr></thead>
+      <tbody>${treinos.length ? treinos.map(t=>`<tr>
+        <td class="mono" style="font-size:10px">${dt(t.data)}</td>
+        <td style="font-size:10px">${{INICIAL:'Inicial',RECICLAGEM:'Reciclagem',MUDANCA_FUNCAO:'Mudança de função'}[t.tipo]}</td>
+        <td style="font-size:10px">${esc(t.responsavel||'—')}</td>
+        <td class="mono" style="font-size:10px;text-align:center">${t.carga_horaria?t.carga_horaria+'h':'—'}</td>
+      </tr>`).join('')
+        : `<tr><td colspan="4" style="font-size:10px;color:#8a2b00">
+            Nenhum treinamento registrado. Registre no sistema antes de apresentar esta ficha.</td></tr>`}
+      </tbody></table>
+    ${treinos.length && treinos[0].conteudo ? `<p style="font-size:9px;color:#444;margin:-6px 0 12px">
+      <b>Conteúdo:</b> ${esc(treinos[0].conteudo)}</p>`:''}
+    ${(semCA.length||vencidos.length)?`<p style="font-size:9.5px;color:#8a2b00;border:1px solid #d9a06a;background:#fdf3e9;
+       padding:6px 8px;margin:-6px 0 12px">
+       ${semCA.length?`<b>Sem CA cadastrado:</b> ${esc(semCA.join('; '))}. O Certificado de Aprovação é a
+       primeira coisa que a fiscalização confere (CLT art. 166).<br>`:''}
+       ${vencidos.length?`<b>CA vencido na data da entrega:</b> ${esc(vencidos.join('; '))}.
+       Regularize e substitua o equipamento.`:''}</p>`:''}
     <div class="rec-termo">
       <b>DECLARAÇÃO DO EMPREGADO</b><br>
       Declaro que recebi gratuitamente da empresa os equipamentos de proteção individual acima relacionados,
@@ -3802,14 +3974,14 @@ async function fichaEPI(funcId){
     <div class="rec-ass">
       <div>${esc(f.nome)}<br><span style="font-size:10px;color:#555">Empregado — assinatura e data</span></div>
       <div>${esc(S.unidade.responsavel_epi || S.perfil.nome)}<br>
-        <span style="font-size:10px;color:#555">Responsável pela entrega — assinatura e data</span></div>
+        <span style="font-size:10px;color:#555">RH Local — responsável pela entrega</span></div>
     </div>
     ${blocoLegal('Fundamentação legal', BASE_EPI.concat(
        linhas.some(l=>/TÉRMICA|JAPONA|BALACLAVA/i.test(l.item)) ? [BASE_FRIO] : []))}
     <div style="margin-top:10px;font-size:8.5px;color:#666">
       Ficha gerada pelo ${esc(CONFIG.SISTEMA)} em ${new Date().toLocaleString('pt-BR')} a partir dos
-      lançamentos registrados. Guardar assinada e disponível para a fiscalização.
-      Registro eletrônico admitido pela NR-6, item 6.9.3.</div>`);
+      lançamentos registrados. Registro eletrônico admitido pela NR-6, item 6.6.1 alínea "h".
+      ${via==='EMPRESA'?'Guardar assinada e disponível para a fiscalização.':'Esta é a sua via.'}</div>`);
 }
 
 /* ---------- dados da unidade para os documentos ---------- */
@@ -3827,9 +3999,9 @@ function formDadosUnidade(){
     <label class="field"><span>CNPJ</span><input class="inp mono" id="duCnpj" value="${esc(u.cnpj||'')}"
       placeholder="00.000.000/0000-00"></label>
     <label class="field"><span>Endereço</span><input class="inp" id="duEnd" value="${esc(u.endereco||'')}"></label>
-    <label class="field"><span>Responsável pela entrega de EPI</span>
+    <label class="field"><span>RH Local — responsável pela entrega de EPI</span>
       <input class="inp" id="duResp" value="${esc(u.responsavel_epi||'')}"
-        placeholder="Quem assina a ficha pela empresa"></label>`,
+        placeholder="Nome de quem assina pelo RH Local"></label>`,
     acoes:[{rotulo:'Cancelar'},{rotulo:'Salvar',classe:'pri',acao:async(o,f,b)=>{
       b.disabled=true;
       const reg = {nome:o.querySelector('#duNome').value.trim(),
